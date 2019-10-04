@@ -2,16 +2,20 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <img class="profile-img" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120" alt="">
+                <img class="profile-img d-none d-sm-block" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120" alt="">
+                
+                <div class="d-block d-sm-none text-center mb-4">
+                    <img src="../assets/image/LogoEncomaq-color2.png" alt="">
+                </div>
+
                 <form class="form-signin" [formGroup]="formSignin">
                     <input type="text" class="form-control" placeholder="Email" autofocus formControlName="email">
                     <input type="password" class="form-control" placeholder="Password" formControlName="password">
                     <button class="btn btn-lg btn-primary btn-block" type="button"
                         (keydown.enter)="formSignin.valid && signIn()" (click)="formSignin.valid && signIn()"
                         [disabled]="!formSignin.valid">Entrar</button>                    
-                    <div class="row d-flex flex-row justify-content-between">
+                    <div class="row d-flex flex-row justify-content-center">
                         <a href="#" class="text-center new-account">¿Olvidaste tu contraseña?</a>
-                        <a href="#" class="text-center new-account">Solicita una cuenta</a>
                     </div>
                 </form>
             </div>
