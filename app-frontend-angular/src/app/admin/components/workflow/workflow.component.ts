@@ -53,7 +53,8 @@ export class WorkflowComponent implements OnInit {
     if (token === null || token === 'null') {
       this.router.navigate(['/admin/auth']);
     } else {
-      this.username = this.localStorageCommon.get('auth_user', 'json').name;
+      const user = this.localStorageCommon.get('auth_user', 'json');
+      this.username = user.personname + ' ' + user.lastnameperson;
     }
   }
 

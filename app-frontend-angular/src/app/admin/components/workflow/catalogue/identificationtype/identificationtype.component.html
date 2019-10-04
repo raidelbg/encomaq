@@ -11,7 +11,7 @@
                     <tr>
                         <th style="width: 8%;">NO</th>
                         <th>TIPO IDENTIFICACION</th>
-                        <th>CODIGO</th>
+                        <th>LONGITUD</th>
                         <th style="width: 8%;">ESTADO</th>
                         <th style="width: 5%;">
                             <button type="button" class="btn btn-primary" (click)="create()">
@@ -23,8 +23,8 @@
                 <tbody>
                     <tr *ngFor="let item of list;  let i = index " [ngClass]= "{'text-danger':item.state == false}" >
                         <td>{{i + 1}}</td>
-                        <td class="text-left">{{item.nametypeidentification}}</td>
-                        <td class="text-left">{{item.code}}</td>
+                        <td class="text-left">{{item.identifytypename}}</td>
+                        <td class="text-left">{{item.identifylength}}</td>
                         <td class="text-left">{{ ((item.state) ? 'ACTIVO' : 'INACTIVO' ) }}</td>
                         <td class="text-center">              
                             <div class="btn-group">
@@ -58,12 +58,16 @@
         <div class="container mt-5">
             <div class="row">
                 <div class="col-12 mb-2">
-                    <label for="nametypeidentification">Tipo de Identificación</label>
-                    <input id="nametypeidentification" type="text" class="form-control" placeholder="" autofocus formControlName="nametypeidentification">
+                    <label for="identifytypename">Tipo de Identificación</label>
+                    <input id="identifytypename" type="text" class="form-control" placeholder="" autofocus formControlName="identifytypename">
                 </div>
                 <div class="col-12 mb-2">
-                    <label for="code">Código</label>
-                    <input id="code" type="text" class="form-control" placeholder="" formControlName="code">
+                    <label for="identifylength">Longitud</label>
+                    <input id="identifylength" type="text" class="form-control" placeholder="" formControlName="identifylength"
+                            [ngClass]="{ 'is-invalid': !formIdentifyType.get('identifylength').valid }">
+                    <div class="invalid-feedback" *ngIf="!formIdentifyType.get('identifylength').valid">
+                        Debe ingresar solo números
+                    </div>
                 </div>
                 <div class="col-12 mb-2">
                     <div class="custom-control custom-checkbox">

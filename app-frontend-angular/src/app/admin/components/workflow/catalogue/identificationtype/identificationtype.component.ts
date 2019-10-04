@@ -32,8 +32,8 @@ export class IdentificationtypeComponent implements OnInit {
   ngOnInit() {
     this.get();
     this.formIdentifyType = this.formBuilder.group({
-      nametypeidentification: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
-      code: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      identifytypename: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      identifylength: new FormControl('', {validators: [Validators.pattern('^[0-9]*$')], updateOn: 'change'}),
       state: new FormControl(true)
     });
   }
@@ -53,14 +53,14 @@ export class IdentificationtypeComponent implements OnInit {
     if (this.itemSelected === null) {
       this.add();
     } else {
-      this.update(this.itemSelected.id_typeidentification);
+      this.update(this.itemSelected.ididentifytype);
     }
   }
 
   edit = (item: any) => {
     this.itemSelected = item;
-    this.formIdentifyType.get('nametypeidentification').setValue(item.nametypeidentification);
-    this.formIdentifyType.get('code').setValue(item.code);
+    this.formIdentifyType.get('identifytypename').setValue(item.identifytypename);
+    this.formIdentifyType.get('identifylength').setValue(item.identifylength);
     this.formIdentifyType.get('state').setValue(item.state);
     this.titleAside = 'Editar Tipo Identificación';
     this.asideIsOpen = true;
@@ -68,8 +68,8 @@ export class IdentificationtypeComponent implements OnInit {
 
   update = (id: any) => {
     const data = {
-      nametypeidentification: this.formIdentifyType.value.nametypeidentification,
-      code: this.formIdentifyType.value.code,
+      identifytypename: this.formIdentifyType.value.identifytypename,
+      identifylength: this.formIdentifyType.value.identifylength,
       state: this.formIdentifyType.value.state
     };
     this.identificationTypeService.put(id, data).subscribe(
@@ -98,8 +98,8 @@ export class IdentificationtypeComponent implements OnInit {
   add = () => {
     const state = (this.formIdentifyType.value.state !== null && this.formIdentifyType.value.state !== false) ? true : false;
     const data = {
-      nametypeidentification: this.formIdentifyType.value.nametypeidentification,
-      code: this.formIdentifyType.value.code,
+      identifytypename: this.formIdentifyType.value.identifytypename,
+      identifylength: this.formIdentifyType.value.identifylength,
       state
     };
     this.identificationTypeService.post(data).subscribe(
@@ -124,7 +124,7 @@ export class IdentificationtypeComponent implements OnInit {
   }
 
   delete = () => {
-    this.identificationTypeService.delete(this.itemSelected.id_typeidentification).subscribe(
+    this.identificationTypeService.delete(this.itemSelected.ididentifytype).subscribe(
       (response) => {
         $('#confirmDeleteIdentificationType').modal('hide');
         if (response.success) {

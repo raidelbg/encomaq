@@ -15,7 +15,7 @@ class TypeIdentificationController extends Controller
      */
     public function index()
     {
-        return TypeIdentification::orderBy('nametypeidentification', 'asc')->get();
+        return TypeIdentification::orderBy('identifytypename', 'asc')->get();
     }
 
     /**
@@ -37,16 +37,7 @@ class TypeIdentificationController extends Controller
     public function store(Request $request)
     {
         $item = new TypeIdentification();
-
-        $item->nametypeidentification = strtoupper($request->input('nametypeidentification'));
-        $item->code = $request->input('code');
-        $item->state = $request->input('state');
-
-        if ($item->save()) {
-            return response()->json(['success' => true, 'message' => 'Se agregó satisfactoriamente' ]);
-        } else {
-            return response()->json(['success' => false, 'message' => 'Ha ocurrido un error al intentar agregar' ]);
-        }
+        return $this->action($item, $request, 'add');
     }
 
     /**
@@ -81,15 +72,25 @@ class TypeIdentificationController extends Controller
     public function update(Request $request, $id)
     {
         $item = TypeIdentification::find($id);
+        return $this->action($item, $request, 'update');
+    }
 
-        $item->nametypeidentification = strtoupper($request->input('nametypeidentification'));
-        $item->code = $request->input('code');
-        $item->state = $request->input('state');
+    private function action(TypeIdentification $item, Request $request, $typeAction)
+    {
+        $item->identifytypename = strtoupper($request->input('identifytypename'));
+        $item->identifylength = ($request->input('identifylength') !== '') ? $request->input('identifylength') : null;
+        $item->state = ($request->input('state') === true) ? 1 : 0;
 
         if ($item->save()) {
-            return response()->json(['success' => true, 'message' => 'Se editó satisfactoriamente' ]);
+            return response()->json([
+                'success' => true,
+                'message' => ($typeAction === 'add') ? 'Se agregó satisfactoriamente' : 'Se editó satisfactoriamente'
+            ]);
         } else {
-            return response()->json(['success' => false, 'message' => 'Ha ocurrido un error al intentar editar' ]);
+            return response()->json([
+                'success' => false,
+                'message' => ($typeAction === 'add') ? 'Ha ocurrido un error al intentar agregar' : 'Ha ocurrido un error al intentar editar'
+            ]);
         }
     }
 
