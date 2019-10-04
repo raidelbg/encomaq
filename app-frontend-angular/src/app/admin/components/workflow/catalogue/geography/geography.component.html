@@ -1,0 +1,168 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h3>Geografía</h3>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="country-tab" data-toggle="tab" href="#country" role="tab"
+                        aria-controls="country" aria-selected="true">PAÍS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="province-tab" data-toggle="tab" href="#province" role="tab"
+                        aria-controls="province" aria-selected="false">PROVINCIA</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="city-tab" data-toggle="tab" href="#city" role="tab" aria-controls="city"
+                        aria-selected="false">CIUDAD</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+
+                <div class="tab-pane fade show active" id="country" role="tabpanel" aria-labelledby="country-tab">
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 table-responsive">
+                            <table class="table table-striped table-bordered table-hober">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th style="width: 8%;">NO</th>
+                                        <th>PAÍS</th>
+                                        <th>CÓDIGO</th>
+                                        <th style="width: 8%;">ESTADO</th>
+                                        <th style="width: 5%;">
+                                            <button type="button" class="btn btn-primary" (click)="createCountry()">
+                                                <i class="fas fa-plus-square"></i>
+                                            </button>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr *ngFor="let item of listCountry;  let i = index " [ngClass]= "{'text-danger':item.state == false}" >
+                                                <td>{{i + 1}}</td>
+                                                <td class="text-left">{{item.namecountry}}</td>
+                                                <td class="text-left">{{item.code}}</td>
+                                                <td class="text-left">{{ ((item.state) ? 'ACTIVO' : 'INACTIVO' ) }}</td>
+                                                <td class="text-center">              
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu">              
+                                                            <a class="dropdown-item" (click)="editCountry(item)">
+                                                                <i class="fas fa-edit"></i> Editar
+                                                            </a>              
+                                                            <div class="dropdown-divider"></div>             
+                                                            <a class="dropdown-item" (click)="confirmDeleteCountry(item)">
+                                                                <i class="fas fa-trash-alt"></i> Eliminar
+                                                            </a>        
+                                                        </div>
+                                                    </div>              
+                                                </td>
+                                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                
+
+                <div class="tab-pane fade" id="province" role="tabpanel" aria-labelledby="province-tab">
+                    <br>
+                    <div class="row">
+                            <div class="col-sm-12 col-md-12 table-responsive">
+                                <table class="table table-striped table-bordered table-hober">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th style="width: 8%;">NO</th>
+                                            <th>PAÍS</th>
+                                            <th>PROVINCIA</th>
+                                            <th style="width: 8%;">ESTADO</th>
+                                            <th style="width: 5%;">
+                                                <button type="button" class="btn btn-primary" >
+                                                    <i class="fas fa-plus-square"></i>
+                                                </button>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                </div>
+
+
+
+
+                <div class="tab-pane fade" id="city" role="tabpanel" aria-labelledby="city-tab">
+                        <br>
+                        <div class="row">
+                                <div class="col-sm-12 col-md-12 table-responsive">
+                                    <table class="table table-striped table-bordered table-hober">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th style="width: 8%;">NO</th>
+                                                <th>PAÍS</th>
+                                                <th>PROVINCIA</th>
+                                                <th>CIUDAD</th>
+                                                <th style="width: 8%;">ESTADO</th>
+                                                <th style="width: 5%;">
+                                                    <button type="button" class="btn btn-primary" >
+                                                        <i class="fas fa-plus-square"></i>
+                                                    </button>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+  
+<app-notification [type]="typeNotification" [icon]="iconNotification" 
+[title]="titleNotification" [message]="messageNotification"></app-notification>
+
+<app-aside [isOpen]="asideIsOpen" [title]="titleAside" [headerOverlay]="false" [closeAside]="closeAside">
+
+    <app-add-country id="createCountry" (notify)="refresh($event)"></app-add-country>
+
+    <app-edit-country id="editCountry" [editItem]="itemSelected" (notify)="refresh($event)" ></app-edit-country>
+</app-aside>  
+
+<div class="modal fade" id="confirmDeleteIdentificationType" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            ¿Está seguro que desea eliminar el item seleccionado?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" (click)="delete()">Eliminar</button>
+        </div>
+        </div>
+    </div>
+</div>

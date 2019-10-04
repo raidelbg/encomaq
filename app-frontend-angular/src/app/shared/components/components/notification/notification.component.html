@@ -1,0 +1,14 @@
+<div class="{{ this.ongetStyleClass() }}" id="{{id}}">
+    <div id="div-close-notification" class="image-close" (click)="close()">
+        <i class="fas fa-times"></i>
+    </div>
+    <div class="body">
+        <div class="icon">
+            <i class="fas {{ icon }} fa-5x"></i>
+        </div>
+        <div class="message">
+            <h4>{{ title }}</h4>
+            <span>{{ message }}</span>
+        </div>        
+    </div>
+</div>

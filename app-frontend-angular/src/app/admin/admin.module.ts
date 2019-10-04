@@ -1,0 +1,44 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { HttpConfigInterceptor } from '../shared/interceptors/httpconfig.interceptor';
+import { AdminRoutingModule } from './admin-routing.module';
+import { AdminComponent } from './admin.component';
+import { SharedModule } from '../shared/shared.module';
+import { AuthComponent } from './components/auth/auth.component';
+import { SigninComponent } from './components/auth/signin/signin.component';
+import { SignupComponent } from './components/auth/signup/signup.component';
+import { PasswordRenewComponent } from './components/auth/password-renew/password-renew.component';
+import { PasswordResetComponent } from './components/auth/password-reset/password-reset.component';
+import { WorkflowComponent } from './components/workflow/workflow.component';
+import { SigninService } from './services/auth/signin/signin.service';
+import { IdentificationtypeComponent } from './components/workflow/catalogue/identificationtype/identificationtype.component';
+import { IdentificationtypeService } from './services/workflow/catalogue/identificationtype.service';
+import { GeographyComponent } from './components/workflow/catalogue/geography/geography.component';
+import { AddCountryComponent } from './components/workflow/catalogue/geography/add-country/add-country.component';
+import { EditCountryComponent } from './components/workflow/catalogue/geography/edit-country/edit-country.component';
+import { PaymentResidentComponent } from './components/workflow/catalogue/payment-resident/payment-resident.component';
+import { PaymentResidentService } from './services/workflow/catalogue/payment-resident/payment-resident.service';
+import { VoucherTypeComponent } from './components/workflow/catalogue/voucher-type/voucher-type.component';
+import { VoucherTypeService } from './services/workflow/catalogue/voucher-type/voucher-type.service';
+
+
+@NgModule({
+  declarations: [AdminComponent, AuthComponent, SigninComponent, SignupComponent, PasswordRenewComponent,
+                PasswordResetComponent, WorkflowComponent, IdentificationtypeComponent, GeographyComponent,
+                AddCountryComponent, EditCountryComponent, PaymentResidentComponent, VoucherTypeComponent],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    FormsModule, ReactiveFormsModule,
+    SharedModule,
+    AdminRoutingModule
+  ],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
+    SigninService, IdentificationtypeService, PaymentResidentService, VoucherTypeService
+  ]
+})
+export class AdminModule { }

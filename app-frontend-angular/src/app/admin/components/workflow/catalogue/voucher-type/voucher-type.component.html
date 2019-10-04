@@ -1,0 +1,104 @@
+<div class="container identification-type-component">
+    <div class="row">
+        <div class="col-12">
+            <h3>Tipo de Comprobante</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 table-responsive">
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width: 8%;">NO</th>
+                        <th>TIPO COMPROBANTE</th>
+                        <th>CODIGO</th>
+                        <th style="width: 8%;">ESTADO</th>
+                        <th style="width: 5%;">
+                            <button type="button" class="btn btn-primary" (click)="create()">
+                                <i class="fas fa-plus-square"></i>
+                            </button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of list;  let i = index " [ngClass]= "{'text-danger':item.state == false}" >
+                        <td>{{i + 1}}</td>
+                        <td class="text-left">{{item.nametypevoucher}}</td>
+                        <td class="text-left">{{item.code}}</td>
+                        <td class="text-left">{{ ((item.state) ? 'ACTIVO' : 'INACTIVO' ) }}</td>
+                        <td class="text-center">              
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu">              
+                                    <a class="dropdown-item" (click)="edit(item)">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>              
+                                    <div class="dropdown-divider"></div>             
+                                    <a class="dropdown-item" (click)="confirmDelete(item)">
+                                        <i class="fas fa-trash-alt"></i> Eliminar
+                                    </a>        
+                                </div>
+                            </div>              
+                        </td>
+                    </tr>
+                </tbody>
+            </table>              
+        </div>
+    </div>
+</div>
+
+<app-notification [type]="typeNotification" [icon]="iconNotification" 
+    [title]="titleNotification" [message]="messageNotification"></app-notification>
+
+<app-aside [isOpen]="asideIsOpen" [title]="titleAside" [headerOverlay]="false" [closeAside]="closeAside">
+    
+    <form [formGroup]="formVoucherType">
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-12 mb-2">
+                    <label for="nametypevoucher">Tipo de Comprobante</label>
+                    <input id="nametypevoucher" type="text" class="form-control" placeholder="" autofocus formControlName="nametypevoucher">
+                </div>
+                <div class="col-12 mb-2">
+                    <label for="code">Código</label>
+                    <input id="code" type="text" class="form-control" placeholder="" formControlName="code">
+                </div>
+                <div class="col-12 mb-2">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="state" formControlName="state">
+                        <label class="custom-control-label" for="state">Estado (Activo/Inactivo)</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-lg btn-primary btn-block" type="button"
+                    (keydown.enter)="formVoucherType.valid && action()" (click)="formVoucherType.valid && action()"
+                    [disabled]="!formVoucherType.valid">Guardar</button>
+                </div>
+                
+            </div>
+        </div>        
+    </form>
+   
+</app-aside>
+
+<div class="modal fade" id="confirmDeleteTypeVoucher" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            ¿Está seguro que desea eliminar el Tipo de Comprobante seleccionado?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" (click)="delete()">Eliminar</button>
+        </div>
+        </div>
+    </div>
+</div>

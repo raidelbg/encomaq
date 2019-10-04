@@ -1,0 +1,13 @@
+<div class="aside-component app-scroll relative" [ngClass]="{'active': isOpen}">
+    <div class="header p-all" [ngClass]="{'overlay': headerOverlay}">
+        <div class="title">
+        {{title}}
+        </div>
+        <div class="image-close" (click)="closeAside()" [ngClass]="{'active': isOpen}" >
+            <i class="fas fa-times"></i>
+        </div>
+    </div>
+    
+    <ng-content></ng-content>
+</div>
+      
