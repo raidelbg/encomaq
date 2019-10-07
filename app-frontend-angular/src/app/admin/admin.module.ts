@@ -20,11 +20,13 @@ import { CategoryItemComponent } from './components/workflow/catalogue/category-
 import { CategoryItemService } from './services/workflow/catalogue/category-item.service';
 import { UnitTypeComponent } from './components/workflow/catalogue/unit-type/unit-type.component';
 import { UnitTypeService } from './services/workflow/catalogue/unit-type.service';
+import { PaymentFormComponent } from './components/workflow/workflow/payment-form/payment-form.component';
+import { PaymentFormService } from './services/workflow/workflow/payment-form.service';
 
 @NgModule({
   declarations: [AdminComponent, AuthComponent, SigninComponent, SignupComponent, PasswordRenewComponent,
                 PasswordResetComponent, WorkflowComponent, IdentificationtypeComponent, CategoryItemComponent,
-                UnitTypeComponent],
+                UnitTypeComponent, PaymentFormComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -34,7 +36,7 @@ import { UnitTypeService } from './services/workflow/catalogue/unit-type.service
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
-    SigninService, IdentificationtypeService, CategoryItemService, UnitTypeService
+    SigninService, IdentificationtypeService, CategoryItemService, UnitTypeService, PaymentFormService
   ]
 })
 export class AdminModule { }

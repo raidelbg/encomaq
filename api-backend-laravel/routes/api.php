@@ -32,3 +32,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('unit-type', 'catalogue\UnitTypeController');
 });
 
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('payment-form', 'workflow\PaymentFormController');
+});
