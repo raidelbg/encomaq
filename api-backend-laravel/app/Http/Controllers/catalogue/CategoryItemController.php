@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\catalogue;
 
-use App\Models\schema_public\TypeVoucher;
+use App\Models\schema_public\CategoryItem;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class TypeVoucherController extends Controller
+class CategoryItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class TypeVoucherController extends Controller
      */
     public function index()
     {
-        return TypeVoucher::orderBy('nametypevoucher', 'asc')->get();
+        return CategoryItem::orderBy('categoryitemname', 'asc')->get();
     }
 
     /**
@@ -36,7 +36,7 @@ class TypeVoucherController extends Controller
      */
     public function store(Request $request)
     {
-        $item = new TypeVoucher();
+        $item = new CategoryItem();
         return $this->action($item, $request, 'add');
     }
 
@@ -71,15 +71,14 @@ class TypeVoucherController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $item = TypeVoucher::find($id);
+        $item = CategoryItem::find($id);
         return $this->action($item, $request, 'update');
     }
 
-    private function action(TypeVoucher $item, Request $request, $typeAction)
+    private function action(CategoryItem $item, Request $request, $typeAction)
     {
-        $item->nametypevoucher = strtoupper($request->input('nametypevoucher'));
-        $item->code = $request->input('code');
-        $item->state = $request->input('state');
+        $item->categoryitemname = strtoupper($request->input('categoryitemname'));
+        $item->state = ($request->input('state') === true) ? 1 : 0;
 
         if ($item->save()) {
             return response()->json([
@@ -102,7 +101,7 @@ class TypeVoucherController extends Controller
      */
     public function destroy($id)
     {
-        $item = TypeVoucher::find($id);
+        $item = CategoryItem::find($id);
 
         if ($item->delete()) {
             return response()->json(['success' => true, 'message' => 'Se eliminó satisfactoriamente' ]);
