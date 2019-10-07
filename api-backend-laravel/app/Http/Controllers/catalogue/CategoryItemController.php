@@ -78,7 +78,7 @@ class CategoryItemController extends Controller
     private function action(CategoryItem $item, Request $request, $typeAction)
     {
         $item->categoryitemname = strtoupper($request->input('categoryitemname'));
-        $item->state = ($request->input('state') === true) ? 1 : 0;
+        $item->state = ($request->input('state') === true || $request->input('state') === 1) ? 1 : 0;
 
         if ($item->save()) {
             return response()->json([
