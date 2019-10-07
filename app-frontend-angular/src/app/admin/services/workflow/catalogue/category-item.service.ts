@@ -5,9 +5,9 @@ import { Services } from 'src/app/shared/classes/Services';
 @Injectable({
   providedIn: 'root'
 })
-export class VoucherTypeService extends Services {
+export class CategoryItemService extends Services {
 
   constructor(http: HttpClient) {
-    super ('typevoucher', http);
+    super ('category-item', http);
   }
 }

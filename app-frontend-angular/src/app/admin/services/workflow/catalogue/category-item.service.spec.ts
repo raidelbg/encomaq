@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { VoucherTypeService } from './voucher-type.service';
+import { CategoryItemService } from './category-item.service';
 
-describe('VoucherTypeService', () => {
+describe('CategoryItemService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: VoucherTypeService = TestBed.get(VoucherTypeService);
+    const service: CategoryItemService = TestBed.get(CategoryItemService);
     expect(service).toBeTruthy();
   });
 });

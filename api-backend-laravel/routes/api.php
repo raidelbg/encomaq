@@ -25,13 +25,5 @@ Route::group(['middleware' => 'auth:api'], function () {
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::resource('country', 'catalogue\CountryController');
-});
-
-Route::group(['middleware' => 'auth:api'], function () {
-    Route::resource('paymentresident', 'catalogue\PaymentResidentController');
-});
-
-Route::group(['middleware' => 'auth:api'], function () {
-    Route::resource('typevoucher', 'catalogue\TypeVoucherController');
+    Route::resource('category-item', 'catalogue\CategoryItemController');
 });
