@@ -18,11 +18,13 @@ import { IdentificationtypeComponent } from './components/workflow/catalogue/ide
 import { IdentificationtypeService } from './services/workflow/catalogue/identificationtype.service';
 import { CategoryItemComponent } from './components/workflow/catalogue/category-item/category-item.component';
 import { CategoryItemService } from './services/workflow/catalogue/category-item.service';
-
+import { UnitTypeComponent } from './components/workflow/catalogue/unit-type/unit-type.component';
+import { UnitTypeService } from './services/workflow/catalogue/unit-type.service';
 
 @NgModule({
   declarations: [AdminComponent, AuthComponent, SigninComponent, SignupComponent, PasswordRenewComponent,
-                PasswordResetComponent, WorkflowComponent, IdentificationtypeComponent, CategoryItemComponent],
+                PasswordResetComponent, WorkflowComponent, IdentificationtypeComponent, CategoryItemComponent,
+                UnitTypeComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -32,7 +34,7 @@ import { CategoryItemService } from './services/workflow/catalogue/category-item
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
-    SigninService, IdentificationtypeService, CategoryItemService
+    SigninService, IdentificationtypeService, CategoryItemService, UnitTypeService
   ]
 })
 export class AdminModule { }
