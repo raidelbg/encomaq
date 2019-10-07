@@ -35,3 +35,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('payment-form', 'workflow\PaymentFormController');
 });
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('warehouse', 'workflow\WarehouseController');
+});
