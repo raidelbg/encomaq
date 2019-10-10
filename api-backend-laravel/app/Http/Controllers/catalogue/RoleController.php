@@ -1,30 +1,22 @@
 <?php
 
-namespace App\Http\Controllers\workflow;
+namespace App\Http\Controllers\catalogue;
 
-use App\Models\schema_public\TransferReason;
-use App\Models\schema_public\TypeTransferReason;
+use App\Models\schema_public\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class TransferReasonController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return TransferReason[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return TransferReason::with('nom_typetransferreason')
-                                    ->orderBy('transferreasonname', 'asc')->get();
+        return Role::orderBy('rolename', 'asc')->get();
     }
-
-    public function getTypeTransferReason()
-    {
-        return TypeTransferReason::where('state', 1)->orderBy('nametypetransferreason', 'asc')->get();
-    }
-
 
     /**
      * Show the form for creating a new resource.
@@ -44,14 +36,14 @@ class TransferReasonController extends Controller
      */
     public function store(Request $request)
     {
-        $item = new TransferReason();
+        $item = new Role();
 
-        if ($this->existTransfer($request->input('transferreasonname'), null) ==  false) {
+        if ($this->exists($request->input('rolename'), null) ==  false) {
             return $this->action($item, $request, 'add');
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Ha ocurrido un error al intentar agregar, ya existe registrado.'
+                'message' => 'Ha ocurrido un error al intentar agregar, ya se encuentra registrado.'
             ]);
         }
     }
@@ -87,14 +79,14 @@ class TransferReasonController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $item = TransferReason::find($id);
+        $item = Role::find($id);
 
-        if ($this->existTransfer($request->input('transferreasonname'), $id) ==  false) {
+        if ($this->exists($request->input('rolename'), $id) ==  false) {
             return $this->action($item, $request, 'update');
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Ha ocurrido un error al intentar editar, ya existe registrado.'
+                'message' => 'Ha ocurrido un error al intentar editar, ya se encuentra registrado.'
             ]);
         }
     }
@@ -107,7 +99,7 @@ class TransferReasonController extends Controller
      */
     public function destroy($id)
     {
-        $item = TransferReason::find($id);
+        $item = Role::find($id);
 
         if ($item->delete()) {
             return response()->json(['success' => true, 'message' => 'Se eliminó satisfactoriamente' ]);
@@ -116,22 +108,19 @@ class TransferReasonController extends Controller
         }
     }
 
-
-    private function existTransfer($transferreasonname, $id)
+    private function exists($transferreasonname, $id)
     {
-        $count = TransferReason::where('transferreasonname', $transferreasonname);
+        $count = Role::where('rolename', $transferreasonname);
         if ($id != null) {
-            $count = $count->where('idtransferreason', '!=' , $id);
+            $count = $count->where('idrole', '!=' , $id);
         }
         $count = $count->count();
         return ($count == 0) ? false : true;
     }
 
-    private function action(TransferReason $item, Request $request, $typeAction)
+    private function action(Role $item, Request $request, $typeAction)
     {
-        $item->transferreasonname = $request->input('transferreasonname');
-        $item->idtypetransferreason = $request->input('idtypetransferreason');
-        $item->state = ($request->input('state') === true || $request->input('state') === 1) ? 1 : 0;
+        $item->rolename = strtoupper($request->input('unittypename'));
 
         if ($item->save()) {
             return response()->json([
