@@ -36,6 +36,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('role', 'catalogue\RoleController');
 });
 
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('config-email', 'catalogue\ConfigEmailController');
+});
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('payment-form', 'workflow\PaymentFormController');
