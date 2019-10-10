@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('transfer-reason/type-reason', 'workflow\TransferReasonController@getTypeTransferReason');
     Route::resource('transfer-reason', 'workflow\TransferReasonController');
 });
 

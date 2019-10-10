@@ -24,11 +24,13 @@ import { PaymentFormComponent } from './components/workflow/workflow/payment-for
 import { PaymentFormService } from './services/workflow/workflow/payment-form.service';
 import { WarehouseComponent } from './components/workflow/workflow/warehouse/warehouse.component';
 import { WarehouseService } from './services/workflow/workflow/warehouse.service';
+import { TransferReasonComponent } from './components/workflow/workflow/transfer-reason/transfer-reason.component';
+import { TransferReasonService } from './services/workflow/workflow/transfer-reason.service';
 
 @NgModule({
   declarations: [AdminComponent, AuthComponent, SigninComponent, SignupComponent, PasswordRenewComponent,
                 PasswordResetComponent, WorkflowComponent, IdentificationtypeComponent, CategoryItemComponent,
-                UnitTypeComponent, PaymentFormComponent, WarehouseComponent],
+                UnitTypeComponent, PaymentFormComponent, WarehouseComponent, TransferReasonComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -38,7 +40,8 @@ import { WarehouseService } from './services/workflow/workflow/warehouse.service
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
-    SigninService, IdentificationtypeService, CategoryItemService, UnitTypeService, PaymentFormService, WarehouseService
+    SigninService, IdentificationtypeService, CategoryItemService, UnitTypeService, PaymentFormService, WarehouseService,
+    TransferReasonService
   ]
 })
 export class AdminModule { }

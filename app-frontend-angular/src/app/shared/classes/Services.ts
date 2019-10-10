@@ -52,9 +52,13 @@ export class Services {
 
   // -------------------------------------------------------------------------------------------------
 
-  get(filter: any, schema: string = null): Observable<any> {
+  get(filter: any, schema: string = null, specificUrl: string = null): Observable<any> {
     this.resolvedSchema(schema);
-    return this.http.get(this.url + this.component + '?filter=' + JSON.stringify(filter), this.httpOptions);
+    let completeUrl = this.url + this.component;
+    if (specificUrl !== null) {
+      completeUrl += '/' + specificUrl;
+    }
+    return this.http.get(completeUrl + '?filter=' + JSON.stringify(filter), this.httpOptions);
   }
 
   post(data: any, schema: string = null): Observable<any> {
