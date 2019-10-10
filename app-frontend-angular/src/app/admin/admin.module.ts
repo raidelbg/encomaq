@@ -28,11 +28,13 @@ import { TransferReasonComponent } from './components/workflow/workflow/transfer
 import { TransferReasonService } from './services/workflow/workflow/transfer-reason.service';
 import { RoleComponent } from './components/workflow/catalogue/role/role.component';
 import { RoleService } from './services/workflow/catalogue/role.service';
+import { ConfigEmailComponent } from './components/workflow/catalogue/config-email/config-email.component';
+import { ConfigEmailService } from './services/workflow/catalogue/config-email.service';
 
 @NgModule({
   declarations: [AdminComponent, AuthComponent, SigninComponent, SignupComponent, PasswordRenewComponent,
                 PasswordResetComponent, WorkflowComponent, IdentificationtypeComponent, CategoryItemComponent,
-                UnitTypeComponent, PaymentFormComponent, WarehouseComponent, TransferReasonComponent, RoleComponent],
+                UnitTypeComponent, PaymentFormComponent, WarehouseComponent, TransferReasonComponent, RoleComponent, ConfigEmailComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -43,7 +45,7 @@ import { RoleService } from './services/workflow/catalogue/role.service';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
     SigninService, IdentificationtypeService, CategoryItemService, UnitTypeService, PaymentFormService, WarehouseService,
-    TransferReasonService, RoleService
+    TransferReasonService, RoleService, ConfigEmailService
   ]
 })
 export class AdminModule { }

@@ -89,7 +89,6 @@ class ConfigEmailController extends Controller
     private function action(ConfigEmail $item, Request $request, $typeAction)
     {
         $item->driver = strtoupper($request->input('driver'));
-
         $item->server = $request->input('server');
         $item->port = $request->input('port');
         $item->encryptation = $request->input('encryptation');

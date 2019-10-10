@@ -1,0 +1,57 @@
+<div class="container generic-component">
+    <div class="row">
+        <div class="col-12">
+            <h3>Configuración Email Sistema</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <form [formGroup]="form">
+                <div class="container mt-5">
+                    <div class="row">
+                        <div class="col-sm-6 col-12 mb-2">
+                            <label for="driver">Driver</label>
+                            <input id="driver" type="text" class="form-control" placeholder="" autofocus formControlName="driver">
+                        </div>
+                        <div class="col-sm-6 col-12 mb-2">
+                            <label for="server">Servidor</label>
+                            <input id="server" type="text" class="form-control" placeholder="" formControlName="server">
+                        </div>
+                        <div class="col-sm-6 col-12 mb-2">
+                            <label for="port">Puerto</label>
+                            <input id="port" type="text" class="form-control" placeholder="" formControlName="port"
+                                    [ngClass]="{ 'is-invalid': !form.get('port').valid }">
+                            <div class="invalid-feedback" *ngIf="!form.get('port').valid">
+                                Debe ingresar solo números
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-12 mb-2">
+                            <label for="encryptation">Encriptación</label>
+                            <input id="encryptation" type="text" class="form-control" placeholder="" formControlName="encryptation">
+                        </div>
+
+                        <div class="col-sm-6 col-12 mb-2">
+                            <label for="useremail">Usuario</label>
+                            <input id="useremail" type="text" class="form-control" placeholder="" formControlName="useremail">
+                        </div>
+
+                        <div class="col-sm-6    col-12 mb-2">
+                            <label for="passwordemail">Password</label>
+                            <input id="passwordemail" type="password" class="form-control" placeholder="" formControlName="passwordemail">
+                        </div>
+
+
+                        <div class="col-12">
+                            <button class="btn btn-lg btn-primary btn-block" type="button"
+                            (keydown.enter)="form.valid && action()" (click)="form.valid && action()"
+                            [disabled]="!form.valid">Guardar</button>
+                        </div>
+                    </div>
+                </div>        
+            </form>          
+        </div>
+    </div>
+</div>
+
+<app-notification [type]="typeNotification" [icon]="iconNotification" 
+    [title]="titleNotification" [message]="messageNotification"></app-notification>
