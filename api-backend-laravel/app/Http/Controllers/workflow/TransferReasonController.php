@@ -16,7 +16,7 @@ class TransferReasonController extends Controller
      */
     public function index()
     {
-        return TransferReason::with('biz_typetransferreason')
+        return TransferReason::with('nom_typetransferreason')
                                     ->orderBy('transferreasonname', 'asc')->get();
     }
 
