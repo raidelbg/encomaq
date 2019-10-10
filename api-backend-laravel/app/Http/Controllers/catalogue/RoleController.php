@@ -108,9 +108,9 @@ class RoleController extends Controller
         }
     }
 
-    private function exists($transferreasonname, $id)
+    private function exists($item, $id)
     {
-        $count = Role::where('rolename', $transferreasonname);
+        $count = Role::where('rolename', $item);
         if ($id != null) {
             $count = $count->where('idrole', '!=' , $id);
         }
@@ -120,7 +120,7 @@ class RoleController extends Controller
 
     private function action(Role $item, Request $request, $typeAction)
     {
-        $item->rolename = strtoupper($request->input('unittypename'));
+        $item->rolename = strtoupper($request->input('rolename'));
 
         if ($item->save()) {
             return response()->json([

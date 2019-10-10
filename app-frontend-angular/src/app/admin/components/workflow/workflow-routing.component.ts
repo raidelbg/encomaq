@@ -6,6 +6,7 @@ import { UnitTypeComponent } from './catalogue/unit-type/unit-type.component';
 import { PaymentFormComponent } from './workflow/payment-form/payment-form.component';
 import { WarehouseComponent } from './workflow/warehouse/warehouse.component';
 import { TransferReasonComponent } from './workflow/transfer-reason/transfer-reason.component';
+import { RoleComponent } from './catalogue/role/role.component';
 
 export const routesWorkflow: Routes = [
     { path: 'identificationtype', component: IdentificationtypeComponent },
@@ -14,6 +15,7 @@ export const routesWorkflow: Routes = [
     { path: 'payment-form', component: PaymentFormComponent },
     { path: 'warehouse', component: WarehouseComponent },
     { path: 'transfer-reason', component: TransferReasonComponent },
+    { path: 'role', component: RoleComponent },
 ];
 
 @NgModule({
