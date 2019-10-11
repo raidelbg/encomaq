@@ -91,7 +91,7 @@ export class UserComponent implements OnInit {
     if (this.itemSelected === null) {
       this.add();
     } else {
-      this.update(this.itemSelected.idrole);
+      this.update(this.itemSelected.iduser);
     }
   }
 
