@@ -32,12 +32,14 @@ import { ConfigEmailComponent } from './components/workflow/catalogue/config-ema
 import { ConfigEmailService } from './services/workflow/catalogue/config-email.service';
 import { UserComponent } from './components/workflow/catalogue/user/user.component';
 import { UserService } from './services/workflow/catalogue/user.service';
+import { CarrierComponent } from './components/workflow/workflow/carrier/carrier.component';
+import { CarrierService } from './services/workflow/workflow/carrier.service';
 
 @NgModule({
   declarations: [AdminComponent, AuthComponent, SigninComponent, SignupComponent, PasswordRenewComponent,
                 PasswordResetComponent, WorkflowComponent, IdentificationtypeComponent, CategoryItemComponent,
                 UnitTypeComponent, PaymentFormComponent, WarehouseComponent, TransferReasonComponent, RoleComponent, ConfigEmailComponent,
-                UserComponent],
+                UserComponent, CarrierComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -48,7 +50,7 @@ import { UserService } from './services/workflow/catalogue/user.service';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
     SigninService, IdentificationtypeService, CategoryItemService, UnitTypeService, PaymentFormService, WarehouseService,
-    TransferReasonService, RoleService, ConfigEmailService, UserService
+    TransferReasonService, RoleService, ConfigEmailService, UserService, CarrierService
   ]
 })
 export class AdminModule { }

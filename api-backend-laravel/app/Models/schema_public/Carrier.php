@@ -11,6 +11,6 @@ class Carrier extends Model
 
     public function nom_identifytype()
     {
-        return $this->belongsTo('app\Models\schema_public\TypeIdentification','ididentifytype');
+        return $this->belongsTo('App\Models\schema_public\TypeIdentification','ididentifytype');
     }
 }
