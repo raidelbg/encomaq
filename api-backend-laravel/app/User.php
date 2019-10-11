@@ -31,4 +31,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password'
     ];
+
+    public function role()
+    {
+        return $this->belongsTo('App\Models\schema_public\Role', 'idrole');
+    }
 }

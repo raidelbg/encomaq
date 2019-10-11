@@ -1,0 +1,85 @@
+<div class="container generic-component">
+    <div class="row">
+        <div class="col-12">
+            <h3>Usuarios</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <form [formGroup]="formFilter">
+                <div class="container mt-5">
+                    <div class="row">
+                        <div class="col-sm-6 col-12 mb-2">
+                            <label for="search">Buscar</label>
+                            <input id="search" type="text" class="form-control" placeholder="" formControlName="search">
+                        </div>
+                        <div class="col-sm-6 col-12 mb-2">
+                            <label for="idrole">Rol</label>
+                            <select class="custom-select" id="idrole" formControlName="idrole" (change)="get()">
+                                <option *ngFor="let e of listRole" [ngValue]="e.idrole">
+                                    {{e.rolename}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3 col-12 mb-2">
+                            <label for="state">Estado</label>
+                            <select class="custom-select" id="state" formControlName="state" (change)="get()">
+                                <option value="1">ACTIVO</option>
+                                <option value="0">INACTIVO</option>
+                            </select>
+                        </div>                        
+
+                        <div class="col-sm-3 col-12 mb-2">
+                            <label for="column">Columna</label>
+                            <select class="custom-select" id="column" formControlName="column" (change)="get()">
+                                <option value="personname">NOMBRE</option>
+                                <option value="lastnameperson">APELLIDOS</option>
+                                <option value="email">EMAIL</option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm-3 col-12 mb-5">
+                            <label for="order">Orden</label>
+                            <select class="custom-select" id="order" formControlName="order" (change)="get()">
+                                <option value="ASC">ASCENDENTE</option>
+                                <option value="DESC">DESCENDENTE</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>        
+            </form>    
+        </div>
+        <div class="col-12">
+            <div class="row">
+
+                <div class="col-12 col-sm-4" *ngFor="let item of list;  let i = index">
+                    <div class="card mb-3" [ngClass]="{ 'border-primary': item.state === 1, 'border-danger': item.state === 0 }">
+                        <div class="row no-gutters">
+                            <div class="col-md-4 image-user" [ngClass]="{ 'text-primary': item.state === 1, 'text-danger': item.state === 0 }">
+                                <i class="fas fa-user-check fa-5x" *ngIf="item.state === 1"></i>
+                                <i class="fas fa-user-times fa-5x" *ngIf="item.state === 0"></i>
+                            </div>
+                            <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{item.personname + ' ' + item.lastnameperson}}</h5>
+                                <p class="card-text">{{item.role.rolename}}</p>
+                                <p class="card-text">{{item.email}}</p>
+                                <p class="card-text">
+                                    <i class="fas fa-edit fa-lg mr-2"></i>
+                                    <i class="fas fa-eye-slash fa-lg mr-2"></i>
+                                    <i class="fas fa-trash-alt fa-lg"></i>
+                                </p>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-notification [type]="typeNotification" [icon]="iconNotification" 
+    [title]="titleNotification" [message]="messageNotification"></app-notification>

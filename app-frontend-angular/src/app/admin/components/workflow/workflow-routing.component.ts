@@ -8,6 +8,7 @@ import { WarehouseComponent } from './workflow/warehouse/warehouse.component';
 import { TransferReasonComponent } from './workflow/transfer-reason/transfer-reason.component';
 import { RoleComponent } from './catalogue/role/role.component';
 import { ConfigEmailComponent } from './catalogue/config-email/config-email.component';
+import { UserComponent } from './catalogue/user/user.component';
 
 export const routesWorkflow: Routes = [
     { path: 'identificationtype', component: IdentificationtypeComponent },
@@ -18,6 +19,7 @@ export const routesWorkflow: Routes = [
     { path: 'transfer-reason', component: TransferReasonComponent },
     { path: 'role', component: RoleComponent },
     { path: 'config-email', component: ConfigEmailComponent },
+    { path: 'user', component: UserComponent },
 ];
 
 @NgModule({

@@ -37,6 +37,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('user', 'catalogue\UserController');
+});
+
+Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('config-email', 'catalogue\ConfigEmailController');
 });
 
