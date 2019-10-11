@@ -22,8 +22,8 @@
                             </select>
                         </div>
                         <div class="col-sm-3 col-12 mb-2">
-                            <label for="state">Estado</label>
-                            <select class="custom-select" id="state" formControlName="state" (change)="get()">
+                            <label for="stateFilter">Estado</label>
+                            <select class="custom-select" id="stateFilter" formControlName="stateFilter" (change)="get()">
                                 <option value="1">ACTIVO</option>
                                 <option value="0">INACTIVO</option>
                             </select>
@@ -46,6 +46,12 @@
                             </select>
                         </div>
 
+                        <div class="col-sm-3 col-12 mt-4 text-right">
+                            <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Agregar" (click)="create()">
+                                Agregar <i class="fas fa-plus-square fa-lg"></i>
+                            </button>
+                        </div>
+
                     </div>
                 </div>        
             </form>    
@@ -66,9 +72,8 @@
                                 <p class="card-text">{{item.role.rolename}}</p>
                                 <p class="card-text">{{item.email}}</p>
                                 <p class="card-text">
-                                    <i class="fas fa-edit fa-lg mr-2" (click)="confirmDelete(item)"></i>
-                                    <i class="fas fa-eye-slash fa-lg mr-2"></i>
-                                    <i class="fas fa-trash-alt fa-lg" (click)="confirmDelete(item)"></i>
+                                    <i class="fas fa-edit fa-lg mr-2" (click)="edit(item)"></i>
+                                    <i class="fas fa-trash-alt fa-lg" (click)="confirmDelete(item)" *ngIf="item.iduser !== 1"></i>
                                 </p>
                             </div>
                             </div>
@@ -82,7 +87,59 @@
 </div>
 
 <app-notification [type]="typeNotification" [icon]="iconNotification" 
-    [title]="titleNotification" [message]="messageNotification"></app-notification>
+[title]="titleNotification" [message]="messageNotification"></app-notification>
+
+<app-aside [isOpen]="asideIsOpen" [title]="titleAside" [headerOverlay]="false" [closeAside]="closeAside">
+
+    <form [formGroup]="form">
+        <div class="container mt-5">
+            <div class="row">
+                
+                <div class="col-12 mb-2">
+                    <label for="personname">Nombre(s)</label>
+                    <input id="personname" type="text" class="form-control" placeholder="" autofocus formControlName="personname">
+                </div>
+                <div class="col-12 mb-2">
+                    <label for="lastnameperson">Apellidos</label>
+                    <input id="lastnameperson" type="text" class="form-control" placeholder="" formControlName="lastnameperson">
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="idtypetransferreason">Rol</label>
+                    <select class="custom-select" formControlName="idrole">
+                        <option *ngFor="let e of listRole" [ngValue]="e.idrole">
+                            {{e.rolename}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="email">Email</label>
+                    <input id="email" type="text" class="form-control" placeholder="" formControlName="email">
+                </div>
+                <div class="col-12 mb-2">
+                    <label for="password">Password</label>
+                    <input id="password" type="password" class="form-control" placeholder="" formControlName="password">
+                </div>
+
+                <div class="col-12 mb-2">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" id="state" class="custom-control-input" formControlName="state">
+                        <label class="custom-control-label" for="state">Estado (Activo/Inactivo)</label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <button class="btn btn-lg btn-primary btn-block" type="button"
+                    (keydown.enter)="form.valid && action()" (click)="form.valid && action()"
+                    [disabled]="!form.valid">Guardar</button>
+                </div>
+            </div>
+        </div>        
+    </form>
+    
+</app-aside>
+        
 
 <div class="modal fade" id="confirmDeleteUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

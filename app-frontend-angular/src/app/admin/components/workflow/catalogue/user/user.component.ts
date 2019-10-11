@@ -34,12 +34,17 @@ export class UserComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      rolename: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      idrole: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      personname: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      lastnameperson: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      email: new FormControl('', {validators: [Validators.required, Validators.email], updateOn: 'change'}),
+      password: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      state: new FormControl(true),
     });
     this.formFilter = this.formBuilder.group({
       search: new FormControl(''),
       idrole: new FormControl(''),
-      state: new FormControl('1'),
+      stateFilter: new FormControl('1'),
       column: new FormControl('personname'),
       order: new FormControl('ASC'),
       numPage: new FormControl(5),
@@ -52,7 +57,7 @@ export class UserComponent implements OnInit {
     const filters = {
       search: this.formFilter.value.search,
       idrole: this.formFilter.value.idrole,
-      state: this.formFilter.value.state,
+      state: this.formFilter.value.stateFilter,
       column: this.formFilter.value.column,
       order: this.formFilter.value.order,
       num_page: this.formFilter.value.num_page
@@ -82,6 +87,85 @@ export class UserComponent implements OnInit {
     );
   }
 
+  action = () => {
+    if (this.itemSelected === null) {
+      this.add();
+    } else {
+      this.update(this.itemSelected.idrole);
+    }
+  }
+
+  edit = (item: any) => {
+    this.itemSelected = item;
+    this.form.get('idrole').setValue(item.idrole);
+    this.form.get('personname').setValue(item.personname);
+    this.form.get('lastnameperson').setValue(item.lastnameperson);
+    this.form.get('email').setValue(item.email);
+    this.form.get('state').setValue(item.state);
+
+    this.titleAside = 'Editar Usuario';
+    this.asideIsOpen = true;
+  }
+
+  update = (id: any) => {
+    const data = {
+      idrole: this.form.value.idrole,
+      personname: this.form.value.personname,
+      lastnameperson: this.form.value.lastnameperson,
+      email: this.form.value.email,
+      password: this.form.value.password,
+      state: this.form.value.state,
+    };
+    this.userService.put(id, data).subscribe(
+      (response) => {
+        if (response.success) {
+          this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
+          this.closeAside();
+          this.get();
+        } else {
+          this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
+  create = () => {
+    this.titleAside = 'Agregar Usuario';
+    this.form.reset();
+    this.form.get('state').setValue(true);
+    this.asideIsOpen = true;
+  }
+
+  add = () => {
+    const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
+    const data = {
+      idrole: this.form.value.idrole,
+      personname: this.form.value.personname,
+      lastnameperson: this.form.value.lastnameperson,
+      email: this.form.value.email,
+      password: this.form.value.password,
+      state,
+    };
+    this.userService.post(data).subscribe(
+      (response) => {
+        if (response.success) {
+          this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
+          this.closeAside();
+          this.get();
+        } else {
+          this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
+
   confirmDelete = (item: any) => {
     this.itemSelected = item;
     $('#confirmDeleteUser').modal('show');
@@ -104,6 +188,11 @@ export class UserComponent implements OnInit {
     );
   }
 
+  closeAside = () => {
+    this.asideIsOpen = false;
+    this.form.reset();
+    this.itemSelected = null;
+  }
 
   /**
    * Show notifications launched from methods
