@@ -24,8 +24,7 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
-                    
+                    </div>                    
 
                     <div class="collapse mb-4" id="collapseExample">
                         <div class="card card-body">
@@ -75,8 +74,6 @@
                     </div>
                 </div>
             </div>
-
-
               
         </div>
         <div class="col-12">
@@ -140,9 +137,15 @@
                     <label for="email">Email</label>
                     <input id="email" type="text" class="form-control" placeholder="" formControlName="email">
                 </div>
-                <div class="col-12 mb-2">
+
+                <div class="col-12 mb-2" *ngIf="!flagActionEdit">
                     <label for="password">Password</label>
                     <input id="password" type="password" class="form-control" placeholder="" formControlName="password">
+                </div>
+
+                <div class="col-12 mb-2" *ngIf="flagActionEdit">
+                    <label for="passwordEdit">Password</label>
+                    <input id="passwordEdit" type="password" class="form-control" placeholder="" formControlName="passwordEdit">
                 </div>
 
                 <div class="col-12 mb-2">

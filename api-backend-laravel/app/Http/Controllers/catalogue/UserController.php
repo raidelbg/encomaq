@@ -132,8 +132,11 @@ class UserController extends Controller
         $item->personname = $request->input('personname');
         $item->lastnameperson = $request->input('lastnameperson');
         $item->email = $request->input('email');
-        $item->password = Hash::make($request->input('password'));
         $item->state = ($request->input('state') === true || $request->input('state') === 1) ? 1 : 0;
+
+        if ($request->input('password') !== false) {
+            $item->password = Hash::make($request->input('password'));
+        }
 
         if ($item->save()) {
             return response()->json([

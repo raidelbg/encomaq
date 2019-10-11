@@ -29,6 +29,8 @@ export class UserComponent implements OnInit {
   listRole = [];
   itemSelected = null;
 
+  flagActionEdit = false;
+
   constructor(private notification: Notification, private userService: UserService, private roleService: RoleService,
               private formBuilder: FormBuilder) { }
 
@@ -39,6 +41,7 @@ export class UserComponent implements OnInit {
       lastnameperson: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
       email: new FormControl('', {validators: [Validators.required, Validators.email], updateOn: 'change'}),
       password: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      passwordEdit: new FormControl(''),
       state: new FormControl(true),
     });
     this.formFilter = this.formBuilder.group({
@@ -103,17 +106,21 @@ export class UserComponent implements OnInit {
     this.form.get('email').setValue(item.email);
     this.form.get('state').setValue(item.state);
 
+    this.form.get('password').setValue(true);
+
     this.titleAside = 'Editar Usuario';
+    this.flagActionEdit = true;
     this.asideIsOpen = true;
   }
 
   update = (id: any) => {
+    const password = (this.form.value.passwordEdit !== null && this.form.value.passwordEdit !== '') ? this.form.value.passwordEdit : false;
     const data = {
       idrole: this.form.value.idrole,
       personname: this.form.value.personname,
       lastnameperson: this.form.value.lastnameperson,
       email: this.form.value.email,
-      password: this.form.value.password,
+      password,
       state: this.form.value.state,
     };
     this.userService.put(id, data).subscribe(
@@ -135,7 +142,9 @@ export class UserComponent implements OnInit {
   create = () => {
     this.titleAside = 'Agregar Usuario';
     this.form.reset();
+    this.form.get('idrole').setValue('');
     this.form.get('state').setValue(true);
+    this.flagActionEdit = false;
     this.asideIsOpen = true;
   }
 
