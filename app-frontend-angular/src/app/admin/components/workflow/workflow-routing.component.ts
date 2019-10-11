@@ -10,6 +10,7 @@ import { RoleComponent } from './catalogue/role/role.component';
 import { ConfigEmailComponent } from './catalogue/config-email/config-email.component';
 import { UserComponent } from './catalogue/user/user.component';
 import { CarrierComponent } from './workflow/carrier/carrier.component';
+import { ClientComponent } from './workflow/client/client.component';
 
 export const routesWorkflow: Routes = [
     { path: 'identificationtype', component: IdentificationtypeComponent },
@@ -22,6 +23,7 @@ export const routesWorkflow: Routes = [
     { path: 'config-email', component: ConfigEmailComponent },
     { path: 'user', component: UserComponent },
     { path: 'carrier', component: CarrierComponent },
+    { path: 'client', component: ClientComponent },
 ];
 
 @NgModule({

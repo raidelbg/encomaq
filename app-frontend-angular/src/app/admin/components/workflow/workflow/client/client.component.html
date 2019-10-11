@@ -1,0 +1,201 @@
+<div class="container generic-component">
+    <div class="row">
+        <div class="col-12">
+            <h3>Clientes</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+
+            <div class="row">
+                <div class="col-12">
+                    
+                    <div class="row mb-4">
+                        <div class="col-sm-8">
+                            <hr>
+                        </div>
+                        <div class="col-sm-4 text-right">
+                            <div class="btn-group mb-2" role="group" aria-label="Basic example">
+                                <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                    Filtros de Búsqueda <i class="fas fa-search fa-lg"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Agregar" (click)="create()">
+                                    Agregar <i class="fas fa-plus-square fa-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>                    
+
+                    <div class="collapse mb-4" id="collapseExample">
+                        <div class="card card-body">
+                            <form [formGroup]="formFilter">
+                                <div class="row">
+                                    <div class="col-sm-3 col-12 mb-2">
+                                        <label for="search">Buscar</label>
+                                        <input id="search" type="text" class="form-control" placeholder="" formControlName="search" (keyup)="get()">
+                                    </div>
+                                    
+                                    <div class="col-sm-3 col-12 mb-2">
+                                        <label for="stateFilter">Estado</label>
+                                        <select class="custom-select" id="stateFilter" formControlName="stateFilter" (change)="get()">
+                                            <option value="1">ACTIVO</option>
+                                            <option value="0">INACTIVO</option>
+                                        </select>
+                                    </div>                        
+            
+                                    <div class="col-sm-3 col-12 mb-2">
+                                        <label for="column">Columna</label>
+                                        <select class="custom-select" id="column" formControlName="column" (change)="get()">
+                                            <option value="businessname">NOMBRE</option>
+                                            <option value="address">DIRECCIÓN</option>
+                                            <option value="email">CORREO</option>
+                                        </select>
+                                    </div>
+            
+                                    <div class="col-sm-3 col-12 mb-5">
+                                        <label for="order">Orden</label>
+                                        <select class="custom-select" id="order" formControlName="order" (change)="get()">
+                                            <option value="ASC">ASCENDENTE</option>
+                                            <option value="DESC">DESCENDENTE</option>
+                                        </select>
+                                    </div>            
+                                    
+                                </div>      
+                            </form>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+        </div>
+        <div class="col-12">
+            <div class="row">
+
+                <div class="col-12 col-sm-4" *ngFor="let item of list;  let i = index">
+                    <div class="card mb-3" [ngClass]="{ 'border-primary': item.state === 1, 'border-danger': item.state === 0 }">
+                        <div class="row no-gutters">
+                            <div class="col-4 image-user" [ngClass]="{ 'text-primary': item.state === 1, 'text-danger': item.state === 0 }">
+                                <i class="fas fa-user-tie fa-5x"></i>
+                            </div>
+                            <div class="col-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{item.businessname}}</h5>
+                                <p class="card-text">{{item.identify}}</p>
+                                <p class="card-text">
+                                    <i class="fas fa-info-circle fa-lg mr-2 cursor-pointer" (click)="info(item)"></i>
+                                    <i class="fas fa-edit fa-lg mr-2 cursor-pointer" (click)="edit(item)"></i>
+                                    <i class="fas fa-trash-alt fa-lg cursor-pointer" (click)="confirmDelete(item)" *ngIf="item.iduser !== 1"></i>
+                                </p>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-notification [type]="typeNotification" [icon]="iconNotification" 
+[title]="titleNotification" [message]="messageNotification"></app-notification>
+
+<app-aside [isOpen]="asideIsOpen" [title]="titleAside" [headerOverlay]="false" [closeAside]="closeAside">
+
+    <form [formGroup]="form">
+        <div class="container mt-4">
+            <div class="row">
+                
+                <div class="col-12 mb-2">
+                    <label for="businessname">Cliente</label>
+                    <input id="businessname" type="text" class="form-control" placeholder="" autofocus formControlName="businessname">
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="ididentifytype">Tipo Identificación</label>
+                    <select class="custom-select" formControlName="ididentifytype">
+                        <option *ngFor="let e of listIdentifyType" [ngValue]="e.ididentifytype">
+                            {{e.identifytypename}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="identify">Identificación</label>
+                    <input id="identify" type="text" class="form-control" placeholder="" formControlName="identify">
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="address">Dirección</label>
+                    <input id="address" type="text" class="form-control" placeholder="" formControlName="address">
+                </div>
+
+                <div class="col-12 col-sm-6 mb-2">
+                    <label for="phone">Teléfono Principal</label>
+                    <input id="phone" type="text" class="form-control" placeholder="" formControlName="phone">
+                </div>
+
+                <div class="col-12 col-sm-6 mb-2">
+                    <label for="phone_2">Teléfono Secundario</label>
+                    <input id="phone_2" type="text" class="form-control" placeholder="" formControlName="phone_2">
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="email">Email Principal</label>
+                    <input id="email" type="text" class="form-control" placeholder="" formControlName="email">
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="email_2">Email Secundario</label>
+                    <input id="email_2" type="text" class="form-control" placeholder="" formControlName="email_2">
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="email_3">Email Secundario</label>
+                    <input id="email_3" type="text" class="form-control" placeholder="" formControlName="email_3">
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="observation">Observación</label>
+                    <textarea cols="100" rows="3"  class="form-control" id="observation" formControlName="observation"></textarea>
+                </div>
+
+                <div class="col-12 mb-2">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" id="state" class="custom-control-input" formControlName="state">
+                        <label class="custom-control-label" for="state">Estado (Activo/Inactivo)</label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <button class="btn btn-lg btn-primary btn-block" type="button"
+                    (keydown.enter)="form.valid && action()" (click)="form.valid && action()"
+                    [disabled]="!form.valid">Guardar</button>
+                </div>
+            </div>
+        </div>        
+    </form>
+    
+</app-aside>
+        
+
+<div class="modal fade" id="confirmDeleteClient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            ¿Está seguro que desea eliminar el cliente seleccionado?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" (click)="delete()">Eliminar</button>
+        </div>
+        </div>
+    </div>
+</div>
+        

@@ -61,3 +61,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('carrier', 'workflow\CarrierController');
 });
 
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('client', 'workflow\ClientController');
+});
+
