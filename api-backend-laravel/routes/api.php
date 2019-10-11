@@ -57,4 +57,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('transfer-reason', 'workflow\TransferReasonController');
 });
 
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('carrier', 'workflow\CarrierController');
+});
 
