@@ -82,6 +82,28 @@ export class UserComponent implements OnInit {
     );
   }
 
+  confirmDelete = (item: any) => {
+    this.itemSelected = item;
+    $('#confirmDeleteUser').modal('show');
+  }
+
+  delete = () => {
+    this.userService.delete(this.itemSelected.iduser).subscribe(
+      (response) => {
+        $('#confirmDeleteUser').modal('hide');
+        if (response.success) {
+          this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
+          this.get();
+        } else {
+          this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
 
   /**
    * Show notifications launched from methods

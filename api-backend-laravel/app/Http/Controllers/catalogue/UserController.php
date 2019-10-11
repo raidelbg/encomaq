@@ -88,6 +88,12 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $item = User::find($id);
+
+        if ($item->delete()) {
+            return response()->json(['success' => true, 'message' => 'Se eliminó satisfactoriamente' ]);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Ha ocurrido un error al intentar eliminar' ]);
+        }
     }
 }
