@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
 import { IdentificationtypeService } from 'src/app/admin/services/workflow/catalogue/identificationtype.service';
 import { ClientService } from 'src/app/admin/services/workflow/workflow/client.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 declare var $: any;
 
@@ -12,7 +14,9 @@ declare var $: any;
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.scss']
 })
-export class ClientComponent implements OnInit {
+export class ClientComponent implements OnInit, OnDestroy {
+
+  private destroySubscription$ = new Subject();
 
   titleNotification?: string;
   iconNotification?: string;
@@ -28,6 +32,7 @@ export class ClientComponent implements OnInit {
   list = [];
   listIdentifyType = [];
   itemSelected = null;
+  anything = '';
 
   constructor(private notification: Notification, private clientService: ClientService,
               private identifyTypeService: IdentificationtypeService, private formBuilder: FormBuilder) { }
@@ -67,7 +72,7 @@ export class ClientComponent implements OnInit {
       order: this.formFilter.value.order,
       num_page: this.formFilter.value.num_page
     };
-    this.clientService.get(filters).subscribe(
+    this.clientService.get(filters).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         this.list = response;
       },
@@ -79,7 +84,7 @@ export class ClientComponent implements OnInit {
 
   getIdentifyType = () => {
     this.listIdentifyType.push({ididentifytype: '', identifytypename: '-- Seleccione Tipo Identificación --'});
-    this.identifyTypeService.get({}).subscribe(
+    this.identifyTypeService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         response.forEach(element => {
           this.listIdentifyType.push({ididentifytype: element.ididentifytype, identifytypename: element.identifytypename});
@@ -101,6 +106,8 @@ export class ClientComponent implements OnInit {
   }
 
   info = (item: any) => {
+    this.itemSelected = item;
+    $('#infoClient').modal('show');
   }
 
   edit = (item: any) => {
@@ -135,7 +142,7 @@ export class ClientComponent implements OnInit {
       observation: this.form.value.observation,
       state: this.form.value.state,
     };
-    this.clientService.put(id, data).subscribe(
+    this.clientService.put(id, data).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
@@ -175,7 +182,7 @@ export class ClientComponent implements OnInit {
       observation: this.form.value.observation,
       state,
     };
-    this.clientService.post(data).subscribe(
+    this.clientService.post(data).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
@@ -194,11 +201,12 @@ export class ClientComponent implements OnInit {
 
   confirmDelete = (item: any) => {
     this.itemSelected = item;
+    this.anything = item.businessname;
     $('#confirmDeleteClient').modal('show');
   }
 
   delete = () => {
-    this.clientService.delete(this.itemSelected.idclient).subscribe(
+    this.clientService.delete(this.itemSelected.idclient).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         $('#confirmDeleteClient').modal('hide');
         if (response.success) {
@@ -220,6 +228,33 @@ export class ClientComponent implements OnInit {
     this.itemSelected = null;
   }
 
+  exportToPDF = () => {
+    const filters = {
+      search: this.formFilter.value.search,
+      state: this.formFilter.value.stateFilter,
+      column: this.formFilter.value.column,
+      order: this.formFilter.value.order
+    };
+
+    const action = this.clientService.exportToPDF(filters);
+
+    // console.log(action);
+    this.clientService.exportToPDF(filters).subscribe(
+      response => console.log(response.text())
+      /*(response) => {
+        console.log(response);
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }*/
+    );
+
+    /*$('#printtitle').html('Lista de Clientes');
+    $('#print').modal('show');
+    // $('#printbody').html("<object width='100%' height='600' data='" + action + "'></object>");
+    $('#printbody').html('<object width="100%" height="600" data="' + action + '"></object>');*/
+  }
+
   /**
    * Show notifications launched from methods
    * @param string title
@@ -233,6 +268,11 @@ export class ClientComponent implements OnInit {
     this.messageNotification = message;
     this.typeNotification = type;
     this.notification.open();
+  }
+
+  ngOnDestroy(): void {
+    this.destroySubscription$.next();     // trigger the unsubscribe
+    this.destroySubscription$.complete(); // finalize & clean up the subject stream
   }
 
 }

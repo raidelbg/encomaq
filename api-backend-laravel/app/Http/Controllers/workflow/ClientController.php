@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\workflow;
 
 use App\Models\schema_public\Client;
+use App\Models\schema_public\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -111,6 +112,30 @@ class ClientController extends Controller
         } else {
             return response()->json(['success' => false, 'message' => 'Ha ocurrido un error al intentar eliminar' ]);
         }
+    }
+
+    public function exportToPDF(Request $request)
+    {
+        ini_set('max_execution_time', 300);
+
+
+        $filter = json_decode($request->get('filter'));
+
+        $where = "(businessname LIKE '%" . $filter->search . "%' OR identify LIKE '%" . $filter->search . "%') ";
+        $where .= "AND state = " . $filter->state;
+
+        $data = Client::with('nom_identifytype')->whereRaw($where)->orderBy($filter->column, $filter->order)->get();
+        $company = Company::all();
+        $today = date("Y-m-d H:i:s");
+
+        $view =  \View::make('templatesExportToPDF.listClient', compact('data','company'))->render();
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($view);
+        $pdf->setPaper('A4', 'landscape');
+
+        // return response()->json(['success' => true, 'pdf' => json_encode($pdf->stream('ListaDeClientes' . $today.'.pdf')) ]);
+
+        return $pdf->stream('ListaDeClientes' . $today.'.pdf');
     }
 
     private function exists($item, $id)

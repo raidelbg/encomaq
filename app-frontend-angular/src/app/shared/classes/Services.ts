@@ -21,7 +21,7 @@ export class Services {
     this.resolvedSchema();
   }
 
-  resolvedSchema(currentSchema: string = null) {
+  resolvedSchema(currentSchema: string = null, applicationTypeHeaders: string = null) {
     let schema = currentSchema;
     if (schema === null) {
       const schemaStorage = this.storage.get('schema_db', 'normal');
@@ -39,12 +39,13 @@ export class Services {
 
     this.httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        'Content-Type': (applicationTypeHeaders === null) ? 'application/json' : applicationTypeHeaders,
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': 'true',
         'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': '*',
         Authorization: authorization,
+        responseType: (applicationTypeHeaders === null) ? 'json' : 'text',
         'schema-db': schema
       })
     };

@@ -62,6 +62,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('client/exportToPDF', 'workflow\ClientController@exportToPDF');
     Route::resource('client', 'workflow\ClientController');
 });
 

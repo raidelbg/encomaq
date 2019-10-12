@@ -17,10 +17,19 @@
                         <div class="col-sm-4 text-right">
                             <div class="btn-group mb-2" role="group" aria-label="Basic example">
                                 <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                    Filtros de Búsqueda <i class="fas fa-search fa-lg"></i>
+                                    <i class="fas fa-search fa-lg"></i> Filtros de Búsqueda
                                 </button>
+                                <div class="btn-group" role="group">
+                                    <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-file-download fa-lg"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                        <a class="dropdown-item" (click)="exportToPDF()"><i class="far fa-file-pdf fa-lg"></i> Exportar a PDF</a>
+                                        <a class="dropdown-item" href="#"><i class="far fa-file-excel fa-lg"></i> Exportar a Excel</a>
+                                    </div>
+                                </div>
                                 <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Agregar" (click)="create()">
-                                    Agregar <i class="fas fa-plus-square fa-lg"></i>
+                                    <i class="fas fa-plus-square fa-lg"></i> Agregar
                                 </button>
                             </div>
                         </div>
@@ -52,7 +61,7 @@
                                         </select>
                                     </div>
             
-                                    <div class="col-sm-3 col-12 mb-5">
+                                    <div class="col-sm-3 col-12 mb-2">
                                         <label for="order">Orden</label>
                                         <select class="custom-select" id="order" formControlName="order" (change)="get()">
                                             <option value="ASC">ASCENDENTE</option>
@@ -79,7 +88,7 @@
                             </div>
                             <div class="col-8">
                             <div class="card-body">
-                                <h5 class="card-title">{{item.businessname}}</h5>
+                                <h5 class="card-title text-truncate">{{item.businessname}}</h5>
                                 <p class="card-text">{{item.identify}}</p>
                                 <p class="card-text">
                                     <i class="fas fa-info-circle fa-lg mr-2 cursor-pointer" (click)="info(item)"></i>
@@ -189,12 +198,120 @@
             </button>
         </div>
         <div class="modal-body">
-            ¿Está seguro que desea eliminar el cliente seleccionado?
+            <p>¿Está seguro que desea eliminar el cliente seleccionado?</p>
+            <p class="text-secondary font-weight-bold text-center">{{anything}}</p>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             <button type="button" class="btn btn-danger" (click)="delete()">Eliminar</button>
         </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="infoClient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" *ngIf="itemSelected !== null">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Información</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-12 col-sm-4 image-user">
+                    <i class="fas fa-user-tie fa-5x"></i>
+                </div>
+                <div class="col-12 col-sm-8">
+                    <div class="row">
+                        <div class="col-12">
+                            <h4>{{itemSelected.businessname}}</h4>
+                        </div>
+                        <div class="col-12">
+                            {{itemSelected.identify}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row mt-4">
+                <div class="col-12 text-secondary font-weight-bold">
+                    Dirección
+                </div>
+                <div class="col-12">
+                    {{itemSelected.address}}
+                </div>
+            </div>
+            <hr>
+            <div class="row mt-3">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-12 text-secondary font-weight-bold">
+                            Teléfono Principal
+                        </div>
+                        <div class="col-12">
+                            {{itemSelected.phone}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-12 text-secondary font-weight-bold">
+                            Teléfono Secundario
+                        </div>
+                        <div class="col-12">
+                            {{itemSelected.phone_2}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row mt-3">
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-12 text-secondary font-weight-bold">
+                            Email Principal
+                        </div>
+                        <div class="col-12">
+                            {{itemSelected.email}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-12 text-secondary font-weight-bold">
+                            Email Secundario
+                        </div>
+                        <div class="col-12">
+                            {{itemSelected.email_2}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-12 text-secondary font-weight-bold">
+                            Email Secundario
+                        </div>
+                        <div class="col-12">
+                            {{itemSelected.email_2}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row mt-4">
+                <div class="col-12 text-secondary font-weight-bold">
+                    Observación
+                </div>
+                <div class="col-12">
+                    {{itemSelected.observation}}
+                </div>
+            </div>
+        </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
         </div>
     </div>
 </div>

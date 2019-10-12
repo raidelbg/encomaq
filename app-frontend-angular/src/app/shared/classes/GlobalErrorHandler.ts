@@ -73,6 +73,7 @@ export class GlobalErrorHandler implements ErrorHandler {
       error: null
     };
     if ( error instanceof HttpErrorResponse ) {
+      console.log(error);
       objectCustomError.title = 'ERROR TIPO: ' + error.status;
       if (error.error !== undefined) {
         objectCustomError.error = error.error;
