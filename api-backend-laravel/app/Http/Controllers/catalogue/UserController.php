@@ -52,7 +52,7 @@ class UserController extends Controller
     {
         $item = new User();
 
-        if ( ! $this->exists($request->input(self::FIELD_DUPLICATE), null) ) {
+        if ($this->notExists($request->input(self::FIELD_DUPLICATE), null)) {
             return $this->action($item, $request, 'add');
         } else {
             return response()->json([
@@ -95,7 +95,7 @@ class UserController extends Controller
     {
         $item = User::find($id);
 
-        if ( ! $this->exists($request->input(self::FIELD_DUPLICATE), $id) ) {
+        if ( ! $this->notExists($request->input(self::FIELD_DUPLICATE), $id) ) {
             return $this->action($item, $request, 'update');
         } else {
             return response()->json([
@@ -128,7 +128,7 @@ class UserController extends Controller
         }
     }
 
-    private function exists($item, $id)
+    private function notExists($item, $id)
     {
         $elements = User::where('email', $item);
         if ($id != null) {

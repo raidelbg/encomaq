@@ -198,7 +198,6 @@ export class ClientComponent implements OnInit, OnDestroy {
     );
   }
 
-
   confirmDelete = (item: any) => {
     this.itemSelected = item;
     this.anything = item.businessname;

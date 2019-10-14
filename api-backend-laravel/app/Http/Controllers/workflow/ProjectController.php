@@ -49,7 +49,7 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $item = new Project();
-        if ( ! $this->exists($request->input(self::FIELD_DUPLICATE), null) ) {
+        if ($this->exists($request->input(self::FIELD_DUPLICATE), null)) {
             return $this->action($item, $request, 'add');
         } else {
             return response()->json([
@@ -91,7 +91,7 @@ class ProjectController extends Controller
     public function update(Request $request, $id)
     {
         $item = Project::find($id);
-        if ( ! $this->exists($request->input(self::FIELD_DUPLICATE), $id) ) {
+        if ($this->exists($request->input(self::FIELD_DUPLICATE), $id)) {
             return $this->action($item, $request, 'update');
         } else {
             return response()->json([
@@ -129,7 +129,7 @@ class ProjectController extends Controller
             $elements = $elements->where('idproject', '!=' , $id);
         }
         $count = $elements->count();
-        return ($count == 0);
+        return ($count === 0);
     }
 
     private function action(Project $item, Request $request, $typeAction)

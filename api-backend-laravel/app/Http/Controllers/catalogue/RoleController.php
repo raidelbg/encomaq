@@ -43,7 +43,7 @@ class RoleController extends Controller
     {
         $item = new Role();
 
-        if ( ! $this->exists($request->input(self::FIELD_DUPLICATE), null) ) {
+        if ($this->notExists($request->input(self::FIELD_DUPLICATE), null)) {
             return $this->action($item, $request, 'add');
         } else {
             return response()->json([
@@ -86,7 +86,7 @@ class RoleController extends Controller
     {
         $item = Role::find($id);
 
-        if ($this->exists($request->input(self::FIELD_DUPLICATE), $id) ==  false) {
+        if ($this->notExists($request->input(self::FIELD_DUPLICATE), $id)) {
             return $this->action($item, $request, 'update');
         } else {
             return response()->json([
@@ -113,14 +113,14 @@ class RoleController extends Controller
         }
     }
 
-    private function exists($item, $id)
+    private function notExists($item, $id)
     {
-        $count = Role::where('rolename', $item);
+        $element= Role::where('rolename', $item);
         if ($id != null) {
-            $count = $count->where('idrole', '!=' , $id);
+            $element = $element->where('idrole', '!=' , $id);
         }
-        $count = $count->count();
-        return ($count == 0);
+        $count = $element->count();
+        return ($count === 0);
     }
 
     private function action(Role $item, Request $request, $typeAction)

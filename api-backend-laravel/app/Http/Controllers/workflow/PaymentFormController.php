@@ -42,7 +42,7 @@ class PaymentFormController extends Controller
     public function store(Request $request)
     {
         $item = new PaymentForm();
-        if (!$this->exists($request->input(self::FIELD_DUPLICATE), null)) {
+        if ($this->notExists($request->input(self::FIELD_DUPLICATE), null)) {
             return $this->action($item, $request, 'add');
         } else {
             return response()->json([
@@ -84,7 +84,7 @@ class PaymentFormController extends Controller
     public function update(Request $request, $id)
     {
         $item = PaymentForm::find($id);
-        if (!$this->exists($request->input(self::FIELD_DUPLICATE), $id)) {
+        if ($this->notExists($request->input(self::FIELD_DUPLICATE), $id)) {
             return $this->action($item, $request, 'update');
         } else {
             return response()->json([
@@ -111,14 +111,14 @@ class PaymentFormController extends Controller
         }
     }
 
-    private function exists($item, $id)
+    private function notExists($item, $id)
     {
         $elements = PaymentForm::where('paymentformname', $item);
         if ($id != null) {
             $elements = $elements->where('idpaymentform', '!=' , $id);
         }
         $count = $elements->count();
-        return ($count == 0);
+        return ($count === 0);
     }
 
     private function action(PaymentForm $item, Request $request, $typeAction)
