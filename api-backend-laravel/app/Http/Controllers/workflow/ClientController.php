@@ -148,7 +148,7 @@ class ClientController extends Controller
             $elements = $elements->where('idclient', '!=' , $id);
         }
         $count = $elements->count();
-        return ($count == 0) ? false : true;
+        return ($count == 0);
     }
 
     private function action(Client $item, Request $request, $typeAction)
@@ -163,7 +163,6 @@ class ClientController extends Controller
         $item->email_2 = $request->input('email_2');
         $item->email_3 = $request->input('email_3');
         $item->observation = $request->input('observation');
-
         $item->state = ($request->input('state') === true || $request->input('state') === 1) ? 1 : 0;
 
         if ($item->save()) {

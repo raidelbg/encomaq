@@ -8,6 +8,11 @@ use App\Http\Controllers\Controller;
 
 class TypeIdentificationController extends Controller
 {
+
+    private const SUCCESS = 'success';
+    private const MESSAGE = 'message';
+    private const FIELD_DUPLICATE = 'identifytypename';
+
     /**
      * Display a listing of the resource.
      *
@@ -37,7 +42,14 @@ class TypeIdentificationController extends Controller
     public function store(Request $request)
     {
         $item = new TypeIdentification();
-        return $this->action($item, $request, 'add');
+        if ( ! $this->exists($request->input(self::FIELD_DUPLICATE), null) ) {
+            return $this->action($item, $request, 'add');
+        } else {
+            return response()->json([
+                self::SUCCESS => false,
+                self::MESSAGE => 'Ha ocurrido un error al intentar agregar, ya se encuentra registrado.'
+            ]);
+        }
     }
 
     /**
@@ -72,27 +84,17 @@ class TypeIdentificationController extends Controller
     public function update(Request $request, $id)
     {
         $item = TypeIdentification::find($id);
-        return $this->action($item, $request, 'update');
-    }
-
-    private function action(TypeIdentification $item, Request $request, $typeAction)
-    {
-        $item->identifytypename = strtoupper($request->input('identifytypename'));
-        $item->identifylength = ($request->input('identifylength') !== '') ? $request->input('identifylength') : null;
-        $item->state = ($request->input('state') === true) ? 1 : 0;
-
-        if ($item->save()) {
-            return response()->json([
-                'success' => true,
-                'message' => ($typeAction === 'add') ? 'Se agregó satisfactoriamente' : 'Se editó satisfactoriamente'
-            ]);
+        if ( ! $this->exists($request->input(self::FIELD_DUPLICATE), $id) ) {
+            return $this->action($item, $request, 'update');
         } else {
             return response()->json([
-                'success' => false,
-                'message' => ($typeAction === 'add') ? 'Ha ocurrido un error al intentar agregar' : 'Ha ocurrido un error al intentar editar'
+                self::SUCCESS => false,
+                self::MESSAGE => 'Ha ocurrido un error al intentar editar, ya se encuentra registrado.'
             ]);
         }
     }
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -105,9 +107,38 @@ class TypeIdentificationController extends Controller
         $item = TypeIdentification::find($id);
 
         if ($item->delete()) {
-            return response()->json(['success' => true, 'message' => 'Se eliminó satisfactoriamente' ]);
+            return response()->json([self::SUCCESS => true, self::MESSAGE => 'Se eliminó satisfactoriamente' ]);
         } else {
-            return response()->json(['success' => false, 'message' => 'Ha ocurrido un error al intentar eliminar' ]);
+            return response()->json([self::SUCCESS => false, self::MESSAGE  => 'Ha ocurrido un error al intentar eliminar' ]);
+        }
+    }
+
+    private function exists($item, $id)
+    {
+        $elements = TypeIdentification::where('identifytypename', $item);
+        if ($id != null) {
+            $elements = $elements->where('ididentifytype', '!=' , $id);
+        }
+        $count = $elements->count();
+        return ($count == 0);
+    }
+
+    private function action(TypeIdentification $item, Request $request, $typeAction)
+    {
+        $item->identifytypename = strtoupper($request->input('identifytypename'));
+        $item->identifylength = ($request->input('identifylength') !== '') ? $request->input('identifylength') : null;
+        $item->state = ($request->input('state') === true) ? 1 : 0;
+
+        if ($item->save()) {
+            return response()->json([
+                self::SUCCESS => true,
+                self::MESSAGE => ($typeAction === 'add') ? 'Se agregó satisfactoriamente' : 'Se editó satisfactoriamente'
+            ]);
+        } else {
+            return response()->json([
+                self::SUCCESS => false,
+                self::MESSAGE => ($typeAction === 'add') ? 'Ha ocurrido un error al intentar agregar' : 'Ha ocurrido un error al intentar editar'
+            ]);
         }
     }
 }

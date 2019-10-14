@@ -8,6 +8,11 @@ use App\Http\Controllers\Controller;
 
 class CarrierController extends Controller
 {
+
+    private const SUCCESS = 'success';
+    private const MESSAGE = 'message';
+    private const FIELD_DUPLICATE = 'licenseplate';
+
     /**
      * Display a listing of the resource.
      *
@@ -42,13 +47,12 @@ class CarrierController extends Controller
     public function store(Request $request)
     {
         $item = new Carrier();
-
-        if ($this->exists($request->input('licenseplate'), null) ==  false) {
+        if ( ! $this->exists($request->input(self::FIELD_DUPLICATE), null) ) {
             return $this->action($item, $request, 'add');
         } else {
             return response()->json([
-                'success' => false,
-                'message' => 'Ha ocurrido un error al intentar agregar, ya se encuentra registrado.'
+                self::SUCCESS => false,
+                self::MESSAGE => 'Ha ocurrido un error al intentar agregar, ya se encuentra registrado.'
             ]);
         }
     }
@@ -85,13 +89,12 @@ class CarrierController extends Controller
     public function update(Request $request, $id)
     {
         $item = Carrier::find($id);
-
-        if ($this->exists($request->input('licenseplate'), $id) ==  false) {
+        if ( ! $this->exists($request->input(self::FIELD_DUPLICATE), $id) ) {
             return $this->action($item, $request, 'update');
         } else {
             return response()->json([
-                'success' => false,
-                'message' => 'Ha ocurrido un error al intentar editar, ya se encuentra registrado.'
+                self::SUCCESS => false,
+                self::MESSAGE => 'Ha ocurrido un error al intentar editar, ya se encuentra registrado.'
             ]);
         }
     }
@@ -107,9 +110,13 @@ class CarrierController extends Controller
         $item = Carrier::find($id);
 
         if ($item->delete()) {
-            return response()->json(['success' => true, 'message' => 'Se eliminó satisfactoriamente' ]);
+            return response()->json([
+                self::SUCCESS => true, self::MESSAGE => 'Se eliminó satisfactoriamente'
+            ]);
         } else {
-            return response()->json(['success' => false, 'message' => 'Ha ocurrido un error al intentar eliminar' ]);
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => 'Ha ocurrido un error al intentar eliminar'
+            ]);
         }
     }
 
@@ -134,13 +141,13 @@ class CarrierController extends Controller
 
         if ($item->save()) {
             return response()->json([
-                'success' => true,
-                'message' => ($typeAction === 'add') ? 'Se agregó satisfactoriamente' : 'Se editó satisfactoriamente'
+                self::SUCCESS => true,
+                self::MESSAGE => ($typeAction === 'add') ? 'Se agregó satisfactoriamente' : 'Se editó satisfactoriamente'
             ]);
         } else {
             return response()->json([
-                'success' => false,
-                'message' => ($typeAction === 'add') ? 'Ha ocurrido un error al intentar agregar' : 'Ha ocurrido un error al intentar editar'
+                self::SUCCESS => false,
+                self::MESSAGE => ($typeAction === 'add') ? 'Ha ocurrido un error al intentar agregar' : 'Ha ocurrido un error al intentar editar'
             ]);
         }
     }

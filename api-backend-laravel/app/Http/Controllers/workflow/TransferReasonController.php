@@ -9,6 +9,11 @@ use App\Http\Controllers\Controller;
 
 class TransferReasonController extends Controller
 {
+
+    private const SUCCESS = 'success';
+    private const MESSAGE = 'message';
+    private const FIELD_DUPLICATE = 'transferreasonname';
+
     /**
      * Display a listing of the resource.
      *
@@ -45,13 +50,12 @@ class TransferReasonController extends Controller
     public function store(Request $request)
     {
         $item = new TransferReason();
-
-        if ($this->existTransfer($request->input('transferreasonname'), null) ==  false) {
+        if (!$this->exists($request->input(self::FIELD_DUPLICATE), null)) {
             return $this->action($item, $request, 'add');
         } else {
             return response()->json([
-                'success' => false,
-                'message' => 'Ha ocurrido un error al intentar agregar, ya existe registrado.'
+                self::SUCCESS => false,
+                self::MESSAGE => 'Ha ocurrido un error al intentar agregar, ya se encuentra registrado.'
             ]);
         }
     }
@@ -88,13 +92,12 @@ class TransferReasonController extends Controller
     public function update(Request $request, $id)
     {
         $item = TransferReason::find($id);
-
-        if ($this->existTransfer($request->input('transferreasonname'), $id) ==  false) {
+        if (!$this->exists($request->input(self::FIELD_DUPLICATE), $id)) {
             return $this->action($item, $request, 'update');
         } else {
             return response()->json([
-                'success' => false,
-                'message' => 'Ha ocurrido un error al intentar editar, ya existe registrado.'
+                self::SUCCESS => false,
+                self::MESSAGE => 'Ha ocurrido un error al intentar editar, ya se encuentra registrado.'
             ]);
         }
     }
@@ -110,21 +113,21 @@ class TransferReasonController extends Controller
         $item = TransferReason::find($id);
 
         if ($item->delete()) {
-            return response()->json(['success' => true, 'message' => 'Se eliminó satisfactoriamente' ]);
+            return response()->json([self::SUCCESS => true, self::MESSAGE => 'Se eliminó satisfactoriamente' ]);
         } else {
-            return response()->json(['success' => false, 'message' => 'Ha ocurrido un error al intentar eliminar' ]);
+            return response()->json([self::SUCCESS => false, self::MESSAGE => 'Ha ocurrido un error al intentar eliminar' ]);
         }
     }
 
 
-    private function existTransfer($transferreasonname, $id)
+    private function exists($item, $id)
     {
-        $count = TransferReason::where('transferreasonname', $transferreasonname);
+        $count = TransferReason::where('transferreasonname', $item);
         if ($id != null) {
             $count = $count->where('idtransferreason', '!=' , $id);
         }
         $count = $count->count();
-        return ($count == 0) ? false : true;
+        return ($count == 0);
     }
 
     private function action(TransferReason $item, Request $request, $typeAction)
@@ -135,13 +138,13 @@ class TransferReasonController extends Controller
 
         if ($item->save()) {
             return response()->json([
-                'success' => true,
-                'message' => ($typeAction === 'add') ? 'Se agregó satisfactoriamente' : 'Se editó satisfactoriamente'
+                self::SUCCESS => true,
+                self::MESSAGE => ($typeAction === 'add') ? 'Se agregó satisfactoriamente' : 'Se editó satisfactoriamente'
             ]);
         } else {
             return response()->json([
-                'success' => false,
-                'message' => ($typeAction === 'add') ? 'Ha ocurrido un error al intentar agregar' : 'Ha ocurrido un error al intentar editar'
+                self::SUCCESS => false,
+                self::MESSAGE => ($typeAction === 'add') ? 'Ha ocurrido un error al intentar agregar' : 'Ha ocurrido un error al intentar editar'
             ]);
         }
     }

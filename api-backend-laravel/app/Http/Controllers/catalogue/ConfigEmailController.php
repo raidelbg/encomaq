@@ -8,6 +8,10 @@ use App\Http\Controllers\Controller;
 
 class ConfigEmailController extends Controller
 {
+
+    private const SUCCESS = 'success';
+    private const MESSAGE = 'message';
+
     /**
      * Display a listing of the resource.
      *
@@ -97,13 +101,13 @@ class ConfigEmailController extends Controller
 
         if ($item->save()) {
             return response()->json([
-                'success' => true,
-                'message' => ($typeAction === 'add') ? 'Se agregó satisfactoriamente' : 'Se editó satisfactoriamente'
+                self::SUCCESS => true,
+                self::MESSAGE => ($typeAction === 'add') ? 'Se agregó satisfactoriamente' : 'Se editó satisfactoriamente'
             ]);
         } else {
             return response()->json([
-                'success' => false,
-                'message' => ($typeAction === 'add') ? 'Ha ocurrido un error al intentar agregar' : 'Ha ocurrido un error al intentar editar'
+                self::SUCCESS => false,
+                self::MESSAGE => ($typeAction === 'add') ? 'Ha ocurrido un error al intentar agregar' : 'Ha ocurrido un error al intentar editar'
             ]);
         }
     }
