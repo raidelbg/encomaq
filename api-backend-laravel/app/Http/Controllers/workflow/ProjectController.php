@@ -2,31 +2,32 @@
 
 namespace App\Http\Controllers\workflow;
 
-use App\Models\schema_public\Carrier;
+use App\Models\schema_public\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class CarrierController extends Controller
+class ProjectController extends Controller
 {
 
     private const SUCCESS = 'success';
     private const MESSAGE = 'message';
-    private const FIELD_DUPLICATE = 'licenseplate';
+    private const FIELD_DUPLICATE = 'projectname';
+
 
     /**
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return Carrier[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return Project[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
     public function index(Request $request)
     {
         $filter = json_decode($request->get('filter'));
 
-        $where = "(identify LIKE '%" . $filter->search . "%' OR carriername LIKE '%" . $filter->search . "%' OR ";
-        $where .= "licenseplate LIKE '%" . $filter->search . "%') AND state = " . $filter->state;
+        $where = "(place LIKE '%" . $filter->search . "%' OR projectname LIKE '%" . $filter->search . "%') ";
+        $where .= "AND state = " . $filter->state;
 
-        return Carrier::with('nom_identifytype')->whereRaw($where)->orderBy($filter->column, $filter->order)->get();
+        return Project::with('biz_client')->whereRaw($where)->orderBy($filter->column, $filter->order)->get();
     }
 
     /**
@@ -47,7 +48,7 @@ class CarrierController extends Controller
      */
     public function store(Request $request)
     {
-        $item = new Carrier();
+        $item = new Project();
         if ( ! $this->exists($request->input(self::FIELD_DUPLICATE), null) ) {
             return $this->action($item, $request, 'add');
         } else {
@@ -89,7 +90,7 @@ class CarrierController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $item = Carrier::find($id);
+        $item = Project::find($id);
         if ( ! $this->exists($request->input(self::FIELD_DUPLICATE), $id) ) {
             return $this->action($item, $request, 'update');
         } else {
@@ -108,7 +109,7 @@ class CarrierController extends Controller
      */
     public function destroy($id)
     {
-        $item = Carrier::find($id);
+        $item = Project::find($id);
 
         if ($item->delete()) {
             return response()->json([
@@ -123,22 +124,20 @@ class CarrierController extends Controller
 
     private function exists($item, $id)
     {
-        $elements = Carrier::where('licenseplate', $item);
+        $elements = Project::where('projectname', $item);
         if ($id != null) {
-            $elements = $elements->where('idcarrier', '!=' , $id);
+            $elements = $elements->where('idproject', '!=' , $id);
         }
         $count = $elements->count();
         return ($count == 0);
     }
 
-    private function action(Carrier $item, Request $request, $typeAction)
+    private function action(Project $item, Request $request, $typeAction)
     {
-        $item->ididentifytype = $request->input('ididentifytype');
-        $item->identify = $request->input('identify');
-        $item->carriername = $request->input('carriername');
-        $item->licenseplate = $request->input('licenseplate');
+        $item->idclient = $request->input('idclient');
+        $item->projectname = $request->input('projectname');
+        $item->place = $request->input('place');
         $item->state = ($request->input('state') === true || $request->input('state') === 1) ? 1 : 0;
-
 
         if ($item->save()) {
             return response()->json([
@@ -152,4 +151,5 @@ class CarrierController extends Controller
             ]);
         }
     }
+
 }
