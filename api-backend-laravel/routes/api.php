@@ -66,3 +66,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('client', 'workflow\ClientController');
 });
 
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('project', 'workflow\ProjectController');
+});
