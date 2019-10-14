@@ -9,22 +9,26 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+
+    private const SUCCESS = 'success';
+    private const MESSAGE = 'message';
+
     public function signin(Request $request)
     {
         if (Auth::attempt($request->only('email', 'password'))) {
             $user = Auth::user();
             $token =  $user->createToken('MyAppFacturaDigital')->accessToken;
             return response()->json([
-                'success'=> true,
+                self::SUCCESS => true,
                 'token' => $token,
                 'user' => $user
             ], 200);
         } else {
             return response()->json([
-                'success' => false,
+                self::SUCCESS => false,
                 'error' => 'Unauthorized',
                 'status' => 401,
-                'message' => 'Email o password incorrecto'
+                self::MESSAGE => 'Email o password incorrecto'
             ]);
         }
     }
@@ -35,10 +39,11 @@ class AuthController extends Controller
         $item->name = $request->input('name');
         $item->email = $request->input('email');
         $item->password = Hash::make($request->input('password'));
+
         if ($item->save()) {
-            return response()->json(['success' => true ]);
+            return response()->json([ self::SUCCESS => true ]);
         } else {
-            return response()->json(['success' => false ]);
+            return response()->json([ self::SUCCESS => false ]);
         }
     }
 }
