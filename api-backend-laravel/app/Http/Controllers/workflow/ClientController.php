@@ -9,9 +9,15 @@ use App\Http\Controllers\Controller;
 
 class ClientController extends Controller
 {
+
+    private const SUCCESS = 'success';
+    private const MESSAGE = 'message';
+    private const FIELD_DUPLICATE = 'identify';
+
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return Client[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
     public function index(Request $request)
@@ -44,12 +50,12 @@ class ClientController extends Controller
     {
         $item = new Client();
 
-        if ($this->exists($request->input('identify'), null) ==  false) {
+        if (!$this->exists($request->input(self::FIELD_DUPLICATE), null)) {
             return $this->action($item, $request, 'add');
         } else {
             return response()->json([
-                'success' => false,
-                'message' => 'Ha ocurrido un error al intentar agregar, ya se encuentra registrado.'
+                self::SUCCESS => false,
+                self::MESSAGE => 'Ha ocurrido un error al intentar agregar, ya se encuentra registrado.'
             ]);
         }
     }
@@ -87,12 +93,12 @@ class ClientController extends Controller
     {
         $item = Client::find($id);
 
-        if ($this->exists($request->input('identify'), $id) ==  false) {
+        if (!$this->exists($request->input(self::FIELD_DUPLICATE), $id)) {
             return $this->action($item, $request, 'update');
         } else {
             return response()->json([
-                'success' => false,
-                'message' => 'Ha ocurrido un error al intentar editar, ya se encuentra registrado.'
+                self::SUCCESS => false,
+                self::MESSAGE => 'Ha ocurrido un error al intentar editar, ya se encuentra registrado.'
             ]);
         }
     }
@@ -108,16 +114,15 @@ class ClientController extends Controller
         $item = Client::find($id);
 
         if ($item->delete()) {
-            return response()->json(['success' => true, 'message' => 'Se eliminó satisfactoriamente' ]);
+            return response()->json([self::SUCCESS => true, self::MESSAGE => 'Se eliminó satisfactoriamente' ]);
         } else {
-            return response()->json(['success' => false, 'message' => 'Ha ocurrido un error al intentar eliminar' ]);
+            return response()->json([self::SUCCESS => false, self::MESSAGE => 'Ha ocurrido un error al intentar eliminar' ]);
         }
     }
 
     public function exportToPDF(Request $request)
     {
         ini_set('max_execution_time', 300);
-
 
         $filter = json_decode($request->get('filter'));
 
@@ -132,8 +137,6 @@ class ClientController extends Controller
         $pdf = \App::make('dompdf.wrapper');
         $pdf->loadHTML($view);
         $pdf->setPaper('A4', 'landscape');
-
-        // return response()->json(['success' => true, 'pdf' => json_encode($pdf->stream('ListaDeClientes' . $today.'.pdf')) ]);
 
         return $pdf->stream('ListaDeClientes' . $today.'.pdf');
     }
@@ -163,16 +166,15 @@ class ClientController extends Controller
 
         $item->state = ($request->input('state') === true || $request->input('state') === 1) ? 1 : 0;
 
-
         if ($item->save()) {
             return response()->json([
-                'success' => true,
-                'message' => ($typeAction === 'add') ? 'Se agregó satisfactoriamente' : 'Se editó satisfactoriamente'
+                self::SUCCESS => true,
+                self::MESSAGE => ($typeAction === 'add') ? 'Se agregó satisfactoriamente' : 'Se editó satisfactoriamente'
             ]);
         } else {
             return response()->json([
-                'success' => false,
-                'message' => ($typeAction === 'add') ? 'Ha ocurrido un error al intentar agregar' : 'Ha ocurrido un error al intentar editar'
+                self::SUCCESS => false,
+                self::MESSAGE => ($typeAction === 'add') ? 'Ha ocurrido un error al intentar agregar' : 'Ha ocurrido un error al intentar editar'
             ]);
         }
     }
