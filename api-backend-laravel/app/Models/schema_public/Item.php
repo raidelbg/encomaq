@@ -10,12 +10,12 @@ class Item extends Model
     protected $table = 'biz_item';
     protected $primaryKey = 'iditem';
 
-    public function nom_category()
+    public function nom_categoryitem()
     {
         return $this->belongsTo('App\Models\schema_public\CategoryItem','idcategoryitem');
     }
 
-    public function nom_unit()
+    public function nom_unittype()
     {
         return $this->belongsTo('App\Models\schema_public\UnitType','idunittype');
     }

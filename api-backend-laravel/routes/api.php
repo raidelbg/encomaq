@@ -69,3 +69,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('project', 'workflow\ProjectController');
 });
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('item', 'workflow\ItemController');
+});
