@@ -1,4 +1,4 @@
-<div class="container generic-component">
+<div class="generic-component">
     <div class="row">
         <div class="col-12">
             <h3>Transportistas (CHOFER)</h3>
@@ -73,7 +73,7 @@
         <div class="col-12">
             <div class="row">
 
-                <div class="col-12 col-sm-4" *ngFor="let item of list;  let i = index">
+                <div class="col-12 col-sm-3" *ngFor="let item of list;  let i = index">
                     <div class="card mb-3" [ngClass]="{ 'border-primary': item.state === 1, 'border-danger': item.state === 0 }">
                         <div class="row no-gutters">
                             <div class="col-4 image-user" [ngClass]="{ 'text-primary': item.state === 1, 'text-danger': item.state === 0 }">
