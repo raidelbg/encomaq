@@ -3,9 +3,9 @@
 namespace Illuminate\Routing;
 
 use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline as BasePipeline;
 
 /**
@@ -18,7 +18,7 @@ class Pipeline extends BasePipeline
     /**
      * Handles the value returned from each pipe before passing it to the next.
      *
-     * @param  mixed $carry
+     * @param  mixed  $carry
      * @return mixed
      */
     protected function handleCarry($carry)

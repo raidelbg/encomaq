@@ -2,17 +2,17 @@
 
 namespace Illuminate\Support\Traits;
 
-use Exception;
-use Traversable;
 use CachingIterator;
-use JsonSerializable;
+use Exception;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Enumerable;
-use Illuminate\Contracts\Support\Jsonable;
-use Symfony\Component\VarDumper\VarDumper;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\HigherOrderCollectionProxy;
+use JsonSerializable;
+use Symfony\Component\VarDumper\VarDumper;
+use Traversable;
 
 /**
  * @property-read HigherOrderCollectionProxy $average
@@ -197,7 +197,7 @@ trait EnumeratesValues
     }
 
     /**
-     * Determine if all items pass the given test.
+     * Determine if all items pass the given truth test.
      *
      * @param  string|callable  $key
      * @param  mixed  $operator
@@ -402,7 +402,7 @@ trait EnumeratesValues
     /**
      * Apply the callback if the value is truthy.
      *
-     * @param  bool  $value
+     * @param  bool|mixed  $value
      * @param  callable  $callback
      * @param  callable  $default
      * @return static|mixed
@@ -604,7 +604,7 @@ trait EnumeratesValues
     /**
      * Pass the collection to the given callback and return the result.
      *
-     * @param  callable $callback
+     * @param  callable  $callback
      * @return mixed
      */
     public function pipe(callable $callback)

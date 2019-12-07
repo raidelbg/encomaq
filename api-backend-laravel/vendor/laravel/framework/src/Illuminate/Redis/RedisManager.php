@@ -3,10 +3,12 @@
 namespace Illuminate\Redis;
 
 use Closure;
-use InvalidArgumentException;
 use Illuminate\Contracts\Redis\Factory;
 use Illuminate\Redis\Connections\Connection;
+use Illuminate\Redis\Connectors\PhpRedisConnector;
+use Illuminate\Redis\Connectors\PredisConnector;
 use Illuminate\Support\ConfigurationUrlParser;
+use InvalidArgumentException;
 
 /**
  * @mixin \Illuminate\Redis\Connections\Connection
@@ -162,14 +164,14 @@ class RedisManager implements Factory
         $customCreator = $this->customCreators[$this->driver] ?? null;
 
         if ($customCreator) {
-            return call_user_func($customCreator);
+            return $customCreator();
         }
 
         switch ($this->driver) {
             case 'predis':
-                return new Connectors\PredisConnector;
+                return new PredisConnector;
             case 'phpredis':
-                return new Connectors\PhpRedisConnector;
+                return new PhpRedisConnector;
         }
     }
 

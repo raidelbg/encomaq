@@ -3,8 +3,8 @@
 namespace Illuminate\Database\Concerns;
 
 use Illuminate\Container\Container;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 trait BuildsQueries
 {
@@ -135,8 +135,8 @@ trait BuildsQueries
     /**
      * Execute the query and get the first result.
      *
-     * @param  array  $columns
-     * @return \Illuminate\Database\Eloquent\Model|object|null
+     * @param  array|string  $columns
+     * @return \Illuminate\Database\Eloquent\Model|object|static|null
      */
     public function first($columns = ['*'])
     {
@@ -213,8 +213,8 @@ trait BuildsQueries
      * Create a new simple paginator instance.
      *
      * @param  \Illuminate\Support\Collection  $items
-     * @param  int $perPage
-     * @param  int $currentPage
+     * @param  int  $perPage
+     * @param  int  $currentPage
      * @param  array  $options
      * @return \Illuminate\Pagination\Paginator
      */

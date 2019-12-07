@@ -2,11 +2,11 @@
 
 namespace Illuminate\Support;
 
-use PhpOption\Option;
-use Dotenv\Environment\DotenvFactory;
-use Dotenv\Environment\Adapter\PutenvAdapter;
 use Dotenv\Environment\Adapter\EnvConstAdapter;
+use Dotenv\Environment\Adapter\PutenvAdapter;
 use Dotenv\Environment\Adapter\ServerConstAdapter;
+use Dotenv\Environment\DotenvFactory;
+use PhpOption\Option;
 
 class Env
 {
@@ -92,7 +92,7 @@ class Env
      * Gets the value of an environment variable.
      *
      * @param  string  $key
-     * @param  mixed   $default
+     * @param  mixed  $default
      * @return mixed
      */
     public static function get($key, $default = null)
