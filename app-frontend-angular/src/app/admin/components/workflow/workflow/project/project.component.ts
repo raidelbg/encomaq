@@ -1,7 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { from, Observable } from 'rxjs';
+import { tap, map, delay } from 'rxjs/operators';
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
 import { ProjectService } from 'src/app/admin/services/workflow/workflow/project.service';
@@ -9,6 +11,10 @@ import { ClientService } from 'src/app/admin/services/workflow/workflow/client.s
 
 declare var $: any;
 
+interface FilterServerResponse {
+  data: any;
+  total: number;
+}
 @Component({
   selector: 'app-project',
   templateUrl: './project.component.html',
@@ -29,10 +35,24 @@ export class ProjectComponent implements OnInit, OnDestroy {
   form: FormGroup;
   formFilter: FormGroup;
 
-  list = [];
+  list: Observable<any[]>;
   listClient = [];
   itemSelected = null;
   anything = '';
+
+  public labels: any = {
+    previousLabel: 'Anterior',
+    nextLabel: 'Siguiente',
+    screenReaderPaginationLabel: 'Paginado',
+    screenReaderPageLabel: 'página',
+    screenReaderCurrentLabel: `Estas en la página`
+  };
+
+  // tslint:disable-next-line: no-input-rename
+  @Input('data') reportData: any[] = [];
+  pag = 1;
+  pageDelta = 1;
+  total = 0;
 
   constructor(private notification: Notification, private projectService: ProjectService,
               private clientService: ClientService, private formBuilder: FormBuilder) { }
@@ -55,41 +75,46 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this.getClient();
   }
 
-  get = () => {
+  getAction(page: number, perPage: number): Observable<FilterServerResponse> {
     const filters = {
       search: this.formFilter.value.search,
       state: this.formFilter.value.stateFilter,
       column: this.formFilter.value.column,
       order: this.formFilter.value.order,
-      num_page: this.formFilter.value.num_page
+      num_page: this.formFilter.value.numPage
     };
-    this.projectService.get(filters).pipe(takeUntil(this.destroySubscription$)).subscribe(
-      (response) => {
-        if (response.success) {
-          this.list = response.data;
+
+    return from(this.projectService.get(filters, null, page)).pipe(delay(200));
+
+  }
+
+  get = (page: number) => {
+    this.list =  this.getAction(page, 5).pipe(
+      tap(
+        (response) => {
+
+          this.total = response.data.total;
+          this.pag = response.data.current_page;
+          this.pageDelta = (page - 1) * 5;
+
+        },
+        (error) => {
+          console.error(error);
         }
-      },
-      (error) => {
-        this.showNotification(error.title, error.icon, error.message, error.type);
-      }
+      ),
+      map(response => response.data.data)
     );
   }
 
   getClient = () => {
-    const filters = {
-      search: this.formFilter.value.search,
-      state: '1',
-      column: 'businessname',
-      order: 'ASC',
-    };
     this.listClient.push({idclient: '', businessname: '-- Seleccione Cliente --'});
-    this.clientService.get(filters).pipe(takeUntil(this.destroySubscription$)).subscribe(
+    this.clientService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
           response.data.forEach(element => {
             this.listClient.push({idclient: element.idclient, businessname: element.businessname});
           });
-          this.get();
+          this.get(1);
         }
       },
       (error) => {
@@ -130,7 +155,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
-          this.get();
+          // this.get();
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
@@ -163,7 +188,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
-          this.get();
+          // this.get();
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
@@ -186,7 +211,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
         $('#confirmDeleteProject').modal('hide');
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
-          this.get();
+          // this.get();
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }

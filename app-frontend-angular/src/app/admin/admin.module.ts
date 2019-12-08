@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
+import {NgxPaginationModule} from 'ngx-pagination';
+
 import { HttpConfigInterceptor } from '../shared/interceptors/httpconfig.interceptor';
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
@@ -51,7 +53,8 @@ import { ItemService } from './services/workflow/workflow/item.service';
     HttpClientModule,
     FormsModule, ReactiveFormsModule,
     SharedModule,
-    AdminRoutingModule
+    AdminRoutingModule,
+    NgxPaginationModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },

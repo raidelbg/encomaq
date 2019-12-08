@@ -85,8 +85,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let item of list;  let i = index " [ngClass]= "{'text-danger':item.state == false}" >
-                        <td>{{i + 1}}</td>
+                    <tr *ngFor="let item of list | async | paginate: { id: 'filters', itemsPerPage: 5, currentPage: pag, totalItems: total }; index as i">
+                        <td><span *ngIf="!pageDelta">{{i+1}}</span><span *ngIf="pageDelta">{{i+pageDelta+1}}</span></td>
                         <td class="text-left cursor-pointer" (click)="info(item)">
                             <div class="row">
                                 <div class="col-2 text-primary" [ngClass]="{ 'text-primary': item.state === 1, 'text-danger': item.state === 0 }">
@@ -122,7 +122,11 @@
                     </tr>
                 </tbody>
             </table>
-
+            <pagination-controls class="text-center" autoHide="true" id='filters' [maxSize]="total" [directionLinks]="true" [responsive]="true" [previousLabel]="labels.previousLabel" [nextLabel]="labels.nextLabel" 
+                [screenReaderPaginationLabel]="labels.screenReaderPaginationLabel"
+                    [screenReaderPageLabel]="labels.screenReaderPageLabel" [screenReaderCurrentLabel]="labels.screenReaderCurrentLabel" (pageChange)="get($event)">
+            </pagination-controls>
+    
         </div>
     </div>
 </div>

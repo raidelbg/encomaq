@@ -1,18 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
 import { CarrierService } from 'src/app/admin/services/workflow/workflow/carrier.service';
+import { Subject } from 'rxjs';
+import { from, Observable } from 'rxjs';
+import { tap, map, delay } from 'rxjs/operators';
 import { IdentificationtypeService } from 'src/app/admin/services/workflow/catalogue/identificationtype.service';
 
 declare var $: any;
 
+interface FilterServerResponse {
+  data: any;
+  total: number;
+}
 @Component({
   selector: 'app-carrier',
   templateUrl: './carrier.component.html',
   styleUrls: ['./carrier.component.scss']
 })
 export class CarrierComponent implements OnInit {
+
+  private destroySubscription$ = new Subject();
 
   titleNotification?: string;
   iconNotification?: string;
@@ -25,9 +34,23 @@ export class CarrierComponent implements OnInit {
   form: FormGroup;
   formFilter: FormGroup;
 
-  list = [];
+  list: Observable<any[]>;
   listIdentifyType = [];
   itemSelected = null;
+
+  public labels: any = {
+    previousLabel: 'Anterior',
+    nextLabel: 'Siguiente',
+    screenReaderPaginationLabel: 'Paginado',
+    screenReaderPageLabel: 'página',
+    screenReaderCurrentLabel: `Estas en la página`
+  };
+
+  // tslint:disable-next-line: no-input-rename
+  @Input('data') reportData: any[] = [];
+  pag = 1;
+  pageDelta = 1;
+  total = 0;
 
   constructor(private notification: Notification, private carrierService: CarrierService,
               private identifyTypeService: IdentificationtypeService, private formBuilder: FormBuilder) { }
@@ -45,29 +68,38 @@ export class CarrierComponent implements OnInit {
       stateFilter: new FormControl('1'),
       column: new FormControl('carriername'),
       order: new FormControl('ASC'),
-      numPage: new FormControl(5),
+      numPage: new FormControl(12),
     });
 
     this.getIdentifyType();
   }
 
-  get = () => {
+  getAction(page: number, perPage: number): Observable<FilterServerResponse> {
     const filters = {
       search: this.formFilter.value.search,
       state: this.formFilter.value.stateFilter,
       column: this.formFilter.value.column,
       order: this.formFilter.value.order,
-      num_page: this.formFilter.value.num_page
+      num_page: this.formFilter.value.numPage
     };
-    this.carrierService.get(filters).subscribe(
-      (response) => {
-        if (response.success) {
-          this.list = response.data;
+    return from(this.carrierService.get(filters, null, page)).pipe(delay(200));
+  }
+
+  get = (page: number) => {
+    this.list =  this.getAction(page, 12).pipe(
+      tap(
+        (response) => {
+
+          this.total = response.data.total;
+          this.pag = response.data.current_page;
+          this.pageDelta = (page - 1) * 12;
+
+        },
+        (error) => {
+          console.error(error);
         }
-      },
-      (error) => {
-        this.showNotification(error.title, error.icon, error.message, error.type);
-      }
+      ),
+      map(response => response.data.data)
     );
   }
 
@@ -79,7 +111,7 @@ export class CarrierComponent implements OnInit {
           response.data.forEach(element => {
             this.listIdentifyType.push({ididentifytype: element.ididentifytype, identifytypename: element.identifytypename});
           });
-          this.get();
+          this.get(1);
         }
       },
       (error) => {
@@ -121,7 +153,7 @@ export class CarrierComponent implements OnInit {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
-          this.get();
+          this.get(1);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
@@ -155,7 +187,7 @@ export class CarrierComponent implements OnInit {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
-          this.get();
+          this.get(1);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
@@ -178,7 +210,7 @@ export class CarrierComponent implements OnInit {
         $('#confirmDeleteCarrier').modal('hide');
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
-          this.get();
+          this.get(1);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }

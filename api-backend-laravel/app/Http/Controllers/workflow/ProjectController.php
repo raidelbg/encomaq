@@ -27,7 +27,8 @@ class ProjectController extends Controller
             $filter = json_decode($request->get('filter'));
             $where = "(place LIKE '%" . $filter->search . "%' OR projectname LIKE '%" . $filter->search . "%') ";
             $where .= "AND state = " . $filter->state;
-            $result = Project::with('biz_client')->whereRaw($where)->orderBy($filter->column, $filter->order)->get();
+            $result = Project::with('biz_client')->whereRaw($where)->orderBy($filter->column, $filter->order)
+                            ->paginate($filter->num_page);
             return response()->json([
                 self::SUCCESS => true, self::DATA => $result
             ]);

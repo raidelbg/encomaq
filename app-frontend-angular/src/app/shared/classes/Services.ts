@@ -53,14 +53,29 @@ export class Services {
 
   // -------------------------------------------------------------------------------------------------
 
-  get(filter: any, schema: string = null, specificUrl: string = null): Observable<any> {
+  get(filter: number | object, partUrl: string = null, pageCurrentPaginate: number = null, schema: string = null): Observable<any> {
+
     this.resolvedSchema(schema);
-    let completeUrl = this.url + this.component;
-    if (specificUrl !== null) {
-      completeUrl += '/' + specificUrl;
+
+    let resultURL = this.url + this.component;
+
+    if (partUrl !== null) {
+      resultURL += '/' + partUrl;
     }
-    return this.http.get(completeUrl + '?filter=' + JSON.stringify(filter), this.httpOptions);
+
+    if (typeof filter === 'number') {
+      resultURL += '/' + filter;
+    } else {
+      resultURL += '?filter=' + JSON.stringify(filter);
+      if (pageCurrentPaginate !== null) {
+        resultURL += '&page=' + pageCurrentPaginate;
+      }
+    }
+
+    return this.http.get(resultURL, this.httpOptions);
+
   }
+
 
   post(data: any, schema: string = null): Observable<any> {
     this.resolvedSchema(schema);

@@ -25,9 +25,14 @@ class ClientController extends Controller
     {
         try {
             $filter = json_decode($request->get('filter'));
-            $where = "(businessname LIKE '%" . $filter->search . "%' OR identify LIKE '%" . $filter->search . "%') ";
-            $where .= "AND state = " . $filter->state;
-            $result = Client::with('nom_identifytype')->whereRaw($where)->orderBy($filter->column, $filter->order)->get();
+            $result = Client::with('nom_identifytype');
+            if (isset($filter->search)) {
+                $where = "(businessname LIKE '%" . $filter->search . "%' OR identify LIKE '%" . $filter->search . "%') ";
+                $where .= "AND state = " . $filter->state;
+                $result = $result->whereRaw($where)->orderBy($filter->column, $filter->order)->paginate($filter->num_page);
+            } else {
+                $result = $result->where('state', 1)->orderBy('businessname', 'ASC')->get();
+            }
             return response()->json([
                 self::SUCCESS => true, self::DATA => $result
             ]);

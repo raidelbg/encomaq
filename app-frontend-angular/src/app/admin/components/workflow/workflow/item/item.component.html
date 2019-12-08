@@ -71,11 +71,11 @@
         <div class="col-12">
             <div class="row">
 
-                <div class="col-12 col-sm-3" *ngFor="let item of list;  let i = index">
+                <div class="col-12 col-sm-3" *ngFor="let item of list | async | paginate: { id: 'filters', itemsPerPage: 12, currentPage: pag, totalItems: total }; index as i">
                     <div class="card mb-3" [ngClass]="{ 'border-primary': item.state === 1, 'border-danger': item.state === 0 }">
                         <div class="row no-gutters">
                             <div class="col-4">
-                                <!--<img src="{{ (item.image != '' && item.image != null) ? url_basic + '' + item.image : urlImageDefault }}" class="card-img" alt="...">-->
+                                <img src="{{ (item.image != '' && item.image != null) ? url_basic + '' + item.image : urlImageDefault }}" class="card-img" alt="...">
                             </div>
                             <div class="col-8">
                             <div class="card-body">
@@ -93,6 +93,10 @@
                 </div>
                 
             </div>
+            <pagination-controls class="text-center" autoHide="true" id='filters' [maxSize]="total" [directionLinks]="true" [responsive]="true" [previousLabel]="labels.previousLabel" [nextLabel]="labels.nextLabel" 
+                [screenReaderPaginationLabel]="labels.screenReaderPaginationLabel"
+                    [screenReaderPageLabel]="labels.screenReaderPageLabel" [screenReaderCurrentLabel]="labels.screenReaderCurrentLabel" (pageChange)="get($event)">
+            </pagination-controls>
         </div>
     </div>
 </div>

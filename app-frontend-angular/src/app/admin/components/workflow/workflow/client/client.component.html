@@ -80,7 +80,7 @@
         <div class="col-12">
             <div class="row">
 
-                <div class="col-12 col-sm-3" *ngFor="let item of list;  let i = index">
+                <div class="col-12 col-sm-3" *ngFor="let item of list | async | paginate: { id: 'filters', itemsPerPage: 12, currentPage: pag, totalItems: total }; index as i">
                     <div class="card mb-3" [ngClass]="{ 'border-primary': item.state === 1, 'border-danger': item.state === 0 }">
                         <div class="row no-gutters">
                             <div class="col-4 image-user text-white" [ngClass]="{ 'bg-primary': item.state === 1, 'bg-danger': item.state === 0 }">
@@ -100,6 +100,11 @@
                         </div>
                     </div>
                 </div>
+
+                <pagination-controls class="text-center" autoHide="true" id='filters' [maxSize]="total" [directionLinks]="true" [responsive]="true" [previousLabel]="labels.previousLabel" [nextLabel]="labels.nextLabel" 
+                    [screenReaderPaginationLabel]="labels.screenReaderPaginationLabel"
+                        [screenReaderPageLabel]="labels.screenReaderPageLabel" [screenReaderCurrentLabel]="labels.screenReaderCurrentLabel" (pageChange)="get($event)">
+                </pagination-controls>
                 
             </div>
         </div>

@@ -35,7 +35,7 @@ class ItemController extends Controller
             $where .= "AND state = " . $filter->state;
             $where .= $otherWhere;
             $result = Item::with('nom_categoryitem','nom_unittype', 'biz_itemprice')->whereRaw($where)
-                ->orderBy($filter->column, $filter->order)->get();
+                ->orderBy($filter->column, $filter->order)->paginate($filter->num_page);
             return response()->json([
                 self::SUCCESS => true, self::DATA => $result
             ]);
