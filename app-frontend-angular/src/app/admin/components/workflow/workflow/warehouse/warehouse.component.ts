@@ -43,7 +43,9 @@ export class WarehouseComponent implements OnInit {
   get = () => {
     this.warehouseService.get({}).subscribe(
       (response) => {
-        this.list = response;
+        if (response.success) {
+          this.list = response.data;
+        }
       },
       (error) => {
         this.showNotification(error.title, error.icon, error.message, error.type);

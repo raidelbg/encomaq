@@ -72,7 +72,9 @@ export class ItemComponent implements OnInit, OnDestroy {
     };
     this.itemService.get(filters).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
-        this.list = response;
+        if (response.success) {
+          this.list = response.data;
+        }
       },
       (error) => {
         this.showNotification(error.title, error.icon, error.message, error.type);

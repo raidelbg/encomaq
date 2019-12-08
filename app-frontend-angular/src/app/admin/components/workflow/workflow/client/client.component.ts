@@ -74,7 +74,9 @@ export class ClientComponent implements OnInit, OnDestroy {
     };
     this.clientService.get(filters).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
-        this.list = response;
+        if (response.success) {
+          this.list = response.data;
+        }
       },
       (error) => {
         this.showNotification(error.title, error.icon, error.message, error.type);
@@ -86,10 +88,12 @@ export class ClientComponent implements OnInit, OnDestroy {
     this.listIdentifyType.push({ididentifytype: '', identifytypename: '-- Seleccione Tipo Identificación --'});
     this.identifyTypeService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
-        response.forEach(element => {
-          this.listIdentifyType.push({ididentifytype: element.ididentifytype, identifytypename: element.identifytypename});
-        });
-        this.get();
+        if (response.success) {
+          response.data.forEach(element => {
+            this.listIdentifyType.push({ididentifytype: element.ididentifytype, identifytypename: element.identifytypename});
+          });
+          this.get();
+        }
       },
       (error) => {
         this.showNotification(error.title, error.icon, error.message, error.type);

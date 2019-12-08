@@ -39,15 +39,16 @@ export class ConfigEmailComponent implements OnInit {
   get = () => {
     this.configEmailService.get({}).subscribe(
       (response) => {
-        if (response.length > 0) {
-          this.itemSelected = response[0];
-          this.form.get('driver').setValue(this.itemSelected.driver);
-          this.form.get('server').setValue(this.itemSelected.server);
-
-          this.form.get('port').setValue(this.itemSelected.port);
-          this.form.get('encryptation').setValue(this.itemSelected.encryptation);
-          this.form.get('useremail').setValue(this.itemSelected.useremail);
-          this.form.get('passwordemail').setValue(this.itemSelected.passwordemail);
+        if (response.success) {
+          if (response.data.length > 0) {
+            this.itemSelected = response.data[0];
+            this.form.get('driver').setValue(this.itemSelected.driver);
+            this.form.get('server').setValue(this.itemSelected.server);
+            this.form.get('port').setValue(this.itemSelected.port);
+            this.form.get('encryptation').setValue(this.itemSelected.encryptation);
+            this.form.get('useremail').setValue(this.itemSelected.useremail);
+            this.form.get('passwordemail').setValue(this.itemSelected.passwordemail);
+          }
         }
       },
       (error) => {

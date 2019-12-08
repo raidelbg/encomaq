@@ -43,7 +43,9 @@ export class TransferReasonComponent implements OnInit {
   get = () => {
     this.transferReasonService.get({}).subscribe(
       (response) => {
-        this.list = response;
+        if (response.success) {
+          this.list = response.data;
+        }
       },
       (error) => {
         this.showNotification(error.title, error.icon, error.message, error.type);
@@ -54,7 +56,9 @@ export class TransferReasonComponent implements OnInit {
   getTypeTransferReason = () => {
     this.transferReasonService.get({}, null, 'type-reason').subscribe(
       (response) => {
-        this.listTypeTransferReason = response;
+        if (response.success) {
+          this.listTypeTransferReason = response.data;
+        }
       },
       (error) => {
         this.showNotification(error.title, error.icon, error.message, error.type);

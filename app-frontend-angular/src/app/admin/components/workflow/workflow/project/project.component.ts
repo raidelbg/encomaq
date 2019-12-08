@@ -65,7 +65,9 @@ export class ProjectComponent implements OnInit, OnDestroy {
     };
     this.projectService.get(filters).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
-        this.list = response;
+        if (response.success) {
+          this.list = response.data;
+        }
       },
       (error) => {
         this.showNotification(error.title, error.icon, error.message, error.type);
@@ -83,10 +85,12 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this.listClient.push({idclient: '', businessname: '-- Seleccione Cliente --'});
     this.clientService.get(filters).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
-        response.forEach(element => {
-          this.listClient.push({idclient: element.idclient, businessname: element.businessname});
-        });
-        this.get();
+        if (response.success) {
+          response.data.forEach(element => {
+            this.listClient.push({idclient: element.idclient, businessname: element.businessname});
+          });
+          this.get();
+        }
       },
       (error) => {
         this.showNotification(error.title, error.icon, error.message, error.type);

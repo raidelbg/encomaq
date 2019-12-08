@@ -11,43 +11,39 @@ class ItemController extends Controller
 
     private const SUCCESS = 'success';
     private const MESSAGE = 'message';
+    private const DATA = 'data';
     private const FIELD_DUPLICATE = 'licenseplate';
 
     /**
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return Item[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $filter = json_decode($request->get('filter'));
-        $otherWhere = '';
-
-        if ($filter->idcategoryitem != '') {
-            $otherWhere .= ' AND idcategoryitem = ' . $filter->idcategoryitem;
+        try {
+            $filter = json_decode($request->get('filter'));
+            $otherWhere = '';
+            if ($filter->idcategoryitem != '') {
+                $otherWhere .= ' AND idcategoryitem = ' . $filter->idcategoryitem;
+            }
+            if ($filter->idunittype != '') {
+                $otherWhere .= ' AND idunittype = ' . $filter->idunittype;
+            }
+            $where = "(itemname LIKE '%" . $filter->search . "%' OR description LIKE '%" . $filter->search . "%' ) ";
+            $where .= "AND state = " . $filter->state;
+            $where .= $otherWhere;
+            $result = Item::with('nom_categoryitem','nom_unittype', 'biz_itemprice')->whereRaw($where)
+                ->orderBy($filter->column, $filter->order)->get();
+            return response()->json([
+                self::SUCCESS => true, self::DATA => $result
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => $e->getMessage()
+            ]);
         }
-
-        if ($filter->idunittype != '') {
-            $otherWhere .= ' AND idunittype = ' . $filter->idunittype;
-        }
-
-        $where = "(itemname LIKE '%" . $filter->search . "%' OR description LIKE '%" . $filter->search . "%' ) ";
-        $where .= "AND state = " . $filter->state;
-        $where .= $otherWhere;
-
-        return Item::with('nom_categoryitem','nom_unittype', 'biz_itemprice')->whereRaw($where)
-                            ->orderBy($filter->column, $filter->order)->get();
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -68,17 +64,6 @@ class ItemController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
     {
         //
     }
