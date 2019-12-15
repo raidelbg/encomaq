@@ -7,6 +7,8 @@ import { Subject } from 'rxjs';
 import { from, Observable } from 'rxjs';
 import { tap, map, delay } from 'rxjs/operators';
 import { ItemService } from 'src/app/admin/services/workflow/workflow/item.service';
+import { CategoryItemService } from 'src/app/admin/services/workflow/catalogue/category-item.service';
+import { UnitTypeService } from 'src/app/admin/services/workflow/catalogue/unit-type.service';
 
 declare var $: any;
 
@@ -36,6 +38,8 @@ export class ItemComponent implements OnInit, OnDestroy {
 
   list: Observable<any[]>;
   listIdentifyType = [];
+  listCategory = [];
+  listUnitType = [];
   itemSelected = null;
   anything = '';
 
@@ -55,7 +59,8 @@ export class ItemComponent implements OnInit, OnDestroy {
   pageDelta = 1;
   total = 0;
 
-  constructor(private notification: Notification, private itemService: ItemService, private formBuilder: FormBuilder) { }
+  constructor(private notification: Notification, private itemService: ItemService, private formBuilder: FormBuilder,
+              private categoryService: CategoryItemService, private unitTypeService: UnitTypeService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -111,6 +116,37 @@ export class ItemComponent implements OnInit, OnDestroy {
     );
   }
 
+  getCategory = () => {
+    this.listCategory.push({idcategoryitem: '', categoryitemname: '-- Seleccione Categoría --'});
+    this.categoryService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          response.data.forEach(element => {
+            this.listCategory.push({idcategoryitem: element.idcategoryitem, categoryitemname: element.categoryitemname});
+          });
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
+  getUnitType = () => {
+    this.listUnitType.push({idunittype: '', unittypename: '-- Seleccione Tipo Unidad --'});
+    this.unitTypeService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          response.data.forEach(element => {
+            this.listUnitType.push({idunittype: element.idunittype, unittypename: element.unittypename});
+          });
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
 
   action = () => {
     if (this.itemSelected === null) {
@@ -166,6 +202,10 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   create = () => {
+
+    this.getCategory();
+    this.getUnitType();
+
     this.titleAside = 'Agregar Item';
     this.form.reset();
     this.form.get('idcategoryitem').setValue('');

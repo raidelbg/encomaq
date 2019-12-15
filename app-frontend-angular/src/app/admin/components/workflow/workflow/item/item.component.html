@@ -106,7 +106,78 @@
 
 <app-aside [isOpen]="asideIsOpen" [title]="titleAside" [headerOverlay]="false" [closeAside]="closeAside">
 
-    
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+            <img src="{{ urlImageDefault }}" class="card-img" style="width: 75%;" alt="...">
+        </div>
+    </div>
+
+    <form [formGroup]="form">
+        <div class="container mt-4">
+            <div class="row">
+                
+                <div class="col-12 mb-2">
+                    <div class="input-group mb-3">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="image" lang="es">
+                            <label class="custom-file-label" for="image" aria-describedby="image">Choose file</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 mb-2">
+
+                    <div class="row">
+                        <div class="col-12 col-sm-5">
+                            <label for="itemname">Código<span class="required">*</span></label>
+                            <input id="itemname" type="text" class="form-control" placeholder="" formControlName="itemname">
+                        </div>
+                        <div class="col-12 col-sm-7 pt-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" id="state" class="custom-control-input" formControlName="state">
+                                <label class="custom-control-label" for="state">Estado (Activo/Inactivo)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="description">Item<span class="required">*</span></label>
+                    <input id="description" type="text" class="form-control" placeholder="" formControlName="description">
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="id_category">Categoría<span class="required">*</span></label>
+                    <select class="custom-select" formControlName="idcategoryitem">
+                        <option *ngFor="let e of listCategory" [ngValue]="e.idcategoryitem">
+                            {{e.categoryitemname}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="idunittype">Tipo Unidad<span class="required">*</span></label>
+                    <select class="custom-select" formControlName="idunittype">
+                        <option *ngFor="let e of listUnitType" [ngValue]="e.idunittype">
+                            {{e.unittypename}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-12 mb-2">
+                    
+                </div>
+
+                <div class="col-12">
+                    <button class="btn btn-lg btn-primary btn-block" type="button"
+                    (keydown.enter)="form.valid && action()" (click)="form.valid && action()"
+                    [disabled]="!form.valid">Guardar</button>
+                </div>
+            </div>
+        </div>        
+    </form>
     
 </app-aside>
         

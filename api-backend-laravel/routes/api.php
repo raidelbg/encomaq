@@ -13,63 +13,32 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+const AUTH_API = 'auth:api';
+
+Route::middleware(AUTH_API)->get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::post('signin', 'AuthController@signin');
 Route::post('create', 'AuthController@create');
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => AUTH_API], function () {
     Route::resource('typeidentification', 'catalogue\TypeIdentificationController');
-});
-
-Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('category-item', 'catalogue\CategoryItemController');
-});
-
-Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('unit-type', 'catalogue\UnitTypeController');
-});
-
-Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('role', 'catalogue\RoleController');
-});
-
-Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('user', 'catalogue\UserController');
-});
-
-Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('config-email', 'catalogue\ConfigEmailController');
 });
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => AUTH_API], function () {
     Route::resource('payment-form', 'workflow\PaymentFormController');
-});
-
-Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('warehouse', 'workflow\WarehouseController');
-});
-
-Route::group(['middleware' => 'auth:api'], function () {
     Route::get('transfer-reason/type-reason', 'workflow\TransferReasonController@getTypeTransferReason');
     Route::resource('transfer-reason', 'workflow\TransferReasonController');
-});
-
-Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('carrier', 'workflow\CarrierController');
-});
-
-Route::group(['middleware' => 'auth:api'], function () {
     Route::get('client/exportToPDF', 'workflow\ClientController@exportToPDF');
     Route::resource('client', 'workflow\ClientController');
-});
-
-Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('project', 'workflow\ProjectController');
-});
-
-Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('item', 'workflow\ItemController');
 });
