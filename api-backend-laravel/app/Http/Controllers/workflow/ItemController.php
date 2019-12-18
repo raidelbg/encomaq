@@ -61,11 +61,20 @@ class ItemController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        //
+        try {
+            $result = Item::where('iditem', $id)->get();
+            return response()->json([
+                self::SUCCESS => true, self::DATA => $result[0]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => $e->getMessage()
+            ]);
+        }
     }
 
     /**

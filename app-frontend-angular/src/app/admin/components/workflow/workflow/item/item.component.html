@@ -158,15 +158,29 @@
                 </div>
 
                 <div class="col-12 mb-2">
-                    <label for="idunittype">Tipo Unidad<span class="required">*</span></label>
-                    <select class="custom-select" formControlName="idunittype">
-                        <option *ngFor="let e of listUnitType" [ngValue]="e.idunittype">
-                            {{e.unittypename}}
-                        </option>
-                    </select>
-                </div>
 
-                <div class="col-12 mb-2">
+                    <div class="row">
+                        <div class="col-12 col-sm-6">
+                            <label for="idunittype">Tipo Unidad<span class="required">*</span></label>
+                            <select class="custom-select" formControlName="idunittype">
+                                <option *ngFor="let e of listUnitType" [ngValue]="e.idunittype">
+                                    {{e.unittypename}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label for="price">Precio por defecto<span class="required">*</span></label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">(USD) $</span>
+                                </div>
+                                <input id="price" type="text" class="form-control" placeholder="" formControlName="price">
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+
                     
                 </div>
 

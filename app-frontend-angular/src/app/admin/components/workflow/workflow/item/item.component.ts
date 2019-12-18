@@ -102,7 +102,8 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.list =  this.getAction(page, 12).pipe(
       tap(
         (response) => {
-
+          this.getCategory();
+          this.getUnitType();
           this.total = response.data.total;
           this.pag = response.data.current_page;
           this.pageDelta = (page - 1) * 12;
@@ -133,7 +134,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   getUnitType = () => {
-    this.listUnitType.push({idunittype: '', unittypename: '-- Seleccione Tipo Unidad --'});
+    this.listUnitType.push({idunittype: '', unittypename: '-- Selecc. Tipo Unidad --'});
     this.unitTypeService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
@@ -162,17 +163,27 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   edit = (item: any) => {
-    this.itemSelected = item;
-    this.form.get('idcategoryitem').setValue(item.idcategoryitem);
-    this.form.get('idunittype').setValue(item.idunittype);
-    this.form.get('itemname').setValue(item.itemname);
-    this.form.get('image').setValue(item.image);
-    this.form.get('description').setValue(item.description);
-    this.form.get('price').setValue(item.price);
-    this.form.get('state').setValue(item.state);
+    this.itemService.get(item.iditem).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          this.itemSelected = response.data;
 
-    this.titleAside = 'Editar Item';
-    this.asideIsOpen = true;
+          this.form.get('idcategoryitem').setValue(response.data.idcategoryitem);
+          this.form.get('idunittype').setValue(response.data.idunittype);
+          this.form.get('itemname').setValue(response.data.itemname);
+          this.form.get('image').setValue(response.data.image);
+          this.form.get('description').setValue(response.data.description);
+          this.form.get('price').setValue(response.data.price);
+          this.form.get('state').setValue(response.data.state);
+
+          this.titleAside = 'Editar Producto';
+          this.asideIsOpen = true;
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
   }
 
   update = (id: any) => {
@@ -202,11 +213,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   create = () => {
-
-    this.getCategory();
-    this.getUnitType();
-
-    this.titleAside = 'Agregar Item';
+    this.titleAside = 'Agregar Producto';
     this.form.reset();
     this.form.get('idcategoryitem').setValue('');
     this.form.get('idunittype').setValue('');
