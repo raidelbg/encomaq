@@ -13,16 +13,15 @@ use Illuminate\Http\Request;
 |
 */
 
-const AUTH_API = 'auth:api';
 
-Route::middleware(AUTH_API)->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::post('signin', 'AuthController@signin');
 Route::post('create', 'AuthController@create');
 
-Route::group(['middleware' => AUTH_API], function () {
+Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('typeidentification', 'catalogue\TypeIdentificationController');
     Route::resource('category-item', 'catalogue\CategoryItemController');
     Route::resource('unit-type', 'catalogue\UnitTypeController');
@@ -31,7 +30,7 @@ Route::group(['middleware' => AUTH_API], function () {
     Route::resource('config-email', 'catalogue\ConfigEmailController');
 });
 
-Route::group(['middleware' => AUTH_API], function () {
+Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('payment-form', 'workflow\PaymentFormController');
     Route::resource('warehouse', 'workflow\WarehouseController');
     Route::get('transfer-reason/type-reason', 'workflow\TransferReasonController@getTypeTransferReason');

@@ -50,11 +50,50 @@ class ItemController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $path = null;
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $fileName = 'item-'.time().'.'.$file->getClientOriginalExtension();
+                $path = $file->storeAs('files', $fileName);
+            }
+            $data = json_decode($request->get('data'));
+            if (isset($data->iditem)) {
+                $item = Item::find($data->iditem);
+            } else {
+                $item = new Item();
+            }
+
+            $item->idcategoryitem = $data->idcategoryitem;
+            $item->idunittype = $data->idunittype;
+            $item->itemname = $data->itemname;
+            $item->description = $data->description;
+            $item->price = $data->price;
+            $item->state = 1;
+
+            if ($path != null) {
+                $item->image = $path;
+            }
+
+            if ($item->save()) {
+                return response()->json([
+                    self::SUCCESS => true, self::MESSAGE => 'Se ha guardado satisfactoriamente el Producto'
+                ]);
+            } else {
+                return response()->json([
+                    self::SUCCESS => false, self::MESSAGE => 'Ha ocurrido un error al intentar guardar el Producto'
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => $e->getMessage()
+            ]);
+        }
     }
 
     /**

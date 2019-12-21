@@ -75,7 +75,7 @@
                     <div class="card mb-3" [ngClass]="{ 'border-primary': item.state === 1, 'border-danger': item.state === 0 }">
                         <div class="row no-gutters">
                             <div class="col-4">
-                                <img src="{{ (item.image != '' && item.image != null) ? url_basic + '' + item.image : urlImageDefault }}" class="card-img" alt="...">
+                                <img src="{{ (item.image != '' && item.image != null) ? urlBasic + '' + item.image : urlImageDefault }}" class="card-img" alt="...">
                             </div>
                             <div class="col-8">
                             <div class="card-body">
@@ -84,7 +84,8 @@
                                 <p class="card-text">
                                     <i class="fas fa-info-circle fa-lg mr-2 cursor-pointer" (click)="info(item)"></i>
                                     <i class="fas fa-edit fa-lg mr-2 cursor-pointer" (click)="edit(item)"></i>
-                                    <i class="fas fa-trash-alt fa-lg cursor-pointer" (click)="confirmDelete(item)"></i>
+                                    <i class="fas fa-trash-alt fa-lg mr-2 cursor-pointer" (click)="confirmDelete(item)"></i>
+                                    <i class="fas fa-file-invoice-dollar fa-lg cursor-pointer" (click)="confirmDelete(item)"></i>
                                 </p>
                             </div>
                             </div>
@@ -119,7 +120,7 @@
                 <div class="col-12 mb-2">
                     <div class="input-group mb-3">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="image" lang="es">
+                            <input type="file" class="custom-file-input" id="image" lang="es" (change)="handleFileInput($event.target.files, 'image')">
                             <label class="custom-file-label" for="image" aria-describedby="image">Choose file</label>
                         </div>
                     </div>

@@ -21,7 +21,7 @@ export class Services {
     this.resolvedSchema();
   }
 
-  resolvedSchema(currentSchema: string = null, applicationTypeHeaders: string = null) {
+  resolvedSchema(currentSchema: string = null, contentType: string = null) {
     let schema = currentSchema;
     if (schema === null) {
       const schemaStorage = this.storage.get('schema_db', 'normal');
@@ -39,16 +39,16 @@ export class Services {
 
     this.httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': (applicationTypeHeaders === null) ? 'application/json' : applicationTypeHeaders,
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': 'true',
         'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': '*',
         Authorization: authorization,
-        responseType: (applicationTypeHeaders === null) ? 'json' : 'text',
         'schema-db': schema
       })
     };
+    this.httpOptions.headers.set('Content-Type', contentType);
+
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -114,14 +114,20 @@ export class Services {
 
   }
 
-  postFile(data: any, file: File, schema: string = null): Observable<any> {
+  postFile(data: any, file: File, partUrl: string = null, schema: string = null): Observable<any> {
 
     this.resolvedSchema(schema);
+
+    let resultURL = this.url + this.component;
+
+    if (partUrl !== null) {
+      resultURL += '/' + partUrl;
+    }
 
     const formData: FormData = new FormData();
     formData.append('file', file);
     formData.append('data', JSON.stringify(data));
-    return this.http.post(this.url + this.component + '/postFile', formData, this.httpOptions);
+    return this.http.post(resultURL, formData, this.httpOptions);
 
   }
 

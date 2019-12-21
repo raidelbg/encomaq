@@ -9,6 +9,7 @@ import { tap, map, delay } from 'rxjs/operators';
 import { ItemService } from 'src/app/admin/services/workflow/workflow/item.service';
 import { CategoryItemService } from 'src/app/admin/services/workflow/catalogue/category-item.service';
 import { UnitTypeService } from 'src/app/admin/services/workflow/catalogue/unit-type.service';
+import { environment } from 'src/environments/environment';
 
 declare var $: any;
 
@@ -42,6 +43,9 @@ export class ItemComponent implements OnInit, OnDestroy {
   listUnitType = [];
   itemSelected = null;
   anything = '';
+
+  fileToUpload: File = null;
+  urlBasic: string;
 
   urlImageDefault = './assets/image/no_image_available.jpg';
 
@@ -82,8 +86,17 @@ export class ItemComponent implements OnInit, OnDestroy {
       numPage: new FormControl(12),
     });
 
+    const partUrl = environment.baseUrl.replace('api/', '');
+    this.urlBasic =  partUrl + 'storage/app/';
+
     this.get(1);
   }
+
+  handleFileInput(files: FileList, fieldName: string) {
+    this.fileToUpload = files.item(0);
+    // this.form.get(fieldName).setValue(files.item(0));
+  }
+
 
   getAction(page: number, perPage: number): Observable<FilterServerResponse> {
     const filters = {
@@ -191,12 +204,12 @@ export class ItemComponent implements OnInit, OnDestroy {
       idcategoryitem: this.form.value.idcategoryitem,
       idunittype: this.form.value.idunittype,
       itemname: this.form.value.itemname,
-      image: this.form.value.image,
       description: this.form.value.description,
       price: this.form.value.price,
       state: this.form.value.state,
+      iditem: id
     };
-    this.itemService.put(id, data).pipe(takeUntil(this.destroySubscription$)).subscribe(
+    this.itemService.postFile(data, this.fileToUpload).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
@@ -228,12 +241,11 @@ export class ItemComponent implements OnInit, OnDestroy {
       idcategoryitem: this.form.value.idcategoryitem,
       idunittype: this.form.value.idunittype,
       itemname: this.form.value.itemname,
-      image: this.form.value.image,
       description: this.form.value.description,
       price: this.form.value.price,
       state,
     };
-    this.itemService.post(data).pipe(takeUntil(this.destroySubscription$)).subscribe(
+    this.itemService.postFile(data, this.fileToUpload).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
