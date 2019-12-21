@@ -10,6 +10,7 @@ import { ItemService } from 'src/app/admin/services/workflow/workflow/item.servi
 import { CategoryItemService } from 'src/app/admin/services/workflow/catalogue/category-item.service';
 import { UnitTypeService } from 'src/app/admin/services/workflow/catalogue/unit-type.service';
 import { environment } from 'src/environments/environment';
+import { ItemPriceService } from 'src/app/admin/services/workflow/workflow/item-price.service';
 
 declare var $: any;
 
@@ -36,6 +37,8 @@ export class ItemComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   formFilter: FormGroup;
+  formView: boolean;
+  formTableView: boolean;
 
   list: Observable<any[]>;
   listIdentifyType = [];
@@ -64,7 +67,8 @@ export class ItemComponent implements OnInit, OnDestroy {
   total = 0;
 
   constructor(private notification: Notification, private itemService: ItemService, private formBuilder: FormBuilder,
-              private categoryService: CategoryItemService, private unitTypeService: UnitTypeService) { }
+              private categoryService: CategoryItemService, private unitTypeService: UnitTypeService,
+              private itemPriceService: ItemPriceService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -190,6 +194,8 @@ export class ItemComponent implements OnInit, OnDestroy {
           this.form.get('state').setValue(response.data.state);
 
           this.titleAside = 'Editar Producto';
+          this.formTableView = false;
+          this.formView = true;
           this.asideIsOpen = true;
         }
       },
@@ -231,7 +237,8 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.form.get('idcategoryitem').setValue('');
     this.form.get('idunittype').setValue('');
     this.form.get('state').setValue(true);
-
+    this.formTableView = false;
+    this.formView = true;
     this.asideIsOpen = true;
   }
 
@@ -253,6 +260,26 @@ export class ItemComponent implements OnInit, OnDestroy {
           this.get(1);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
+  listPrice = (item: any) => {
+    const data = {
+      iditem: item.iditem
+    };
+    this.itemPriceService.get(data).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+
+          this.titleAside = 'Lista de Precio';
+          this.formView = false;
+          this.formTableView = true;
+          this.asideIsOpen = true;
         }
       },
       (error) => {

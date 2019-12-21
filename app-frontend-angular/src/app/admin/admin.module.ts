@@ -42,6 +42,7 @@ import { ProjectComponent } from './components/workflow/workflow/project/project
 import { ProjectService } from './services/workflow/workflow/project.service';
 import { ItemComponent } from './components/workflow/workflow/item/item.component';
 import { ItemService } from './services/workflow/workflow/item.service';
+import { ItemPriceService } from './services/workflow/workflow/item-price.service';
 
 @NgModule({
   declarations: [AdminComponent, AuthComponent, SigninComponent, SignupComponent, PasswordRenewComponent,
@@ -59,7 +60,8 @@ import { ItemService } from './services/workflow/workflow/item.service';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
     SigninService, IdentificationtypeService, CategoryItemService, UnitTypeService, PaymentFormService, WarehouseService,
-    TransferReasonService, RoleService, ConfigEmailService, UserService, CarrierService, ClientService, ProjectService, ItemService
+    TransferReasonService, RoleService, ConfigEmailService, UserService, CarrierService, ClientService, ProjectService, ItemService,
+    ItemPriceService
   ]
 })
 export class AdminModule { }
