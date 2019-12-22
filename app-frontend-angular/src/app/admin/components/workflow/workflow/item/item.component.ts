@@ -317,6 +317,26 @@ export class ItemComponent implements OnInit, OnDestroy {
     $('#confirmCancel').modal('hide');
   }
 
+  actionListPrice = () => {
+    const data = {
+      iditem: this.itemSelected.iditem,
+      list: this.listItemPrice
+    };
+    this.itemPriceService.post(data).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
+          this.listPrice(this.itemSelected);
+        } else {
+          this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
   confirmDelete = (item: any) => {
     this.itemSelected = item;
     this.anything = item.itemname + ' ' + item.description;

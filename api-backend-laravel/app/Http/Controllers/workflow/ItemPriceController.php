@@ -45,11 +45,50 @@ class ItemPriceController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-        //
+        try {
+
+            foreach ($request->input('list') as $item) {
+                if ($item['iditemprice'] === 0) {
+                    $itemprice = new ItemPrice();
+                    $itemprice->iditem = $request->input('iditem');
+                    $itemprice->price = $item['price'];
+                    if (!$itemprice->save()) {
+                        return response()->json([
+                            self::SUCCESS => false, self::MESSAGE => 'Ha ocurrido un error al intentar actualizar la lista'
+                        ]);
+                    }
+                } else {
+                    if (!$item['deleted']) {
+                        $itemprice = ItemPrice::find($item['iditemprice']);
+                        $itemprice->price = $item['price'];
+                        if (!$itemprice->save()) {
+                            return response()->json([
+                                self::SUCCESS => false, self::MESSAGE => 'Ha ocurrido un error al intentar actualizar la lista'
+                            ]);
+                        }
+                    } else {
+                        $itemprice = ItemPrice::find($item['iditemprice']);
+                        if (!$itemprice->delete()) {
+                            return response()->json([
+                                self::SUCCESS => false, self::MESSAGE => 'Ha ocurrido un error al intentar actualizar la lista'
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            return response()->json([
+                self::SUCCESS => true, self::MESSAGE => 'Se ha actualizado satisfactoriamente la lista de precios'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => $e->getMessage()
+            ]);
+        }
     }
 
     /**
