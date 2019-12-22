@@ -93,7 +93,7 @@ export class ItemComponent implements OnInit, OnDestroy {
     });
 
     const partUrl = environment.baseUrl.replace('api/', '');
-    this.urlBasic =  partUrl + 'storage/app/';
+    this.urlBasic =  partUrl;
 
     this.get(1);
   }
@@ -182,6 +182,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   edit = (item: any) => {
+    this.itemSelected = item;
     this.itemService.get(item.iditem).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {

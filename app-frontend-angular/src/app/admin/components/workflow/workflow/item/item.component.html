@@ -107,9 +107,9 @@
 
 <app-aside [isOpen]="asideIsOpen" [title]="titleAside" [headerOverlay]="false" [closeAside]="closeAside">
 
-    <div *ngIf="formView" class="row">
+    <div *ngIf="formView && itemSelected != undefined" class="row">
         <div class="col-12 d-flex justify-content-center">
-            <img src="{{ urlImageDefault }}" class="card-img" style="width: 75%;" alt="...">
+            <img src="{{ (itemSelected.image != '' && itemSelected.image != null) ? urlBasic + '' + itemSelected.image : urlImageDefault }}" class="card-img" style="width: 75%;" alt="...">
         </div>
     </div>
 

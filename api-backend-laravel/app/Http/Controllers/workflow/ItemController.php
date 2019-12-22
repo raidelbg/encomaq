@@ -57,9 +57,13 @@ class ItemController extends Controller
         try {
             $path = null;
             if ($request->hasFile('file')) {
+                $dirupload = 'uploads/items';
                 $file = $request->file('file');
-                $fileName = 'item-'.time().'.'.$file->getClientOriginalExtension();
-                $path = $file->storeAs('files', $fileName);
+                $destinationPath = public_path() . '/' . $dirupload;
+                $name = 'item-'.time().'.'.$file->getClientOriginalExtension();
+                if($file->move($destinationPath, $name)) {
+                    $path = $dirupload . '/' . $name;
+                }
             }
             $data = json_decode($request->get('data'));
             if (isset($data->iditem)) {
