@@ -107,7 +107,7 @@
 
 <app-aside [isOpen]="asideIsOpen" [title]="titleAside" [headerOverlay]="false" [closeAside]="closeAside">
 
-    <div class="row">
+    <div *ngIf="formView" class="row">
         <div class="col-12 d-flex justify-content-center">
             <img src="{{ urlImageDefault }}" class="card-img" style="width: 75%;" alt="...">
         </div>
@@ -191,6 +191,55 @@
             </div>
         </div>        
     </form>
+
+    <div *ngIf="formTableView" class="container">
+        <div class="col-12 table-responsive">
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width: 8%;">NO</th>
+                        <th>PRECIO</th>
+                        <th style="width: 5%;">
+                            <button type="button" class="btn btn-primary" (click)="createPrice()">
+                                <i class="fas fa-plus-square"></i>
+                            </button>
+                        </th>
+                    </tr>
+                    <tr>
+                    <th colspan="3">{{ itemNameSelected }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of listItemPrice; let i = index">  
+                        <tr *ngIf="!item.deleted">
+                            <td>{{i + 1}}</td>
+                            <td class="text-left">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">(USD) $</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="{{i}}price" [(ngModel)]="item.price" />
+                                </div>
+                            </td>
+                            <td class="text-center">              
+                                <button type="button" class="btn btn-danger" (click)="deletePrice(item, i)">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>             
+                            </td>
+                        </tr>
+                    </ng-container> 
+                </tbody>
+            </table>              
+        </div>
+
+        <div class="col-12">
+            <div class="btn-group btn-block" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-lg btn-primary">Guardar</button>
+                <button type="button" class="btn btn-lg btn-secondary" (click)="cancelConfirmActionListPrice()">Cancelar</button>
+            </div>
+            
+        </div>
+    </div>
     
 </app-aside>
         
@@ -211,6 +260,27 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             <button type="button" class="btn btn-danger" (click)="delete()">Eliminar</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmCancel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+            <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>¿Está seguro que desea cancelar las acciones anteriormente realizadas en la lista de precios?</p>
+            <p class="text-secondary font-weight-bold text-center">{{anything}}</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="cancelActionListPrice()">Aceptar</button>
         </div>
         </div>
     </div>

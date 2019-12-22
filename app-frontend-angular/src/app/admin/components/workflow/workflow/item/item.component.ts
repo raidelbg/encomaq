@@ -44,11 +44,13 @@ export class ItemComponent implements OnInit, OnDestroy {
   listIdentifyType = [];
   listCategory = [];
   listUnitType = [];
+  listItemPrice = [];
   itemSelected = null;
   anything = '';
 
   fileToUpload: File = null;
   urlBasic: string;
+  itemNameSelected: string;
 
   urlImageDefault = './assets/image/no_image_available.jpg';
 
@@ -269,14 +271,16 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   listPrice = (item: any) => {
+    this.itemSelected = item;
     const data = {
       iditem: item.iditem
     };
     this.itemPriceService.get(data).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
-
+          this.listItemPrice = response.data;
           this.titleAside = 'Lista de Precio';
+          this.itemNameSelected = item.itemname + '. ' + item.description;
           this.formView = false;
           this.formTableView = true;
           this.asideIsOpen = true;
@@ -286,6 +290,31 @@ export class ItemComponent implements OnInit, OnDestroy {
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
+  }
+
+  createPrice = () => {
+    const data = {
+      iditemprice: 0,
+      price: 0.00
+    };
+    this.listItemPrice.push(data);
+  }
+
+  deletePrice = (item: any, pos: number) => {
+    if (item.iditemprice === 0) {
+      this.listItemPrice.splice(pos, 1);
+    } else {
+      item.deleted = true;
+    }
+  }
+
+  cancelConfirmActionListPrice = () => {
+    $('#confirmCancel').modal('show');
+  }
+
+  cancelActionListPrice = () => {
+    this.listPrice(this.itemSelected);
+    $('#confirmCancel').modal('hide');
   }
 
   confirmDelete = (item: any) => {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\workflow;
 
 use App\Http\Controllers\Controller;
+use App\Models\schema_public\Item;
 use App\Models\schema_public\ItemPrice;
 use Illuminate\Http\Request;
 
@@ -24,8 +25,14 @@ class ItemPriceController extends Controller
         try {
             $filter = json_decode($request->get('filter'));
             $result = ItemPrice::where('iditem', $filter->iditem)->orderBy('price', 'DESC')->get();
+
+            $arrayResult = [];
+            foreach ($result as $item) {
+                $arrayResult[] = ['iditemprice' => $item->iditemprice, 'price' => $item->price, 'deleted' => false];
+            }
+
             return response()->json([
-                self::SUCCESS => true, self::DATA => $result
+                self::SUCCESS => true, self::DATA => $arrayResult
             ]);
         } catch (\Exception $e) {
             return response()->json([
