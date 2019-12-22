@@ -13,6 +13,7 @@ import { CarrierComponent } from './workflow/carrier/carrier.component';
 import { ClientComponent } from './workflow/client/client.component';
 import { ProjectComponent } from './workflow/project/project.component';
 import { ItemComponent } from './workflow/item/item.component';
+import { CompanyComponent } from './workflow/company/company.component';
 
 export const routesWorkflow: Routes = [
     { path: 'identificationtype', component: IdentificationtypeComponent },
@@ -28,6 +29,7 @@ export const routesWorkflow: Routes = [
     { path: 'client', component: ClientComponent },
     { path: 'project', component: ProjectComponent },
     { path: 'item', component: ItemComponent },
+    { path: 'company', component: CompanyComponent },
 ];
 
 @NgModule({
