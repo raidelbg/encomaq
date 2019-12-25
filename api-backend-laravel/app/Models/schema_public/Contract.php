@@ -28,4 +28,10 @@ class Contract extends Model
     {
         return $this->hasMany('App\Models\schema_public\ContractPaymentForm','idcontract');
     }
+
+    public function biz_contractitem()
+    {
+        return $this->hasMany('App\Models\schema_public\ContractItem',"idcontract");
+    }
+
 }

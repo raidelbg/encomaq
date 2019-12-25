@@ -42,4 +42,5 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('item', 'workflow\ItemController');
     Route::resource('item-price', 'workflow\ItemPriceController');
     Route::resource('company', 'workflow\CompanyController');
+    Route::resource('contract', 'workflow\ContractController');
 });

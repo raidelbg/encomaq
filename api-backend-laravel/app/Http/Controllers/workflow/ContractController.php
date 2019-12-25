@@ -24,13 +24,14 @@ class ContractController extends Controller
         try {
             $filter = json_decode($request->get('filter'));
             $where = "( biz_contract.nocontract LIKE '%" . $filter->search . "%' OR (biz_client.businessname LIKE '%" . $filter->search . "%' OR biz_client.identify LIKE '%" . $filter->search . "%') ) ";
-            $where .= "AND state = " . $filter->state;
+            $where .= "AND biz_contract.state = " . $filter->state;
             $result = Contract::with(
                 [
                     'biz_client.biz_project', 'nom_categoryitem', 'biz_period',
                     'biz_contractitem.biz_item', 'biz_contractpaymentform.biz_paymentform']
             )
                 ->whereRaw($where)->orderBy($filter->column, $filter->order)
+                ->join("biz_client","biz_client.idclient","=","biz_contract.idclient")
                 ->paginate($filter->num_page);
             return response()->json([
                 self::SUCCESS => true, self::DATA => $result

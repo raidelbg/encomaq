@@ -13,4 +13,9 @@ class Client extends Model
     {
         return $this->belongsTo('App\Models\schema_public\TypeIdentification','ididentifytype');
     }
+
+    public function biz_project()
+    {
+        return $this->hasMany('App\Models\schema_public\Project',"idclient");
+    }
 }
