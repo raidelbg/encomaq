@@ -40,6 +40,7 @@
                                         <select class="custom-select" id="stateFilter" formControlName="stateFilter" (change)="get(1)">
                                             <option value="1">ACTIVO</option>
                                             <option value="0">INACTIVO</option>
+                                            <option value="2">CADUCADO</option>
                                         </select>
                                     </div>                        
             
@@ -159,9 +160,110 @@
 <app-notification [type]="typeNotification" [icon]="iconNotification" 
 [title]="titleNotification" [message]="messageNotification"></app-notification>
 
-<app-aside [isOpen]="asideIsOpen" [title]="titleAside" [headerOverlay]="false" [closeAside]="closeAside">
+<app-aside [isOpen]="asideIsOpen" [title]="titleAside" [headerOverlay]="false" [closeAside]="closeAside" [large]="true">
 
+    <form [formGroup]="form">
+        <div class="container mt-4">
+            <div class="row">
 
+                <div class="col-12">
+                    <span class="font-weight-bold">ARRENDATARIO</span>
+                    <hr>
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="ididentifytype">Cliente</label>
+                    <select class="custom-select" formControlName="idclient">
+                        <option *ngFor="let e of listClient" [ngValue]="e.idclient">
+                            {{e.businessname}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-sm-4 col-12 mb-2">
+                    <label for="nocontract">No. Contrato</label>
+                    <input id="nocontract" type="text" class="form-control" placeholder="" formControlName="nocontract">
+                </div>
+
+                <div class="col-sm-4 col-12 mb-2">
+                    <label for="startdate">Fecha Inicio</label>
+                    <input id="startdate" type="text" class="form-control" placeholder="" formControlName="startdate">
+                </div>
+
+                <div class="col-sm-4 col-12 mb-2">
+                    <label for="enddate">Fecha Fin</label>
+                    <input id="enddate" type="text" class="form-control" placeholder="" formControlName="enddate">
+                </div>
+
+                <div class="col-sm-4 col-12 mb-2">
+                    <label for="idperiod">Periodo</label>
+                    <select class="custom-select" formControlName="idperiod">
+                        <option *ngFor="let e of listPeriod" [ngValue]="e.idperiod">
+                            {{e.periodname}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-sm-4 col-12 mb-2">
+                    <label for="period">Cantidad (Periodo)</label>
+                    <input id="period" type="text" class="form-control" placeholder="" formControlName="period">
+                </div>
+
+                <div class="col-sm-4 col-12 mb-2">
+                    <label for="area">Área (m<sup>2</sup>)</label>
+                    <input id="area" type="text" class="form-control" placeholder="" formControlName="area">
+                </div>
+
+                <div class="col-sm-4 col-12 mb-2">
+                    <label for="cost">Costo de Alquiler</label>
+                    <input id="cost" type="text" class="form-control" placeholder="" formControlName="cost">
+                </div>
+
+                <div class="col-sm-4 col-12 mb-2">
+                    <label for="receipt">No. Recibo</label>
+                    <input id="receipt" type="text" class="form-control" placeholder="" formControlName="receipt">
+                </div>
+
+                <div class="col-sm-4 col-12 mb-2">
+                    <label for="invoice">No. Factura</label>
+                    <input id="invoice" type="text" class="form-control" placeholder="" formControlName="invoice">
+                </div>
+                
+
+                <div class="col-12 mb-2">
+                    <label for="place">Observaciones</label>
+                    <textarea cols="100" rows="3"  class="form-control" id="observation" formControlName="observation"></textarea>
+                </div>
+
+                <div class="col-12 mb-2">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" id="state" class="custom-control-input" formControlName="state">
+                        <label class="custom-control-label" for="state">Estado (Activo/Inactivo)</label>
+                    </div>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <span class="font-weight-bold">LISTA DE PRODUCTOS</span>
+                    <hr>
+                </div>
+
+                <div class="col-12 mb-2">
+                    <label for="idcategoryitem">Categoría Item</label>
+                    <select class="custom-select" formControlName="idcategoryitem">
+                        <option *ngFor="let e of listCategoryItem" [ngValue]="e.idcategoryitem">
+                            {{e.categoryitemname}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <button class="btn btn-lg btn-primary btn-block" type="button"
+                    (keydown.enter)="form.valid && action()" (click)="form.valid && action()"
+                    [disabled]="!form.valid">Guardar</button>
+                </div>
+            </div>
+        </div>        
+    </form>
     
 </app-aside>
         

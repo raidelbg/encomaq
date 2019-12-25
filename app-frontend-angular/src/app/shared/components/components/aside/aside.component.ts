@@ -10,6 +10,7 @@ export class AsideComponent implements OnInit {
   @Input() isOpen: boolean;
   @Input() headerOverlay?: boolean;
   @Input() title: string;
+  @Input() large?: boolean;
   @Input() closeAside: () => void;
 
   constructor() { }

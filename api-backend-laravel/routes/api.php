@@ -26,6 +26,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('category-item', 'catalogue\CategoryItemController');
     Route::resource('unit-type', 'catalogue\UnitTypeController');
     Route::resource('role', 'catalogue\RoleController');
+    Route::resource('period', 'catalogue\PeriodController');
     Route::resource('user', 'catalogue\UserController');
     Route::resource('config-email', 'catalogue\ConfigEmailController');
 });

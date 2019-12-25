@@ -7,6 +7,9 @@ import { tap, map, delay } from 'rxjs/operators';
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
 import { ContractService } from 'src/app/admin/services/workflow/workflow/contract.service';
+import { ClientService } from 'src/app/admin/services/workflow/workflow/client.service';
+import { PeriodService } from 'src/app/admin/services/workflow/catalogue/period.service';
+import { CategoryItemService } from 'src/app/admin/services/workflow/catalogue/category-item.service';
 
 declare var $: any;
 
@@ -31,6 +34,9 @@ export class ContractComponent implements OnInit, OnDestroy {
   formFilter: FormGroup;
 
   list: Observable<any[]>;
+  listClient = [];
+  listPeriod = [];
+  listCategoryItem = [];
   itemSelected = null;
   anything = '';
 
@@ -49,7 +55,8 @@ export class ContractComponent implements OnInit, OnDestroy {
   total = 0;
 
   constructor(private notification: Notification, private formBuilder: FormBuilder,
-              private contractService: ContractService) { }
+              private contractService: ContractService, private clientService: ClientService,
+              private periodService: PeriodService, private categoryItemService: CategoryItemService) { }
 
   ngOnInit() {
     this.formFilter = this.formBuilder.group({
@@ -59,7 +66,73 @@ export class ContractComponent implements OnInit, OnDestroy {
       order: new FormControl('ASC'),
       numPage: new FormControl(5),
     });
+    this.form = this.formBuilder.group({
+      idclient: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      nocontract: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      startdate: new FormControl(''),
+      enddate: new FormControl(''),
+      area: new FormControl(''),
+      idperiod: new FormControl(''),
+      period: new FormControl(''),
+      cost: new FormControl(''),
+      receipt: new FormControl(''),
+      invoice: new FormControl(''),
+      idcategoryitem: new FormControl(''),
+      observation: new FormControl(''),
+      state: new FormControl(true),
+    });
+    this.getClient();
+    this.getPeriod();
+    this.getCategoryItem();
     this.get(1);
+  }
+
+  getClient = () => {
+    this.listClient.push({idclient: '', businessname: '-- Seleccione Cliente --'});
+    this.clientService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          response.data.forEach(element => {
+            this.listClient.push({idclient: element.idclient, businessname: element.businessname});
+          });
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
+  getPeriod = () => {
+    this.listPeriod.push({idperiod: '', periodname: '-- Seleccione Periodo --'});
+    this.periodService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          response.data.forEach(element => {
+            this.listPeriod.push({idperiod: element.idperiod, periodname: element.periodname});
+          });
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
+  getCategoryItem = () => {
+    this.listCategoryItem.push({idcategoryitem: '', categoryitemname: '-- Seleccione Categoría Item --'});
+    this.categoryItemService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          response.data.forEach(element => {
+            this.listCategoryItem.push({idcategoryitem: element.idcategoryitem, categoryitemname: element.categoryitemname});
+          });
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
   }
 
   getAction(page: number, perPage: number): Observable<any> {
@@ -90,6 +163,13 @@ export class ContractComponent implements OnInit, OnDestroy {
       ),
       map(response => response.data.data)
     );
+  }
+
+  create = () => {
+    this.titleAside = 'Agregar Contrato';
+    // this.form.reset();
+
+    this.asideIsOpen = true;
   }
 
   closeAside = () => {
