@@ -228,7 +228,22 @@
                     <label for="invoice">No. Factura</label>
                     <input id="invoice" type="text" class="form-control" placeholder="" formControlName="invoice">
                 </div>
-                
+
+                <div class="col-12 mb-2">
+                    <label>Garantía Entregada</label>
+                </div>
+
+                <div class="col-sm-4 col-12 mb-2" formArrayName="paymentform" *ngFor="let element of form.controls.paymentform?.value; let ii = index">
+                    <ng-container [formGroupName]="ii">
+                        <label for="invoice">{{ element.paymentformname }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text"> (USD) $</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="value" />
+                        </div>
+                    </ng-container>
+                </div>
 
                 <div class="col-12 mb-2">
                     <label for="place">Observaciones</label>
@@ -256,7 +271,40 @@
                     </select>
                 </div>
 
-                <div class="col-12">
+                <div class="col-12 table-responsive">
+                    <table class="table table-striped table-hover table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>No.</th>
+                                <th>Descripción</th>
+                                <th>Cantidad</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr formArrayName="items" *ngFor="let element of form.controls.items?.value; let ii = index">
+                                <ng-container [formGroupName]="ii">
+                                    <td>{{ ii + 1 }}</td>
+                                    <td>
+                                        <select class="custom-select" formControlName="iditem">
+                                            <option *ngFor="let e of listItem" [ngValue]="e.iditem">
+                                                {{e.itemname}}
+                                            </option>
+                                        </select>                                    
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" placeholder="" formControlName="count">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" placeholder="" formControlName="observation">
+                                    </td> 
+                                </ng-container>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-12 mb-5">
                     <button class="btn btn-lg btn-primary btn-block" type="button"
                     (keydown.enter)="form.valid && action()" (click)="form.valid && action()"
                     [disabled]="!form.valid">Guardar</button>

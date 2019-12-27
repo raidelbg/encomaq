@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators, FormArray } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { from, Observable } from 'rxjs';
@@ -10,6 +10,8 @@ import { ContractService } from 'src/app/admin/services/workflow/workflow/contra
 import { ClientService } from 'src/app/admin/services/workflow/workflow/client.service';
 import { PeriodService } from 'src/app/admin/services/workflow/catalogue/period.service';
 import { CategoryItemService } from 'src/app/admin/services/workflow/catalogue/category-item.service';
+import { PaymentFormService } from 'src/app/admin/services/workflow/workflow/payment-form.service';
+import { ItemService } from 'src/app/admin/services/workflow/workflow/item.service';
 
 declare var $: any;
 
@@ -32,11 +34,15 @@ export class ContractComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   formFilter: FormGroup;
+  formArrayPaymentForm: FormArray;
+  formArrayItem: FormArray;
 
   list: Observable<any[]>;
   listClient = [];
   listPeriod = [];
   listCategoryItem = [];
+  listPaymentForm = [];
+  listItem = [];
   itemSelected = null;
   anything = '';
 
@@ -56,7 +62,8 @@ export class ContractComponent implements OnInit, OnDestroy {
 
   constructor(private notification: Notification, private formBuilder: FormBuilder,
               private contractService: ContractService, private clientService: ClientService,
-              private periodService: PeriodService, private categoryItemService: CategoryItemService) { }
+              private periodService: PeriodService, private categoryItemService: CategoryItemService,
+              private paymentFormService: PaymentFormService, private itemService: ItemService) { }
 
   ngOnInit() {
     this.formFilter = this.formBuilder.group({
@@ -80,10 +87,14 @@ export class ContractComponent implements OnInit, OnDestroy {
       idcategoryitem: new FormControl(''),
       observation: new FormControl(''),
       state: new FormControl(true),
+      paymentform: this.formBuilder.array([]),
+      items: this.formBuilder.array([]),
     });
     this.getClient();
     this.getPeriod();
     this.getCategoryItem();
+    this.getPaymentForm();
+    this.getItem();
     this.get(1);
   }
 
@@ -135,6 +146,50 @@ export class ContractComponent implements OnInit, OnDestroy {
     );
   }
 
+  getItem = () => {
+    const filter = {
+      search: '',
+      state: 1,
+      column: 'itemname',
+      order: 'ASC'
+    };
+    this.listItem.push({iditem: '', itemname: '-- Seleccione --'});
+    this.itemService.get(filter).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          response.data.forEach(element => {
+            this.listItem.push({iditem: element.iditem, itemname: element.itemname});
+          });
+        }
+        this.createRowItem();
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
+  getPaymentForm = () => {
+    this.paymentFormService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          response.data.forEach(element => {
+            const paymentform = this.formBuilder.group({
+              idpaymentform: element.idpaymentform,
+              paymentformname: element.paymentformname,
+              value: 0
+            });
+            this.formArrayPaymentForm = this.form.get('paymentform') as FormArray;
+            this.formArrayPaymentForm.push(paymentform);
+          });
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
   getAction(page: number, perPage: number): Observable<any> {
     const filters = {
       search: this.formFilter.value.search,
@@ -174,8 +229,18 @@ export class ContractComponent implements OnInit, OnDestroy {
 
   closeAside = () => {
     this.asideIsOpen = false;
-    this.form.reset();
+    // this.form.reset();
     this.itemSelected = null;
+  }
+
+  createRowItem = () => {
+    const item = this.formBuilder.group({
+      iditem: '',
+      count: 0,
+      observation: ''
+    });
+    this.formArrayItem = this.form.get('items') as FormArray;
+    this.formArrayItem.push(item);
   }
 
   /**

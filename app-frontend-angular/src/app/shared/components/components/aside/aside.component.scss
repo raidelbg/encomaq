@@ -12,6 +12,7 @@ $width-aside: 400px;
   &.active{
     transition: all 0.6s;
     right: 0;
+    overflow: auto;
     &.large{
       width: 700px;
       right: 0px;

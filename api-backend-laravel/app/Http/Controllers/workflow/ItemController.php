@@ -25,17 +25,24 @@ class ItemController extends Controller
         try {
             $filter = json_decode($request->get('filter'));
             $otherWhere = '';
-            if ($filter->idcategoryitem != '') {
+            if (isset($filter->idcategoryitem) && $filter->idcategoryitem != '') {
                 $otherWhere .= ' AND idcategoryitem = ' . $filter->idcategoryitem;
             }
-            if ($filter->idunittype != '') {
+            if (isset($filter->idunittype) && $filter->idunittype != '') {
                 $otherWhere .= ' AND idunittype = ' . $filter->idunittype;
             }
             $where = "(itemname LIKE '%" . $filter->search . "%' OR description LIKE '%" . $filter->search . "%' ) ";
             $where .= "AND state = " . $filter->state;
             $where .= $otherWhere;
             $result = Item::with('nom_categoryitem','nom_unittype', 'biz_itemprice')->whereRaw($where)
-                ->orderBy($filter->column, $filter->order)->paginate($filter->num_page);
+                ->orderBy($filter->column, $filter->order);
+
+            if (isset($filter->num_page)) {
+                $result = $result->paginate($filter->num_page);
+            } else {
+                $result = $result->get();
+            }
+
             return response()->json([
                 self::SUCCESS => true, self::DATA => $result
             ]);
