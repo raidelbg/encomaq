@@ -279,6 +279,11 @@
                                 <th>Descripción</th>
                                 <th>Cantidad</th>
                                 <th>Observaciones</th>
+                                <th style="width: 5%;">
+                                    <button type="button" class="btn btn-primary" (click)="createRowItem()">
+                                        <i class="fas fa-plus-square"></i>
+                                    </button>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -298,6 +303,11 @@
                                     <td>
                                         <input type="text" class="form-control" placeholder="" formControlName="observation">
                                     </td> 
+                                    <td class="text-center">              
+                                        <button type="button" class="btn btn-danger" (click)="deleteItem(ii)">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>             
+                                    </td>
                                 </ng-container>
                             </tr>
                         </tbody>

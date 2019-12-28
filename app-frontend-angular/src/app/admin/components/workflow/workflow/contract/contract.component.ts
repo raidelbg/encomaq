@@ -158,7 +158,7 @@ export class ContractComponent implements OnInit, OnDestroy {
       (response) => {
         if (response.success) {
           response.data.forEach(element => {
-            this.listItem.push({iditem: element.iditem, itemname: element.itemname});
+            this.listItem.push({iditem: element.iditem, itemname: element.itemname + '. ' + element.description});
           });
         }
         this.createRowItem();
@@ -241,6 +241,10 @@ export class ContractComponent implements OnInit, OnDestroy {
     });
     this.formArrayItem = this.form.get('items') as FormArray;
     this.formArrayItem.push(item);
+  }
+
+  deleteItem = (pos) => {
+    this.formArrayItem.removeAt(pos);
   }
 
   /**
