@@ -247,7 +247,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
     }
   }
 
-
   /**
    * Show notifications launched from methods
    * @param string title

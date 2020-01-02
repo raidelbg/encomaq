@@ -56,8 +56,12 @@
         <div class="container mt-5">
             <div class="row">
                 <div class="col-12 mb-2">
-                    <label for="categoryitemname">Tipo de Identificación</label>
-                    <input id="categoryitemname" type="text" class="form-control" placeholder="" autofocus formControlName="categoryitemname">
+                    <label for="categoryitemname">Tipo de Categoría<span class="required">*</span></label>
+                    <input id="categoryitemname" type="text" class="form-control" [ngClass]="{'is-invalid': error.categoryitemname.error}" placeholder="" autofocus 
+                        formControlName="categoryitemname" (input)="validInput('categoryitemname')">
+                        <div class="invalid-feedback" *ngIf="form.get('categoryitemname').errors?.required">
+                            {{error.categoryitemname.msg}}
+                        </div>
                 </div>
                 <div class="col-12 mb-2">
                     <div class="custom-control custom-checkbox">

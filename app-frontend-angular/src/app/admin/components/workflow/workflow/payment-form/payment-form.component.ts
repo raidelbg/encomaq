@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { PaymentFormService } from 'src/app/admin/services/workflow/workflow/payment-form.service';
 import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { customValidatorHandler } from 'src/app/shared/classes/CustomValidators';
 
 declare var $: any;
 
@@ -22,6 +23,7 @@ export class PaymentFormComponent implements OnInit {
   titleAside = '';
 
   form: FormGroup;
+  error: any;
 
   list = [];
   itemSelected = null;
@@ -30,11 +32,18 @@ export class PaymentFormComponent implements OnInit {
               private formBuilder: FormBuilder) { }
 
   ngOnInit() {
+    this.errorInit();
     this.get();
     this.form = this.formBuilder.group({
       paymentformname: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
       state: new FormControl(true)
     });
+  }
+
+  errorInit = () => {
+    this.error = {
+      paymentformname: { error: false, msg: ''},
+    };
   }
 
   get = () => {
@@ -59,6 +68,7 @@ export class PaymentFormComponent implements OnInit {
   }
 
   edit = (item: any) => {
+    this.errorInit();
     this.itemSelected = item;
     this.form.get('paymentformname').setValue(item.paymentformname);
     this.form.get('state').setValue(item.state);
@@ -88,6 +98,7 @@ export class PaymentFormComponent implements OnInit {
   }
 
   create = () => {
+    this.errorInit();
     this.titleAside = 'Agregar Forma de Pago';
     this.form.reset();
     this.form.get('state').setValue(true);
@@ -143,6 +154,16 @@ export class PaymentFormComponent implements OnInit {
     this.asideIsOpen = false;
     this.form.reset();
     this.itemSelected = null;
+  }
+
+  validInput(id: string) {
+    if (this.form.get(id).errors) {
+      this.error[id].error = true;
+      this.error[id].msg = customValidatorHandler(this.form, id);
+    } else {
+      this.error[id].error = false;
+      this.error[id].msg = '';
+    }
   }
 
   /**

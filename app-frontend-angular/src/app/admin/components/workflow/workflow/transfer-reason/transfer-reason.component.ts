@@ -3,6 +3,7 @@ import { Notification } from 'src/app/shared/components/classes/Notification';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { TransferReasonService } from 'src/app/admin/services/workflow/workflow/transfer-reason.service';
 import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { customValidatorHandler } from 'src/app/shared/classes/CustomValidators';
 
 declare var $: any;
 
@@ -22,6 +23,10 @@ export class TransferReasonComponent implements OnInit {
   titleAside = '';
 
   form: FormGroup;
+  error = {
+    transferreasonname: { error: false, msg: ''},
+    idtypetransferreason: { error: false, msg: ''},
+  };
 
   list = [];
   listTypeTransferReason = [];
@@ -59,6 +64,7 @@ export class TransferReasonComponent implements OnInit {
         if (response.success) {
           this.listTypeTransferReason = response.data;
         }
+        this.form.get('idtypetransferreason').setValue(String(response.data[0].idtypetransferreason));
       },
       (error) => {
         this.showNotification(error.title, error.icon, error.message, error.type);
@@ -75,6 +81,10 @@ export class TransferReasonComponent implements OnInit {
   }
 
   edit = (item: any) => {
+    this.error = {
+      transferreasonname: { error: false, msg: ''},
+      idtypetransferreason: { error: false, msg: ''},
+    };
     this.itemSelected = item;
     this.form.get('transferreasonname').setValue(item.transferreasonname);
     this.form.get('idtypetransferreason').setValue(item.idtypetransferreason);
@@ -106,6 +116,10 @@ export class TransferReasonComponent implements OnInit {
   }
 
   create = () => {
+    this.error = {
+      transferreasonname: { error: false, msg: ''},
+      idtypetransferreason: { error: false, msg: ''},
+    };
     this.titleAside = 'Agregar Motivo Traslado';
     this.form.reset();
     this.form.get('state').setValue(true);
@@ -162,6 +176,16 @@ export class TransferReasonComponent implements OnInit {
     this.asideIsOpen = false;
     this.form.reset();
     this.itemSelected = null;
+  }
+
+  validInput(id: string) {
+    if (this.form.get(id).errors) {
+      this.error[id].error = true;
+      this.error[id].msg = customValidatorHandler(this.form, id);
+    } else {
+      this.error[id].error = false;
+      this.error[id].msg = '';
+    }
   }
 
   /**

@@ -56,8 +56,12 @@
         <div class="container mt-5">
             <div class="row">
                 <div class="col-12 mb-2">
-                    <label for="unittypename">Tipo de Unidad</label>
-                    <input id="unittypename" type="text" class="form-control" placeholder="" autofocus formControlName="unittypename">
+                    <label for="unittypename">Tipo de Unidad<span class="required">*</span></label>
+                    <input id="unittypename" type="text" class="form-control" placeholder="" [ngClass]="{'is-invalid': error.unittypename.error}" autofocus 
+                        formControlName="unittypename" (input)="validInput('unittypename')">
+                        <div class="invalid-feedback" *ngIf="form.get('unittypename').errors?.required">
+                            {{error.unittypename.msg}}
+                        </div>
                 </div>
                 <div class="col-12 mb-2">
                     <div class="custom-control custom-checkbox">

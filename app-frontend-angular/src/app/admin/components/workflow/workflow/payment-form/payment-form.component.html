@@ -56,8 +56,12 @@
         <div class="container mt-5">
             <div class="row">
                 <div class="col-12 mb-2">
-                    <label for="paymentformname">Forma de Pago</label>
-                    <input id="paymentformname" type="text" class="form-control" placeholder="" autofocus formControlName="paymentformname">
+                    <label for="paymentformname">Forma de Pago<span class="required">*</span></label>
+                    <input id="paymentformname" type="text" class="form-control" placeholder="" [ngClass]="{'is-invalid': error.paymentformname.error}" autofocus 
+                        formControlName="paymentformname" (input)="validInput('paymentformname')">
+                        <div class="invalid-feedback" *ngIf="form.get('paymentformname').errors?.required">
+                            {{error.paymentformname.msg}}
+                        </div>
                 </div>
                 <div class="col-12 mb-2">
                     <div class="custom-control custom-checkbox">

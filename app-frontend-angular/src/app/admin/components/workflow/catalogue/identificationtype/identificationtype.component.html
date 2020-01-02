@@ -58,7 +58,7 @@
         <div class="container mt-5">
             <div class="row">
                 <div class="col-12 mb-2">
-                    <label for="identifytypename">Tipo de Identificación</label>
+                    <label for="identifytypename">Tipo de Identificación<span class="required">*</span></label>
                     <input id="identifytypename" type="text" class="form-control" placeholder="" [ngClass]="{'is-invalid': error.identifytypename.error}" autofocus
                      formControlName="identifytypename" (input)="validInput('identifytypename')">
                      <div class="invalid-feedback" *ngIf="formIdentifyType.get('identifytypename').errors?.required">

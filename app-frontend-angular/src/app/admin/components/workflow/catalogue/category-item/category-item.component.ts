@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { CategoryItemService } from 'src/app/admin/services/workflow/catalogue/category-item.service';
 import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { customValidatorHandler } from 'src/app/shared/classes/CustomValidators';
 
 declare var $: any;
 
@@ -22,6 +23,9 @@ export class CategoryItemComponent implements OnInit {
   titleAside = '';
 
   form: FormGroup;
+  error = {
+    categoryitemname: { error: false, msg: ''},
+  };
 
   list = [];
   itemSelected = null;
@@ -63,6 +67,9 @@ export class CategoryItemComponent implements OnInit {
     this.form.get('categoryitemname').setValue(item.categoryitemname);
     this.form.get('state').setValue(item.state);
     this.titleAside = 'Editar Categoría Item';
+    this.error = {
+      categoryitemname: { error: false, msg: ''},
+    };
     this.asideIsOpen = true;
   }
 
@@ -91,6 +98,9 @@ export class CategoryItemComponent implements OnInit {
     this.titleAside = 'Agregar Categoría Item';
     this.form.reset();
     this.form.get('state').setValue(true);
+    this.error = {
+      categoryitemname: { error: false, msg: ''},
+    };
     this.asideIsOpen = true;
   }
 
@@ -143,6 +153,16 @@ export class CategoryItemComponent implements OnInit {
     this.asideIsOpen = false;
     this.form.reset();
     this.itemSelected = null;
+  }
+
+  validInput(id: string) {
+    if (this.form.get(id).errors) {
+      this.error[id].error = true;
+      this.error[id].msg = customValidatorHandler(this.form, id);
+    } else {
+      this.error[id].error = false;
+      this.error[id].msg = '';
+    }
   }
 
   /**

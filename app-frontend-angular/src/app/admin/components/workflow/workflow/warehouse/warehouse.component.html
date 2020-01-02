@@ -64,23 +64,39 @@
         <div class="container mt-5">
             <div class="row">
                 <div class="col-12 mb-2">
-                    <label for="warehousename">Forma de Pago</label>
-                    <input id="warehousename" type="text" class="form-control" placeholder="" autofocus formControlName="warehousename">
+                    <label for="warehousename">Bodega<span class="required">*</span></label>
+                    <input id="warehousename" type="text" class="form-control" placeholder="" [ngClass]="{'is-invalid': error.warehousename.error}" autofocus 
+                        formControlName="warehousename" (input)="validInput('warehousename')">
+                        <div class="invalid-feedback" *ngIf="form.get('warehousename').errors?.required">
+                            {{error.warehousename.msg}}
+                        </div>
                 </div>
 
                 <div class="col-12 mb-2">
-                    <label for="address">Dirección</label>
-                    <input id="address" type="text" class="form-control" placeholder="" autofocus formControlName="address">
+                    <label for="address">Dirección<span class="required">*</span></label>
+                    <input id="address" type="text" class="form-control" placeholder="" [ngClass]="{'is-invalid': error.address.error}" 
+                        formControlName="address" (input)="validInput('address')">
+                        <div class="invalid-feedback" *ngIf="form.get('address').errors?.required">
+                            {{error.address.msg}}
+                        </div>
                 </div>
 
                 <div class="col-12 mb-2">
-                    <label for="phone">Teléfono</label>
-                    <input id="phone" type="text" class="form-control" placeholder="" autofocus formControlName="phone">
+                    <label for="phone">Teléfono<span class="required">*</span></label>
+                    <input id="phone" type="text" class="form-control" placeholder="" [ngClass]="{'is-invalid': error.phone.error}" 
+                        formControlName="phone" (input)="validInput('phone')">
+                        <div class="invalid-feedback" *ngIf="form.get('phone').errors?.required">
+                            {{error.phone.msg}}
+                        </div>
                 </div>
 
                 <div class="col-12 mb-2">
-                    <label for="email">Email</label>
-                    <input id="email" type="text" class="form-control" placeholder="" autofocus formControlName="email">
+                    <label for="email">Email<span class="required">*</span></label>
+                    <input id="email" type="text" class="form-control" placeholder="" [ngClass]="{'is-invalid': error.email.error}" formControlName="email" 
+                        (input)="validInput('email')">
+                        <div class="invalid-feedback" *ngIf="form.get('email').errors?.required || form.get('email').errors?.email">
+                            {{error.email.msg}}
+                        </div>
                 </div>
 
                 <div class="col-12 mb-2">

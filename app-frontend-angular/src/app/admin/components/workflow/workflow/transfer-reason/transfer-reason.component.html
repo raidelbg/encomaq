@@ -58,16 +58,24 @@
         <div class="container mt-5">
             <div class="row">
                 <div class="col-12 mb-2">
-                    <label for="transferreasonname">Motivo Traslado</label>
-                    <input id="transferreasonname" type="text" class="form-control" placeholder="" autofocus formControlName="transferreasonname">
+                    <label for="transferreasonname">Motivo Traslado<span class="required">*</span></label>
+                    <input id="transferreasonname" type="text" class="form-control" placeholder="" [ngClass]="{'is-invalid': error.transferreasonname.error}" autofocus 
+                        formControlName="transferreasonname" (input)="validInput('transferreasonname')">
+                        <div class="invalid-feedback" *ngIf="form.get('transferreasonname').errors?.required">
+                            {{error.transferreasonname.msg}}
+                        </div>
                 </div>
                 <div class="col-12 mb-2">
-                    <label for="idtypetransferreason">Tipo</label>
-                    <select class="custom-select" id="idtypetransferreason" name="idtypetransferreason" formControlName="idtypetransferreason">
+                    <label for="idtypetransferreason">Tipo<span class="required">*</span></label>
+                    <select class="custom-select" id="idtypetransferreason" name="idtypetransferreason" [ngClass]="{'is-invalid': error.idtypetransferreason.error}" 
+                        formControlName="idtypetransferreason" (change)="validInput('idtypetransferreason')">
                         <option *ngFor="let e of listTypeTransferReason" [ngValue]="e.idtypetransferreason">
                             {{e.nametypetransferreason}}
                         </option>
                     </select>
+                    <div class="invalid-feedback" *ngIf="form.get('idtypetransferreason').errors?.required">
+                        {{error.idtypetransferreason.msg}}
+                    </div>
                 </div>
                 <div class="col-12 mb-2">
                     <div class="custom-control custom-checkbox">

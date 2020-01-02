@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { WarehouseService } from 'src/app/admin/services/workflow/workflow/warehouse.service';
 import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { customValidatorHandler } from 'src/app/shared/classes/CustomValidators';
 
 declare var $: any;
 
@@ -22,6 +23,7 @@ export class WarehouseComponent implements OnInit {
   titleAside = '';
 
   form: FormGroup;
+  error: any;
 
   list = [];
   itemSelected = null;
@@ -30,6 +32,7 @@ export class WarehouseComponent implements OnInit {
               private formBuilder: FormBuilder) { }
 
   ngOnInit() {
+    this.errorInit();
     this.get();
     this.form = this.formBuilder.group({
       warehousename: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
@@ -38,6 +41,15 @@ export class WarehouseComponent implements OnInit {
       email: new FormControl('', {validators: [Validators.email], updateOn: 'change'}),
       state: new FormControl(true)
     });
+  }
+
+  errorInit = () => {
+    this.error = {
+      warehousename: { error: false, msg: ''},
+      address: { error: false, msg: ''},
+      phone: { error: false, msg: ''},
+      email: { error: false, msg: ''},
+    };
   }
 
   get = () => {
@@ -62,6 +74,7 @@ export class WarehouseComponent implements OnInit {
   }
 
   edit = (item: any) => {
+    this.errorInit();
     this.itemSelected = item;
     this.form.get('warehousename').setValue(item.warehousename);
     this.form.get('address').setValue(item.address);
@@ -97,6 +110,7 @@ export class WarehouseComponent implements OnInit {
   }
 
   create = () => {
+    this.errorInit();
     this.titleAside = 'Agregar Bodega';
     this.form.reset();
     this.form.get('state').setValue(true);
@@ -155,6 +169,16 @@ export class WarehouseComponent implements OnInit {
     this.asideIsOpen = false;
     this.form.reset();
     this.itemSelected = null;
+  }
+
+  validInput(id: string) {
+    if (this.form.get(id).errors) {
+      this.error[id].error = true;
+      this.error[id].msg = customValidatorHandler(this.form, id);
+    } else {
+      this.error[id].error = false;
+      this.error[id].msg = '';
+    }
   }
 
   /**
