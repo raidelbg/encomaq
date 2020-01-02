@@ -93,7 +93,7 @@ export class ContractComponent implements OnInit, OnDestroy {
     this.getClient();
     this.getPeriod();
     this.getCategoryItem();
-    this.getPaymentForm();
+    // this.getPaymentForm();
     this.getItem();
     this.get(1);
   }
@@ -161,7 +161,6 @@ export class ContractComponent implements OnInit, OnDestroy {
             this.listItem.push({iditem: element.iditem, itemname: element.itemname + '. ' + element.description});
           });
         }
-        this.createRowItem();
       },
       (error) => {
         this.showNotification(error.title, error.icon, error.message, error.type);
@@ -222,8 +221,35 @@ export class ContractComponent implements OnInit, OnDestroy {
 
   create = () => {
     this.titleAside = 'Agregar Contrato';
-    // this.form.reset();
+    this.form.reset();
 
+    this.form.get('idclient').setValue('');
+    this.form.get('idperiod').setValue('');
+    this.form.get('idcategoryitem').setValue('');
+    this.form.get('state').setValue(true);
+
+    this.formArrayItem = this.form.get('items') as FormArray;
+    this.createRowItem();
+    this.formArrayPaymentForm = this.form.get('paymentform') as FormArray;
+    this.getPaymentForm();
+
+    this.asideIsOpen = true;
+  }
+
+  edit = (item: any) => {
+    this.itemSelected = item;
+
+    this.form.get('idclient').setValue(item.idclient);
+    this.form.get('nocontract').setValue(item.nocontract);
+    this.form.get('startdate').setValue(item.startdate);
+    this.form.get('enddate').setValue(item.enddate);
+
+    this.form.get('area').setValue(item.area);
+    this.form.get('idperiod').setValue(item.idperiod);
+    this.form.get('period').setValue(item.period);
+    this.form.get('cost').setValue(item.cost);
+
+    this.titleAside = 'Editar Contrato';
     this.asideIsOpen = true;
   }
 
@@ -245,6 +271,52 @@ export class ContractComponent implements OnInit, OnDestroy {
 
   deleteItem = (pos) => {
     this.formArrayItem.removeAt(pos);
+  }
+
+  action = () => {
+    if (this.itemSelected === null) {
+      this.add();
+    } else {
+      // this.update(this.itemSelected.iditem);
+    }
+  }
+
+  add = () => {
+
+    const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
+    const data = {
+      idclient: this.form.value.idclient,
+      nocontract: this.form.value.nocontract,
+      startdate: this.form.value.startdate,
+      enddate: this.form.value.enddate,
+      area: this.form.value.area,
+
+      idperiod: this.form.value.idperiod,
+      period: this.form.value.period,
+      cost: this.form.value.cost,
+      receipt: this.form.value.receipt,
+      invoice: this.form.value.invoice,
+      idcategoryitem: this.form.value.idcategoryitem,
+      observation: this.form.value.observation,
+      paymentform: this.form.value.paymentform,
+      items: this.form.value.items,
+      state,
+    };
+
+    this.contractService.post(data).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
+          this.closeAside();
+          this.get(1);
+        } else {
+          this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
   }
 
   /**

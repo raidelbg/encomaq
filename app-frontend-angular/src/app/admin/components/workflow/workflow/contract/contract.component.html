@@ -216,7 +216,12 @@
 
                 <div class="col-sm-4 col-12 mb-2">
                     <label for="cost">Costo de Alquiler</label>
-                    <input id="cost" type="text" class="form-control" placeholder="" formControlName="cost">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> (USD) $</span>
+                        </div>
+                        <input id="cost" type="text" class="form-control" placeholder="" formControlName="cost">
+                    </div>
                 </div>
 
                 <div class="col-sm-4 col-12 mb-2">
@@ -229,8 +234,9 @@
                     <input id="invoice" type="text" class="form-control" placeholder="" formControlName="invoice">
                 </div>
 
-                <div class="col-12 mb-2">
-                    <label>Garantía Entregada</label>
+                <div class="col-12 mt-3">
+                    <span class="font-weight-bold">GARANTIA ENTREGADA</span>
+                    <hr>
                 </div>
 
                 <div class="col-sm-4 col-12 mb-2" formArrayName="paymentform" *ngFor="let element of form.controls.paymentform?.value; let ii = index">
