@@ -332,7 +332,7 @@
 </app-aside>
         
 
-<div class="modal fade" id="confirmDeleteProject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirmDeleteContract" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
         <div class="modal-header bg-danger text-white">
@@ -342,120 +342,13 @@
             </button>
         </div>
         <div class="modal-body">
-            <p>¿Está seguro que desea eliminar el proyecto seleccionado?</p>
+            <p>¿Está seguro que desea eliminar el contrato seleccionado?</p>
             <p class="text-secondary font-weight-bold text-center">{{anything}}</p>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             <button type="button" class="btn btn-danger" (click)="delete()">Eliminar</button>
         </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="infoClient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" *ngIf="itemSelected !== null">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-        <div class="modal-header bg-info">
-            <h5 class="modal-title" id="exampleModalLabel">Información</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-12 col-sm-4 image-user">
-                    <i class="fas fa-user-tie fa-5x"></i>
-                </div>
-                <div class="col-12 col-sm-8">
-                    <div class="row">
-                        <div class="col-12">
-                            <h4>{{itemSelected.businessname}}</h4>
-                        </div>
-                        <div class="col-12">
-                            {{itemSelected.identify}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <div class="row mt-4">
-                <div class="col-12 text-secondary font-weight-bold">
-                    Dirección
-                </div>
-                <div class="col-12">
-                    {{itemSelected.address}}
-                </div>
-            </div>
-            <hr>
-            <div class="row mt-3">
-                <div class="col-sm-6">
-                    <div class="row">
-                        <div class="col-12 text-secondary font-weight-bold">
-                            Teléfono Principal
-                        </div>
-                        <div class="col-12">
-                            {{itemSelected.phone}}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="row">
-                        <div class="col-12 text-secondary font-weight-bold">
-                            Teléfono Secundario
-                        </div>
-                        <div class="col-12">
-                            {{itemSelected.phone_2}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <div class="row mt-3">
-                <div class="col-sm-4">
-                    <div class="row">
-                        <div class="col-12 text-secondary font-weight-bold">
-                            Email Principal
-                        </div>
-                        <div class="col-12">
-                            {{itemSelected.email}}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="row">
-                        <div class="col-12 text-secondary font-weight-bold">
-                            Email Secundario
-                        </div>
-                        <div class="col-12">
-                            {{itemSelected.email_2}}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="row">
-                        <div class="col-12 text-secondary font-weight-bold">
-                            Email Secundario
-                        </div>
-                        <div class="col-12">
-                            {{itemSelected.email_2}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <div class="row mt-4">
-                <div class="col-12 text-secondary font-weight-bold">
-                    Observación
-                </div>
-                <div class="col-12">
-                    {{itemSelected.observation}}
-                </div>
-            </div>
-        </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            </div>
         </div>
     </div>
 </div>
