@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { from, Observable } from 'rxjs';
 import { tap, map, delay } from 'rxjs/operators';
+import { customValidatorHandler } from 'src/app/shared/classes/CustomValidators';
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
 import { ProjectService } from 'src/app/admin/services/workflow/workflow/project.service';
@@ -34,6 +35,10 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   formFilter: FormGroup;
+  error = {
+    idclient: { error: false, msg: ''},
+    projectname: { error: false, msg: ''},
+  };
 
   list: Observable<any[]>;
   listClient = [];
@@ -59,7 +64,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      idclient: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      idclient: new FormControl(null, {validators: [Validators.required], updateOn: 'change'}),
       projectname: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
       place: new FormControl(''),
       state: new FormControl(true),
@@ -107,7 +112,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   getClient = () => {
-    this.listClient.push({idclient: '', businessname: '-- Seleccione Cliente --'});
+    this.listClient.push({idclient: null, businessname: '-- Seleccione Cliente --'});
     this.clientService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
@@ -169,9 +174,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
   create = () => {
     this.titleAside = 'Agregar Proyecto';
     this.form.reset();
-    this.form.get('idclient').setValue('');
+    this.form.get('idclient').setValue(null);
     this.form.get('state').setValue(true);
-
     this.asideIsOpen = true;
   }
 
@@ -232,6 +236,17 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this.itemSelected = item.biz_client;
     $('#infoClient').modal('show');
   }
+
+  validInput(id: string) {
+    if (this.form.get(id).errors) {
+      this.error[id].error = true;
+      this.error[id].msg = customValidatorHandler(this.form, id);
+    } else {
+      this.error[id].error = false;
+      this.error[id].msg = '';
+    }
+  }
+
 
   /**
    * Show notifications launched from methods

@@ -141,17 +141,25 @@
             <div class="row">
                 
                 <div class="col-12 mb-2">
-                    <label for="projectname">Proyecto</label>
-                    <input id="projectname" type="text" class="form-control" placeholder="" autofocus formControlName="projectname">
+                    <label for="projectname">Proyecto<span class="required">*</span></label>
+                    <input id="projectname" type="text" class="form-control" [ngClass]="{'is-invalid': error.projectname.error}" autofocus 
+                            formControlName="projectname" (input)="validInput('projectname')">
+                    <div class="invalid-feedback" *ngIf="form.get('projectname').errors?.required">
+                        {{error.projectname.msg}}
+                    </div>
                 </div>
 
                 <div class="col-12 mb-2">
-                    <label for="ididentifytype">Cliente</label>
-                    <select class="custom-select" formControlName="idclient">
+                    <label for="ididentifytype">Cliente<span class="required">*</span></label>
+                    <select class="custom-select" formControlName="idclient" [ngClass]="{'is-invalid': error.idclient.error}"
+                        (change)="validInput('idclient')">
                         <option *ngFor="let e of listClient" [ngValue]="e.idclient">
                             {{e.businessname}}
                         </option>
                     </select>
+                    <div class="invalid-feedback" *ngIf="form.get('idclient').errors?.required">
+                        {{error.idclient.msg}}
+                    </div>
                 </div>
 
                 <div class="col-12 mb-2">

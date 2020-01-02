@@ -3,6 +3,7 @@ import { IdentificationtypeService } from 'src/app/admin/services/workflow/catal
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { customValidatorHandler } from 'src/app/shared/classes/CustomValidators';
 
 declare var $: any;
 
@@ -22,6 +23,10 @@ export class IdentificationtypeComponent implements OnInit {
   titleAside = '';
 
   formIdentifyType: FormGroup;
+  error = {
+    identifytypename: { error: false, msg: ''},
+    identifylength: { error: false, msg: ''},
+  };
 
   list = [];
   itemSelected = null;
@@ -147,6 +152,16 @@ export class IdentificationtypeComponent implements OnInit {
     this.asideIsOpen = false;
     this.formIdentifyType.reset();
     this.itemSelected = null;
+  }
+
+  validInput(id: string) {
+    if (this.formIdentifyType.get(id).errors) {
+      this.error[id].error = true;
+      this.error[id].msg = customValidatorHandler(this.formIdentifyType, id);
+    } else {
+      this.error[id].error = false;
+      this.error[id].msg = '';
+    }
   }
 
   /**
