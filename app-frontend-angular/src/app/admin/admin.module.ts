@@ -49,12 +49,13 @@ import { ContractComponent } from './components/workflow/workflow/contract/contr
 import { ContractService } from './services/workflow/workflow/contract.service';
 import { PeriodService } from './services/workflow/catalogue/period.service';
 import { DashboardComponent } from './components/workflow/workflow/dashboard/dashboard.component';
+import { ReferralGuideComponent } from './components/workflow/workflow/referral-guide/referral-guide.component';
 
 @NgModule({
   declarations: [AdminComponent, AuthComponent, SigninComponent, SignupComponent, PasswordRenewComponent,
                 PasswordResetComponent, WorkflowComponent, IdentificationtypeComponent, CategoryItemComponent,
                 UnitTypeComponent, PaymentFormComponent, WarehouseComponent, TransferReasonComponent, RoleComponent, ConfigEmailComponent,
-                UserComponent, CarrierComponent, ClientComponent, ProjectComponent, ItemComponent, CompanyComponent, ContractComponent, DashboardComponent],
+                UserComponent, CarrierComponent, ClientComponent, ProjectComponent, ItemComponent, CompanyComponent, ContractComponent, DashboardComponent, ReferralGuideComponent],
   imports: [
     CommonModule,
     HttpClientModule,

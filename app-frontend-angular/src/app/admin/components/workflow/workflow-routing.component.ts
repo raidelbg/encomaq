@@ -16,6 +16,7 @@ import { ItemComponent } from './workflow/item/item.component';
 import { CompanyComponent } from './workflow/company/company.component';
 import { ContractComponent } from './workflow/contract/contract.component';
 import { DashboardComponent } from './workflow/dashboard/dashboard.component';
+import { ReferralGuideComponent } from './workflow/referral-guide/referral-guide.component';
 
 export const routesWorkflow: Routes = [
     { path: 'identificationtype', component: IdentificationtypeComponent },
@@ -35,6 +36,7 @@ export const routesWorkflow: Routes = [
     { path: 'contract', component: ContractComponent },
     { path: 'dashboard', component: DashboardComponent },
     { path: '', component: DashboardComponent },
+    { path: 'referral-guide', component: ReferralGuideComponent },
 ];
 
 @NgModule({
