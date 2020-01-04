@@ -93,7 +93,7 @@ export class ContractComponent implements OnInit, OnDestroy {
     this.getClient();
     this.getPeriod();
     this.getCategoryItem();
-    // this.getPaymentForm();
+    this.getPaymentForm();
     this.getItem();
     this.get(1);
   }
@@ -172,15 +172,17 @@ export class ContractComponent implements OnInit, OnDestroy {
     this.paymentFormService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
+          this.listPaymentForm = response.data;
+
+          /* this.formArrayPaymentForm = this.form.get('paymentform') as FormArray;
           response.data.forEach(element => {
             const paymentform = this.formBuilder.group({
               idpaymentform: element.idpaymentform,
               paymentformname: element.paymentformname,
               value: 0
             });
-            this.formArrayPaymentForm = this.form.get('paymentform') as FormArray;
             this.formArrayPaymentForm.push(paymentform);
-          });
+          }); */
         }
       },
       (error) => {
@@ -230,11 +232,24 @@ export class ContractComponent implements OnInit, OnDestroy {
 
     this.formArrayItem = this.form.get('items') as FormArray;
     this.createRowItem();
+
     this.formArrayPaymentForm = this.form.get('paymentform') as FormArray;
-    this.getPaymentForm();
+    this.formArrayPaymentForm.clear();
+    this.listPaymentForm.forEach(element => {
+      const paymentform = this.formBuilder.group({
+        idpaymentform: element.idpaymentform,
+        paymentformname: element.paymentformname,
+        value: 0
+      });
+      this.formArrayPaymentForm.push(paymentform);
+    });
 
     this.asideIsOpen = true;
   }
+
+  trackByFn(index: any, item: any) {
+    return index;
+ }
 
   edit = (item: any) => {
     this.itemSelected = item;
@@ -249,18 +264,66 @@ export class ContractComponent implements OnInit, OnDestroy {
     this.form.get('period').setValue(item.period);
     this.form.get('cost').setValue(item.cost);
 
+    this.form.get('receipt').setValue(item.receipt);
+    this.form.get('invoice').setValue(item.invoice);
+
+    this.form.get('idcategoryitem').setValue(item.idcategoryitem);
+    this.form.get('observation').setValue(item.observation);
+    this.form.get('state').setValue(item.state);
+
+    this.formArrayPaymentForm = this.form.get('paymentform') as FormArray;
+    this.formArrayPaymentForm.clear();
+
+    this.listPaymentForm.forEach(element => {
+      let flag = false;
+      item.biz_contractpaymentform.forEach(elementEdit => {
+
+        if (element.idpaymentform === elementEdit.idpaymentform) {
+          const paymentform = this.formBuilder.group({
+            idpaymentform: element.idpaymentform,
+            paymentformname: element.paymentformname,
+            value: elementEdit.cost
+          });
+          this.formArrayPaymentForm.push(paymentform);
+          flag = true;
+        }
+
+      });
+
+      if (! flag) {
+        const paymentform = this.formBuilder.group({
+          idpaymentform: element.idpaymentform,
+          paymentformname: element.paymentformname,
+          value: 0
+        });
+        this.formArrayPaymentForm.push(paymentform);
+      }
+
+    });
+
+    this.formArrayItem = this.form.get('items') as FormArray;
+    item.biz_contractitem.forEach(element => {
+      this.formArrayItem.push(this.formBuilder.group({
+        idcontractitem: element.idcontractitem,
+        iditem: element.iditem,
+        count: element.quantity,
+        observation: element.observation
+      }));
+    });
+
     this.titleAside = 'Editar Contrato';
     this.asideIsOpen = true;
   }
 
   closeAside = () => {
     this.asideIsOpen = false;
-    // this.form.reset();
+    this.form.reset();
     this.itemSelected = null;
   }
 
   createRowItem = () => {
     const item = this.formBuilder.group({
+      idcontractitem: 0,
       iditem: '',
       count: 0,
       observation: ''
@@ -277,7 +340,7 @@ export class ContractComponent implements OnInit, OnDestroy {
     if (this.itemSelected === null) {
       this.add();
     } else {
-      // this.update(this.itemSelected.iditem);
+      this.update(this.itemSelected.idcontract);
     }
   }
 
@@ -304,6 +367,42 @@ export class ContractComponent implements OnInit, OnDestroy {
     };
 
     this.contractService.post(data).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
+          this.closeAside();
+          this.get(1);
+        } else {
+          this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
+  update = (id: number) => {
+    const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
+    const data = {
+      idclient: this.form.value.idclient,
+      nocontract: this.form.value.nocontract,
+      startdate: this.form.value.startdate,
+      enddate: this.form.value.enddate,
+      area: this.form.value.area,
+
+      idperiod: this.form.value.idperiod,
+      period: this.form.value.period,
+      cost: this.form.value.cost,
+      receipt: this.form.value.receipt,
+      invoice: this.form.value.invoice,
+      idcategoryitem: this.form.value.idcategoryitem,
+      observation: this.form.value.observation,
+      paymentform: this.form.value.paymentform,
+      items: this.form.value.items,
+      state,
+    };
+    this.contractService.put(id, data).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');

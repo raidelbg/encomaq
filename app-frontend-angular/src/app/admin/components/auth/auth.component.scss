@@ -1,15 +1,18 @@
 
 .publicity {
-    background: #0264d6; /* Old browsers */
-    background: -moz-radial-gradient(center, ellipse cover,  #0264d6 1%, #1c2b5a 100%); /* FF3.6+ */
-    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(1%,#0264d6), color-stop(100%,#1c2b5a)); /* Chrome,Safari4+ */
-    background: -webkit-radial-gradient(center, ellipse cover,  #0264d6 1%,#1c2b5a 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-radial-gradient(center, ellipse cover,  #0264d6 1%,#1c2b5a 100%); /* Opera 12+ */
-    background: -ms-radial-gradient(center, ellipse cover,  #0264d6 1%,#1c2b5a 100%); /* IE10+ */
-    background: radial-gradient(ellipse at center,  #0264d6 1%,#1c2b5a 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0264d6', endColorstr='#1c2b5a',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-    height:100vh;
-    width:100%;
+    background: url("./../../../../assets/image/auth.jpeg") no-repeat center center;        
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    .image-auth-gradient {
+        background: linear-gradient(to bottom, #3023ff, rgba(28, 21, 153, 0.6));
+        mix-blend-mode: multiply;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        min-height: 100vh;
+    }
 
     .logo {
         display: flex;

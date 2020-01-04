@@ -239,7 +239,7 @@
                     <hr>
                 </div>
 
-                <div class="col-sm-4 col-12 mb-2" formArrayName="paymentform" *ngFor="let element of form.controls.paymentform?.value; let ii = index">
+                <div class="col-sm-4 col-12 mb-2" formArrayName="paymentform" *ngFor="let element of form.controls.paymentform?.value; let ii = index; trackBy:trackByFn">
                     <ng-container [formGroupName]="ii">
                         <label for="invoice">{{ element.paymentformname }}</label>
                         <div class="input-group">
@@ -293,7 +293,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr formArrayName="items" *ngFor="let element of form.controls.items?.value; let ii = index">
+                            <tr formArrayName="items" *ngFor="let element of form.controls.items?.value; let ii = index; trackBy:trackByFn">
                                 <ng-container [formGroupName]="ii">
                                     <td>{{ ii + 1 }}</td>
                                     <td>
