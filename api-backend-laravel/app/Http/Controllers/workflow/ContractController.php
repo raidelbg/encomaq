@@ -35,6 +35,7 @@ class ContractController extends Controller
             )
                 ->whereRaw($where)->orderBy($filter->column, $filter->order)
                 ->join("biz_client","biz_client.idclient","=","biz_contract.idclient")
+                ->selectRaw('biz_contract.*, biz_client.idclient, biz_client.businessname, biz_client.identify, biz_client.address')
                 ->paginate($filter->num_page);
             return response()->json([
                 self::SUCCESS => true, self::DATA => $result
@@ -44,6 +45,23 @@ class ContractController extends Controller
                 self::SUCCESS => false, self::MESSAGE => $e->getMessage()
             ]);
         }
+    }
+
+    public function getNoContract()
+    {
+        try {
+
+            return response()->json([
+                self::SUCCESS => true,
+                self::DATA => $this->getLastNoContract()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => $e->getMessage()
+            ]);
+        }
+
     }
 
     /**
@@ -80,11 +98,18 @@ class ContractController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $item = Contract::find($id);
+            return $this->action($item, $request, 'edit');
+        } catch (\Exception $e) {
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -119,7 +144,7 @@ class ContractController extends Controller
             $item->idclient = $request->input('idclient');
             $item->idperiod = $request->input('idperiod');
             $item->idcategoryitem = $request->input('idcategoryitem');
-            $item->nocontract = $request->input('nocontract');
+            $item->nocontract = $this->verifyNoContract($request->input('nocontract'), $item->idcontract);
             $item->startdate = $request->input('startdate');
             $item->enddate = $request->input('enddate');
             $item->area = $request->input('area');
@@ -129,6 +154,7 @@ class ContractController extends Controller
             $item->receipt = $request->input('receipt');
             $item->invoice = $request->input('invoice');
             $item->state = ($request->input('state') === true || $request->input('state') === 1) ? 1 : 0;
+
             if ($item->save()) {
 
                 $resultPaymentForm = $this->actionPaymentForm($item->idcontract, $request->input('paymentform'));
@@ -173,7 +199,7 @@ class ContractController extends Controller
 
             $count = ContractPaymentForm::where('idcontract', $idContract)->count();
             if ($count != 0) {
-                ContractPaymentForm::where('idcontract', $idContract)->deleted();
+                ContractPaymentForm::where('idcontract', $idContract)->delete();
             }
 
             foreach ($paymentForms as $paymentForm) {
@@ -206,7 +232,7 @@ class ContractController extends Controller
 
             $count = ContractItem::where('idcontract', $idContract)->count();
             if ($count != 0) {
-                ContractItem::where('idcontract', $idContract)->deleted();
+                ContractItem::where('idcontract', $idContract)->delete();
             }
 
             foreach ($items as $item) {
@@ -231,4 +257,33 @@ class ContractController extends Controller
             return $result;
         }
     }
+
+    private function verifyNoContract($nocontract, $id = null)
+    {
+        $search = str_pad((((int) $nocontract) ),9,'0', STR_PAD_LEFT );
+
+        if ($id === null) {
+            $result = Contract::where('nocontract', $search)->count();
+        } else {
+            $result = Contract::where('nocontract', $search)->where('idcontract', '!=', $id)->count();
+        }
+
+        if ($result != 0) {
+            $search = $this->getLastNoContract();
+        }
+
+        return $search;
+    }
+
+    private function getLastNoContract()
+    {
+        $row = Contract::all();
+        $last = $row->last();
+        $num_contract = 0;
+        if(  isset($last->nocontract) ) {
+            $num_contract = $last->nocontract;
+        }
+        return str_pad((((int) $num_contract) + 1 ),9,'0', STR_PAD_LEFT );
+    }
+
 }

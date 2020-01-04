@@ -173,16 +173,6 @@ export class ContractComponent implements OnInit, OnDestroy {
       (response) => {
         if (response.success) {
           this.listPaymentForm = response.data;
-
-          /* this.formArrayPaymentForm = this.form.get('paymentform') as FormArray;
-          response.data.forEach(element => {
-            const paymentform = this.formBuilder.group({
-              idpaymentform: element.idpaymentform,
-              paymentformname: element.paymentformname,
-              value: 0
-            });
-            this.formArrayPaymentForm.push(paymentform);
-          }); */
         }
       },
       (error) => {
