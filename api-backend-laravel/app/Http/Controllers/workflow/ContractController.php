@@ -47,7 +47,7 @@ class ContractController extends Controller
         }
     }
 
-    public function getNoContract()
+    public function getNoContract(Request $request)
     {
         try {
 

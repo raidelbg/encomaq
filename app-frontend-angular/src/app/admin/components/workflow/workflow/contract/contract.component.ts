@@ -212,29 +212,44 @@ export class ContractComponent implements OnInit, OnDestroy {
   }
 
   create = () => {
-    this.titleAside = 'Agregar Contrato';
-    this.form.reset();
 
-    this.form.get('idclient').setValue('');
-    this.form.get('idperiod').setValue('');
-    this.form.get('idcategoryitem').setValue('');
-    this.form.get('state').setValue(true);
+    this.contractService.get({}, 'getLastNoContract').pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          this.titleAside = 'Agregar Contrato';
+          this.form.reset();
 
-    this.formArrayItem = this.form.get('items') as FormArray;
-    this.createRowItem();
+          this.form.get('idclient').setValue('');
+          this.form.get('idperiod').setValue('');
+          this.form.get('idcategoryitem').setValue('');
+          this.form.get('state').setValue(true);
 
-    this.formArrayPaymentForm = this.form.get('paymentform') as FormArray;
-    this.formArrayPaymentForm.clear();
-    this.listPaymentForm.forEach(element => {
-      const paymentform = this.formBuilder.group({
-        idpaymentform: element.idpaymentform,
-        paymentformname: element.paymentformname,
-        value: 0
-      });
-      this.formArrayPaymentForm.push(paymentform);
-    });
+          this.form.get('nocontract').setValue(response.data);
 
-    this.asideIsOpen = true;
+          this.formArrayItem = this.form.get('items') as FormArray;
+          this.createRowItem();
+
+          this.formArrayPaymentForm = this.form.get('paymentform') as FormArray;
+          this.formArrayPaymentForm.clear();
+          this.listPaymentForm.forEach(element => {
+            const paymentform = this.formBuilder.group({
+              idpaymentform: element.idpaymentform,
+              paymentformname: element.paymentformname,
+              value: 0
+            });
+            this.formArrayPaymentForm.push(paymentform);
+          });
+
+          this.asideIsOpen = true;
+        } else {
+          this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+
   }
 
   trackByFn(index: any, item: any) {
