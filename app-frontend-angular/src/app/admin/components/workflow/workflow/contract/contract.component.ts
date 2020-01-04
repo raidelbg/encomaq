@@ -39,6 +39,7 @@ export class ContractComponent implements OnInit, OnDestroy {
 
   list: Observable<any[]>;
   listClient = [];
+  listClientModal: Observable<any[]>;
   listPeriod = [];
   listCategoryItem = [];
   listPaymentForm = [];
@@ -59,6 +60,10 @@ export class ContractComponent implements OnInit, OnDestroy {
   pag = 1;
   pageDelta = 1;
   total = 0;
+
+  pagClient = 1;
+  pageDeltaClient = 1;
+  totalClient = 0;
 
   constructor(private notification: Notification, private formBuilder: FormBuilder,
               private contractService: ContractService, private clientService: ClientService,
@@ -211,6 +216,38 @@ export class ContractComponent implements OnInit, OnDestroy {
     );
   }
 
+  getActionClient(page: number, perPage: number): Observable<any> {
+    const filters = {
+      search: '',
+      state: true,
+      column: 'businessname',
+      order: 'asc',
+      num_page: 5
+    };
+
+    return from(this.clientService.get(filters, null, page)).pipe(delay(200));
+  }
+
+  getClientPaginate = (page: number) => {
+    this.listClientModal =  this.getActionClient(page, 5).pipe(
+      tap(
+        (response) => {
+
+          this.totalClient = response.data.total;
+          this.pagClient = response.data.current_page;
+          this.pageDeltaClient = (page - 1) * 5;
+
+          $('#listClientModalSearch').modal('show');
+
+        },
+        (error) => {
+          console.error(error);
+        }
+      ),
+      map(response => response.data.data)
+    );
+  }
+
   create = () => {
 
     this.contractService.get({}, 'getLastNoContract').pipe(takeUntil(this.destroySubscription$)).subscribe(
@@ -254,7 +291,7 @@ export class ContractComponent implements OnInit, OnDestroy {
 
   trackByFn(index: any, item: any) {
     return index;
- }
+  }
 
   edit = (item: any) => {
     this.itemSelected = item;
@@ -444,6 +481,11 @@ export class ContractComponent implements OnInit, OnDestroy {
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
+  }
+
+  selectedClient = (item: any) => {
+    this.form.get('idclient').setValue(item.idclient);
+    $('#listClientModalSearch').modal('hide');
   }
 
   /**
