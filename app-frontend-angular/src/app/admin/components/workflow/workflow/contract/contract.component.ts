@@ -4,8 +4,9 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { from, Observable } from 'rxjs';
 import { tap, map, delay } from 'rxjs/operators';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { Notification } from 'src/app/shared/components/classes/Notification';
-import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/ConstantsEnums';
 import { ContractService } from 'src/app/admin/services/workflow/workflow/contract.service';
 import { ClientService } from 'src/app/admin/services/workflow/workflow/client.service';
 import { PeriodService } from 'src/app/admin/services/workflow/catalogue/period.service';
@@ -65,7 +66,11 @@ export class ContractComponent implements OnInit, OnDestroy {
   pageDeltaClient = 1;
   totalClient = 0;
 
-  constructor(private notification: Notification, private formBuilder: FormBuilder,
+  typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
+  overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
+  colorAnimation = CONFIG_LOADING_UI.colorAnimation;
+
+  constructor(private notification: Notification, private formBuilder: FormBuilder, private ngxService: NgxUiLoaderService,
               private contractService: ContractService, private clientService: ClientService,
               private periodService: PeriodService, private categoryItemService: CategoryItemService,
               private paymentFormService: PaymentFormService, private itemService: ItemService) { }
@@ -199,6 +204,7 @@ export class ContractComponent implements OnInit, OnDestroy {
   }
 
   get = (page: number) => {
+    this.ngxService.startLoader('loading-component');
     this.list =  this.getAction(page, 5).pipe(
       tap(
         (response) => {
@@ -207,8 +213,10 @@ export class ContractComponent implements OnInit, OnDestroy {
           this.pag = response.data.current_page;
           this.pageDelta = (page - 1) * 5;
 
+          this.ngxService.stopLoader('loading-component');
         },
         (error) => {
+          this.ngxService.stopLoader('loading-component');
           console.error(error);
         }
       ),
@@ -387,7 +395,7 @@ export class ContractComponent implements OnInit, OnDestroy {
   }
 
   add = () => {
-
+    this.ngxService.startLoader('loading-component');
     const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
     const data = {
       idclient: this.form.value.idclient,
@@ -425,6 +433,7 @@ export class ContractComponent implements OnInit, OnDestroy {
   }
 
   update = (id: number) => {
+    this.ngxService.startLoader('loading-component');
     const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
     const data = {
       idclient: this.form.value.idclient,
@@ -467,6 +476,7 @@ export class ContractComponent implements OnInit, OnDestroy {
   }
 
   delete = () => {
+    this.ngxService.startLoader('loading-component');
     this.contractService.delete(this.itemSelected.idcontract).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         $('#confirmDeleteContract').modal('hide');

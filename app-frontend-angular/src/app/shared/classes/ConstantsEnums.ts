@@ -1,3 +1,4 @@
+import { SPINNER } from 'ngx-ui-loader';
 
 export const ICONS_ALERT = {
     success: 'fa-check-circle',
@@ -43,4 +44,10 @@ export const VALIDATOR_ENUM = {
     userRuc: 'Ingrese un RUC válido',
     telephone: 'Ingrese un número de teléfono fijo válido',
     cellphone: 'Ingrese un número de celular válido',
+};
+
+export const CONFIG_LOADING_UI = {
+    typeSpinnerLoading: SPINNER.squareJellyBox,
+    overlayColorLoading: 'rgba(186,203,213,0.64)',
+    colorAnimation: '#4569ce'
 };

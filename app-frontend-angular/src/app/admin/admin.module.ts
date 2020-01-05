@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import {NgxPaginationModule} from 'ngx-pagination';
+import { NgxUiLoaderModule } from 'ngx-ui-loader';
 
 import { HttpConfigInterceptor } from '../shared/interceptors/httpconfig.interceptor';
 import { AdminRoutingModule } from './admin-routing.module';
@@ -55,7 +56,8 @@ import { ReferralGuideComponent } from './components/workflow/workflow/referral-
   declarations: [AdminComponent, AuthComponent, SigninComponent, SignupComponent, PasswordRenewComponent,
                 PasswordResetComponent, WorkflowComponent, IdentificationtypeComponent, CategoryItemComponent,
                 UnitTypeComponent, PaymentFormComponent, WarehouseComponent, TransferReasonComponent, RoleComponent, ConfigEmailComponent,
-                UserComponent, CarrierComponent, ClientComponent, ProjectComponent, ItemComponent, CompanyComponent, ContractComponent, DashboardComponent, ReferralGuideComponent],
+                UserComponent, CarrierComponent, ClientComponent, ProjectComponent, ItemComponent, CompanyComponent, ContractComponent,
+                DashboardComponent, ReferralGuideComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -63,6 +65,7 @@ import { ReferralGuideComponent } from './components/workflow/workflow/referral-
     SharedModule,
     AdminRoutingModule,
     NgxPaginationModule,
+    NgxUiLoaderModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
