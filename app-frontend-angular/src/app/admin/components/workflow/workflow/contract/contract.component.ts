@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { from, Observable } from 'rxjs';
 import { tap, map, delay } from 'rxjs/operators';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
+import * as XLSX from 'xlsx';
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/ConstantsEnums';
 import { ContractService } from 'src/app/admin/services/workflow/workflow/contract.service';
@@ -497,6 +498,20 @@ export class ContractComponent implements OnInit, OnDestroy {
     this.form.get('idclient').setValue(item.idclient);
     $('#listClientModalSearch').modal('hide');
   }
+
+  exportExcel = () => {
+    /* table id is passed over here */
+    const element = document.getElementById('contract-table');
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+
+    /* generate workbook and add the worksheet */
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    /* save to file */
+    XLSX.writeFile(wb, 'Contratos.xlsx');
+ }
+
 
   /**
    * Show notifications launched from methods
