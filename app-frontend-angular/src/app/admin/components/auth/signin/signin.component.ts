@@ -34,7 +34,7 @@ export class SigninComponent implements OnInit {
   security = () => {
     const token = this.localStorageCommon.get('auth_token', 'normal');
     if (token !== null && token !== 'null') {
-      this.router.navigate(['/admin']);
+      this.router.navigate(['/']);
     }
   }
 
@@ -48,7 +48,7 @@ export class SigninComponent implements OnInit {
         if (response.success) {
           this.localStorageCommon.store('auth_token', response.token, 'normal');
           this.localStorageCommon.store('auth_user', response.user, 'json');
-          this.router.navigate(['/admin/workflow']);
+          this.router.navigate(['/workflow']);
         } else {
           // this.showNotification('Información', ICONS_ALERT.success, 'no login', 'success');
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');

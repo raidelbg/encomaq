@@ -51,7 +51,7 @@ export class WorkflowComponent implements OnInit {
   security = () => {
     const token = this.localStorageCommon.get('auth_token', 'normal');
     if (token === null || token === 'null') {
-      this.router.navigate(['/admin/auth']);
+      this.router.navigate(['/auth']);
     } else {
       const user = this.localStorageCommon.get('auth_user', 'json');
       this.username = user.personname + ' ' + user.lastnameperson;
@@ -60,7 +60,7 @@ export class WorkflowComponent implements OnInit {
 
   logout = () => {
     this.localStorageCommon.clear();
-    this.router.navigate(['/admin/auth']);
+    this.router.navigate(['/auth']);
   }
 
 }
