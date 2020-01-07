@@ -5,13 +5,15 @@
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+    padding-right: 0;
+    position: relative;
+
     .image-auth-gradient {
-        background: linear-gradient(to bottom, #3023ff, rgba(28, 21, 153, 0.6));
+        background: linear-gradient(to bottom, #3023ff, rgba(28, 21, 153, 0.3));
         mix-blend-mode: multiply;
         height: 100%;
         width: 100%;
-        overflow: hidden;
-        min-height: 100vh;
+        z-index: 10;
     }
 
     .logo {
@@ -20,6 +22,12 @@
         justify-content: center;
         align-items: center;
         height: 100vh;
+        z-index: 100;
+        position: absolute;
+    }
+
+    .logo img {
+        position: absolute;
     }
 }
 
