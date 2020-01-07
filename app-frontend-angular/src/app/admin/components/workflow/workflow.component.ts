@@ -58,7 +58,12 @@ export class WorkflowComponent implements OnInit {
     }
   }
 
+  confirmLogout = () => {
+    $('#confirmLogout').modal('show');
+  }
+
   logout = () => {
+    $('#confirmLogout').modal('hide');
     this.localStorageCommon.clear();
     this.router.navigate(['/auth']);
   }
