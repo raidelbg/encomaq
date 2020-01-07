@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { TransferReasonService } from 'src/app/admin/services/workflow/workflow/transfer-reason.service';
-import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/ConstantsEnums';
 import { customValidatorHandler } from 'src/app/shared/classes/CustomValidators';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 declare var $: any;
 
@@ -32,8 +33,12 @@ export class TransferReasonComponent implements OnInit {
   listTypeTransferReason = [];
   itemSelected = null;
 
+  typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
+  overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
+  colorAnimation = CONFIG_LOADING_UI.colorAnimation;
+
   constructor(private notification: Notification, private transferReasonService: TransferReasonService,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder, private ngxService: NgxUiLoaderService) { }
 
   ngOnInit() {
     this.get();
@@ -46,13 +51,16 @@ export class TransferReasonComponent implements OnInit {
   }
 
   get = () => {
+    this.ngxService.startLoader('loading-component');
     this.transferReasonService.get({}).subscribe(
       (response) => {
         if (response.success) {
           this.list = response.data;
+          this.ngxService.stopLoader('loading-component');
         }
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -94,6 +102,7 @@ export class TransferReasonComponent implements OnInit {
   }
 
   update = (id: any) => {
+    this.ngxService.startLoader('loading-component');
     const data = {
       transferreasonname: this.form.value.transferreasonname,
       idtypetransferreason: this.form.value.idtypetransferreason,
@@ -105,11 +114,14 @@ export class TransferReasonComponent implements OnInit {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
           this.get();
+          this.ngxService.stopLoader('loading-component');
         } else {
+          this.ngxService.stopLoader('loading-component');
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -127,6 +139,7 @@ export class TransferReasonComponent implements OnInit {
   }
 
   add = () => {
+    this.ngxService.startLoader('loading-component');
     const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
     const data = {
       transferreasonname: this.form.value.transferreasonname,
@@ -139,11 +152,14 @@ export class TransferReasonComponent implements OnInit {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
           this.get();
+          this.ngxService.stopLoader('loading-component');
         } else {
+          this.ngxService.stopLoader('loading-component');
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -155,18 +171,22 @@ export class TransferReasonComponent implements OnInit {
   }
 
   delete = () => {
+    $('#confirmDeleteTransferReason').modal('hide');
+    this.ngxService.startLoader('loading-component');
     this.transferReasonService.delete(this.itemSelected.idtransferreason).subscribe(
       (response) => {
-        $('#confirmDeleteTransferReason').modal('hide');
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
           this.get();
+          this.ngxService.stopLoader('loading-component');
         } else {
+          this.ngxService.stopLoader('loading-component');
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
