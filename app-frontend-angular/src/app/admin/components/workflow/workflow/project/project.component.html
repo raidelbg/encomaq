@@ -32,12 +32,12 @@
                                 <div class="row">
                                     <div class="col-sm-3 col-12 mb-2">
                                         <label for="search">Buscar</label>
-                                        <input id="search" type="text" class="form-control" placeholder="" formControlName="search" (keyup)="get()">
+                                        <input id="search" type="text" class="form-control" placeholder="" formControlName="search" (keyup)="get(1)">
                                     </div>
                                     
                                     <div class="col-sm-3 col-12 mb-2">
                                         <label for="stateFilter">Estado</label>
-                                        <select class="custom-select" id="stateFilter" formControlName="stateFilter" (change)="get()">
+                                        <select class="custom-select" id="stateFilter" formControlName="stateFilter" (change)="get(1)">
                                             <option value="1">ACTIVO</option>
                                             <option value="0">INACTIVO</option>
                                         </select>
@@ -45,7 +45,7 @@
             
                                     <div class="col-sm-3 col-12 mb-2">
                                         <label for="column">Columna</label>
-                                        <select class="custom-select" id="column" formControlName="column" (change)="get()">
+                                        <select class="custom-select" id="column" formControlName="column" (change)="get(1)">
                                             <option value="projectname">PROYECTO</option>
                                             <option value="idclient">CLIENTE</option>
                                         </select>
@@ -53,7 +53,7 @@
             
                                     <div class="col-sm-3 col-12 mb-2">
                                         <label for="order">Orden</label>
-                                        <select class="custom-select" id="order" formControlName="order" (change)="get()">
+                                        <select class="custom-select" id="order" formControlName="order" (change)="get(1)">
                                             <option value="ASC">ASCENDENTE</option>
                                             <option value="DESC">DESCENDENTE</option>
                                         </select>
