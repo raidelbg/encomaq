@@ -3,6 +3,6 @@ export const environment = {
 
   production: true,
   name: 'production',
-  baseUrl: 'http://157.230.220.113/new_version/encomaq/api-backend-laravel/public/api/'
+  baseUrl: 'https://api-v2-encomaq.apps-developing.com/api/'
 
 };
