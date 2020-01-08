@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { PaymentFormService } from 'src/app/admin/services/workflow/workflow/payment-form.service';
-import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/ConstantsEnums';
 import { customValidatorHandler } from 'src/app/shared/classes/CustomValidators';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 declare var $: any;
 
@@ -28,8 +29,12 @@ export class PaymentFormComponent implements OnInit {
   list = [];
   itemSelected = null;
 
+  typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
+  overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
+  colorAnimation = CONFIG_LOADING_UI.colorAnimation;
+
   constructor(private notification: Notification, private paymentFormService: PaymentFormService,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder, private ngxService: NgxUiLoaderService) { }
 
   ngOnInit() {
     this.errorInit();
@@ -47,13 +52,16 @@ export class PaymentFormComponent implements OnInit {
   }
 
   get = () => {
+    this.ngxService.startLoader('loading-component');
     this.paymentFormService.get({}).subscribe(
       (response) => {
         if (response.success) {
           this.list = response.data;
+          this.ngxService.stopLoader('loading-component');
         }
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -77,6 +85,7 @@ export class PaymentFormComponent implements OnInit {
   }
 
   update = (id: any) => {
+    this.ngxService.startLoader('loading-component');
     const data = {
       paymentformname: this.form.value.paymentformname,
       state: this.form.value.state
@@ -87,11 +96,14 @@ export class PaymentFormComponent implements OnInit {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
           this.get();
+          this.ngxService.stopLoader('loading-component');
         } else {
+          this.ngxService.stopLoader('loading-component');
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -106,6 +118,7 @@ export class PaymentFormComponent implements OnInit {
   }
 
   add = () => {
+    this.ngxService.startLoader('loading-component');
     const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
     const data = {
       paymentformname: this.form.value.paymentformname,
@@ -117,11 +130,14 @@ export class PaymentFormComponent implements OnInit {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
           this.get();
+          this.ngxService.stopLoader('loading-component');
         } else {
+          this.ngxService.stopLoader('loading-component');
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -133,18 +149,22 @@ export class PaymentFormComponent implements OnInit {
   }
 
   delete = () => {
+    $('#confirmDeletePaymentForm').modal('hide');
+    this.ngxService.startLoader('loading-component');
     this.paymentFormService.delete(this.itemSelected.idpaymentform).subscribe(
       (response) => {
-        $('#confirmDeletePaymentForm').modal('hide');
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
           this.get();
+          this.ngxService.stopLoader('loading-component');
         } else {
+          this.ngxService.stopLoader('loading-component');
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );

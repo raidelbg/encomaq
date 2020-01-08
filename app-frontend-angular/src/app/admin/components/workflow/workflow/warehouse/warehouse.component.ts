@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { WarehouseService } from 'src/app/admin/services/workflow/workflow/warehouse.service';
-import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/ConstantsEnums';
 import { customValidatorHandler } from 'src/app/shared/classes/CustomValidators';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 declare var $: any;
 
@@ -28,8 +29,13 @@ export class WarehouseComponent implements OnInit {
   list = [];
   itemSelected = null;
 
+  typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
+  overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
+  colorAnimation = CONFIG_LOADING_UI.colorAnimation;
+
+
   constructor(private notification: Notification, private warehouseService: WarehouseService,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder, private ngxService: NgxUiLoaderService) { }
 
   ngOnInit() {
     this.errorInit();
@@ -53,13 +59,16 @@ export class WarehouseComponent implements OnInit {
   }
 
   get = () => {
+    this.ngxService.startLoader('loading-component');
     this.warehouseService.get({}).subscribe(
       (response) => {
         if (response.success) {
           this.list = response.data;
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -86,6 +95,7 @@ export class WarehouseComponent implements OnInit {
   }
 
   update = (id: any) => {
+    this.ngxService.startLoader('loading-component');
     const data = {
       warehousename: this.form.value.warehousename,
       address: this.form.value.address,
@@ -102,8 +112,10 @@ export class WarehouseComponent implements OnInit {
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -118,6 +130,7 @@ export class WarehouseComponent implements OnInit {
   }
 
   add = () => {
+    this.ngxService.startLoader('loading-component');
     const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
     const data = {
       warehousename: this.form.value.warehousename,
@@ -135,8 +148,10 @@ export class WarehouseComponent implements OnInit {
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -148,9 +163,10 @@ export class WarehouseComponent implements OnInit {
   }
 
   delete = () => {
+    $('#confirmDeleteWarehouse').modal('hide');
+    this.ngxService.startLoader('loading-component');
     this.warehouseService.delete(this.itemSelected.idwarehouse).subscribe(
       (response) => {
-        $('#confirmDeleteWarehouse').modal('hide');
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
@@ -158,8 +174,10 @@ export class WarehouseComponent implements OnInit {
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );

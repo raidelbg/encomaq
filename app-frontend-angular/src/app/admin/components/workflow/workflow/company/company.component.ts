@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Notification } from 'src/app/shared/components/classes/Notification';
-import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/ConstantsEnums';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { from, Observable } from 'rxjs';
 import { tap, map, delay } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { CompanyService } from 'src/app/admin/services/workflow/workflow/company.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 declare var $: any;
 
@@ -32,7 +33,12 @@ export class CompanyComponent implements OnInit, OnDestroy {
 
   urlImageDefault = './assets/image/no_image_available.jpg';
 
-  constructor(private formBuilder: FormBuilder, private notification: Notification, private companyService: CompanyService) { }
+  typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
+  overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
+  colorAnimation = CONFIG_LOADING_UI.colorAnimation;
+
+  constructor(private formBuilder: FormBuilder, private notification: Notification, private companyService: CompanyService,
+              private ngxService: NgxUiLoaderService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -56,6 +62,7 @@ export class CompanyComponent implements OnInit, OnDestroy {
   }
 
   get = () => {
+    this.ngxService.startLoader('loading-component');
     this.companyService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
@@ -70,15 +77,18 @@ export class CompanyComponent implements OnInit, OnDestroy {
           if (response.data.image !== null) {
             this.urlImageDefault = this.urlBasic + response.data.image;
           }
+          this.ngxService.stopLoader('loading-component');
         }
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
   }
 
   action = () => {
+    this.ngxService.startLoader('loading-component');
     const data = {
       idcompany: this.form.value.idcompany,
       businessname: this.form.value.businessname,
@@ -94,11 +104,14 @@ export class CompanyComponent implements OnInit, OnDestroy {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.get();
+          this.ngxService.stopLoader('loading-component');
         } else {
+          this.ngxService.stopLoader('loading-component');
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );

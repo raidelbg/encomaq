@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Notification } from 'src/app/shared/components/classes/Notification';
-import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/ConstantsEnums';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { from, Observable } from 'rxjs';
 import { tap, map, delay } from 'rxjs/operators';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ItemService } from 'src/app/admin/services/workflow/workflow/item.service';
 import { CategoryItemService } from 'src/app/admin/services/workflow/catalogue/category-item.service';
 import { UnitTypeService } from 'src/app/admin/services/workflow/catalogue/unit-type.service';
@@ -68,9 +69,13 @@ export class ItemComponent implements OnInit, OnDestroy {
   pageDelta = 1;
   total = 0;
 
+  typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
+  overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
+  colorAnimation = CONFIG_LOADING_UI.colorAnimation;
+
   constructor(private notification: Notification, private itemService: ItemService, private formBuilder: FormBuilder,
               private categoryService: CategoryItemService, private unitTypeService: UnitTypeService,
-              private itemPriceService: ItemPriceService) { }
+              private itemPriceService: ItemPriceService, private ngxService: NgxUiLoaderService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -118,6 +123,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   get = (page: number) => {
+    this.ngxService.startLoader('loading-component');
     this.list =  this.getAction(page, 12).pipe(
       tap(
         (response) => {
@@ -126,9 +132,10 @@ export class ItemComponent implements OnInit, OnDestroy {
           this.total = response.data.total;
           this.pag = response.data.current_page;
           this.pageDelta = (page - 1) * 12;
-
+          this.ngxService.stopLoader('loading-component');
         },
         (error) => {
+          this.ngxService.stopLoader('loading-component');
           console.error(error);
         }
       ),
@@ -209,6 +216,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   update = (id: any) => {
+    this.ngxService.startLoader('loading-component');
     const data = {
       idcategoryitem: this.form.value.idcategoryitem,
       idunittype: this.form.value.idunittype,
@@ -227,8 +235,10 @@ export class ItemComponent implements OnInit, OnDestroy {
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -246,6 +256,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   add = () => {
+    this.ngxService.startLoader('loading-component');
     const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
     const data = {
       idcategoryitem: this.form.value.idcategoryitem,
@@ -264,8 +275,10 @@ export class ItemComponent implements OnInit, OnDestroy {
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -319,6 +332,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   actionListPrice = () => {
+    this.ngxService.startLoader('loading-component');
     const data = {
       iditem: this.itemSelected.iditem,
       list: this.listItemPrice
@@ -331,8 +345,10 @@ export class ItemComponent implements OnInit, OnDestroy {
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -345,17 +361,20 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   delete = () => {
+    $('#confirmDeleteItem').modal('hide');
+    this.ngxService.startLoader('loading-component');
     this.itemService.delete(this.itemSelected.iditem).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
-        $('#confirmDeleteItem').modal('hide');
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.get(1);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
