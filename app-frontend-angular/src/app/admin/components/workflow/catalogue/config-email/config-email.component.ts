@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/ConstantsEnums';
 import { ConfigEmailService } from 'src/app/admin/services/workflow/catalogue/config-email.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 declare var $: any;
 
@@ -21,8 +22,12 @@ export class ConfigEmailComponent implements OnInit {
   form: FormGroup;
   itemSelected = null;
 
+  typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
+  overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
+  colorAnimation = CONFIG_LOADING_UI.colorAnimation;
+
   constructor(private notification: Notification, private configEmailService: ConfigEmailService,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder, private ngxService: NgxUiLoaderService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -37,6 +42,7 @@ export class ConfigEmailComponent implements OnInit {
   }
 
   get = () => {
+    this.ngxService.startLoader('loading-component');
     this.configEmailService.get({}).subscribe(
       (response) => {
         if (response.success) {
@@ -50,8 +56,10 @@ export class ConfigEmailComponent implements OnInit {
             this.form.get('passwordemail').setValue(this.itemSelected.passwordemail);
           }
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -66,6 +74,7 @@ export class ConfigEmailComponent implements OnInit {
   }
 
   update = (id: any) => {
+    this.ngxService.startLoader('loading-component');
     const data = {
       driver: this.form.value.driver,
       server: this.form.value.server,
@@ -82,14 +91,17 @@ export class ConfigEmailComponent implements OnInit {
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
   }
 
   add = () => {
+    this.ngxService.startLoader('loading-component');
     const data = {
       driver: this.form.value.driver,
       server: this.form.value.server,
@@ -106,13 +118,14 @@ export class ConfigEmailComponent implements OnInit {
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
   }
-
 
   /**
    * Show notifications launched from methods

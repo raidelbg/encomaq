@@ -4,9 +4,10 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { from, Observable } from 'rxjs';
 import { tap, map, delay } from 'rxjs/operators';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { customValidatorHandler } from 'src/app/shared/classes/CustomValidators';
 import { Notification } from 'src/app/shared/components/classes/Notification';
-import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/ConstantsEnums';
 import { ProjectService } from 'src/app/admin/services/workflow/workflow/project.service';
 import { ClientService } from 'src/app/admin/services/workflow/workflow/client.service';
 
@@ -59,8 +60,12 @@ export class ProjectComponent implements OnInit, OnDestroy {
   pageDelta = 1;
   total = 0;
 
+  typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
+  overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
+  colorAnimation = CONFIG_LOADING_UI.colorAnimation;
+
   constructor(private notification: Notification, private projectService: ProjectService,
-              private clientService: ClientService, private formBuilder: FormBuilder) { }
+              private clientService: ClientService, private formBuilder: FormBuilder, private ngxService: NgxUiLoaderService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -94,6 +99,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   get = (page: number) => {
+    this.ngxService.startLoader('loading-component');
     this.list =  this.getAction(page, 5).pipe(
       tap(
         (response) => {
@@ -101,9 +107,11 @@ export class ProjectComponent implements OnInit, OnDestroy {
           this.total = response.data.total;
           this.pag = response.data.current_page;
           this.pageDelta = (page - 1) * 5;
+          this.ngxService.stopLoader('loading-component');
 
         },
         (error) => {
+          this.ngxService.stopLoader('loading-component');
           console.error(error);
         }
       ),
@@ -149,6 +157,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   update = (id: any) => {
+    this.ngxService.startLoader('loading-component');
     const data = {
       idclient: this.form.value.idclient,
       projectname: this.form.value.projectname,
@@ -160,12 +169,13 @@ export class ProjectComponent implements OnInit, OnDestroy {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
-          // this.get();
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -180,6 +190,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   add = () => {
+    this.ngxService.startLoader('loading-component');
     const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
     const data = {
       idclient: this.form.value.idclient,
@@ -192,12 +203,13 @@ export class ProjectComponent implements OnInit, OnDestroy {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
-          // this.get();
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -210,17 +222,19 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   delete = () => {
+    $('#confirmDeleteProject').modal('hide');
+    this.ngxService.startLoader('loading-component');
     this.projectService.delete(this.itemSelected.idproject).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
-        $('#confirmDeleteProject').modal('hide');
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
-          // this.get();
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -230,6 +244,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this.asideIsOpen = false;
     this.form.reset();
     this.itemSelected = null;
+    this.get(1);
   }
 
   info = (item: any) => {

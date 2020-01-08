@@ -1,4 +1,8 @@
 <div class="generic-component">
+
+    <ngx-ui-loader [loaderId]="'loading-component'" [fgsType]="typeSpinnerLoading" [overlayColor]="overlayColorLoading"
+      [fgsColor]="colorAnimation" [pbColor]="colorAnimation"></ngx-ui-loader>
+
     <div class="row">
         <div class="col-12">
             <h3>Usuarios</h3>
@@ -66,7 +70,6 @@
                                             <option value="DESC">DESCENDENTE</option>
                                         </select>
                                     </div>
-            
                                     
                                 </div>      
                             </form>  
@@ -88,9 +91,9 @@
                             </div>
                             <div class="col-8">
                             <div class="card-body">
-                                <h5 class="card-title">{{item.personname + ' ' + item.lastnameperson}}</h5>
-                                <p class="card-text">{{item.role.rolename}}</p>
-                                <p class="card-text">{{item.email}}</p>
+                                <h5 class="card-title text-truncate">{{item.personname + ' ' + item.lastnameperson}}</h5>
+                                <p class="card-text text-truncate">{{item.role.rolename}}</p>
+                                <p class="card-text text-truncate">{{item.email}}</p>
                                 <p class="card-text">
                                     <i class="fas fa-edit fa-lg mr-2 cursor-pointer" (click)="edit(item)"></i>
                                     <i class="fas fa-trash-alt fa-lg cursor-pointer" (click)="confirmDelete(item)" *ngIf="item.iduser !== 1"></i>

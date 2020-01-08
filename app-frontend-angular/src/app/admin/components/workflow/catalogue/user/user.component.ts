@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Notification } from 'src/app/shared/components/classes/Notification';
-import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/ConstantsEnums';
 import { UserService } from 'src/app/admin/services/workflow/catalogue/user.service';
 import { RoleService } from 'src/app/admin/services/workflow/catalogue/role.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 declare var $: any;
 
@@ -31,8 +32,12 @@ export class UserComponent implements OnInit {
 
   flagActionEdit = false;
 
+  typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
+  overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
+  colorAnimation = CONFIG_LOADING_UI.colorAnimation;
+
   constructor(private notification: Notification, private userService: UserService, private roleService: RoleService,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder, private ngxService: NgxUiLoaderService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -57,6 +62,7 @@ export class UserComponent implements OnInit {
   }
 
   get = () => {
+    this.ngxService.startLoader('loading-component');
     const filters = {
       search: this.formFilter.value.search,
       idrole: this.formFilter.value.idrole,
@@ -70,8 +76,10 @@ export class UserComponent implements OnInit {
         if (response.success) {
           this.list = response.data;
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -118,6 +126,7 @@ export class UserComponent implements OnInit {
   }
 
   update = (id: any) => {
+    this.ngxService.startLoader('loading-component');
     const password = (this.form.value.passwordEdit !== null && this.form.value.passwordEdit !== '') ? this.form.value.passwordEdit : false;
     const data = {
       idrole: this.form.value.idrole,
@@ -132,12 +141,13 @@ export class UserComponent implements OnInit {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
-          this.get();
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -153,6 +163,7 @@ export class UserComponent implements OnInit {
   }
 
   add = () => {
+    this.ngxService.startLoader('loading-component');
     const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
     const data = {
       idrole: this.form.value.idrole,
@@ -167,12 +178,13 @@ export class UserComponent implements OnInit {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
-          this.get();
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -185,17 +197,20 @@ export class UserComponent implements OnInit {
   }
 
   delete = () => {
+    $('#confirmDeleteUser').modal('hide');
+    this.ngxService.startLoader('loading-component');
     this.userService.delete(this.itemSelected.iduser).subscribe(
       (response) => {
-        $('#confirmDeleteUser').modal('hide');
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.get();
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -205,6 +220,7 @@ export class UserComponent implements OnInit {
     this.asideIsOpen = false;
     this.form.reset();
     this.itemSelected = null;
+    this.get();
   }
 
   /**

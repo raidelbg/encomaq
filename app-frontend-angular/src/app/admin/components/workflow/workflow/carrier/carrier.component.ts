@@ -1,11 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Notification } from 'src/app/shared/components/classes/Notification';
-import { ICONS_ALERT } from 'src/app/shared/classes/ConstantsEnums';
+import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/ConstantsEnums';
 import { CarrierService } from 'src/app/admin/services/workflow/workflow/carrier.service';
 import { Subject } from 'rxjs';
 import { from, Observable } from 'rxjs';
 import { tap, map, delay } from 'rxjs/operators';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { IdentificationtypeService } from 'src/app/admin/services/workflow/catalogue/identificationtype.service';
 
 declare var $: any;
@@ -52,8 +53,13 @@ export class CarrierComponent implements OnInit {
   pageDelta = 1;
   total = 0;
 
+  typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
+  overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
+  colorAnimation = CONFIG_LOADING_UI.colorAnimation;
+
   constructor(private notification: Notification, private carrierService: CarrierService,
-              private identifyTypeService: IdentificationtypeService, private formBuilder: FormBuilder) { }
+              private identifyTypeService: IdentificationtypeService, private formBuilder: FormBuilder,
+              private ngxService: NgxUiLoaderService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -86,6 +92,7 @@ export class CarrierComponent implements OnInit {
   }
 
   get = (page: number) => {
+    this.ngxService.startLoader('loading-component');
     this.list =  this.getAction(page, 12).pipe(
       tap(
         (response) => {
@@ -93,9 +100,11 @@ export class CarrierComponent implements OnInit {
           this.total = response.data.total;
           this.pag = response.data.current_page;
           this.pageDelta = (page - 1) * 12;
+          this.ngxService.stopLoader('loading-component');
 
         },
         (error) => {
+          this.ngxService.stopLoader('loading-component');
           console.error(error);
         }
       ),
@@ -141,6 +150,7 @@ export class CarrierComponent implements OnInit {
   }
 
   update = (id: any) => {
+    this.ngxService.startLoader('loading-component');
     const data = {
       ididentifytype: this.form.value.ididentifytype,
       identify: this.form.value.identify,
@@ -153,12 +163,13 @@ export class CarrierComponent implements OnInit {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
-          this.get(1);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -174,6 +185,7 @@ export class CarrierComponent implements OnInit {
   }
 
   add = () => {
+    this.ngxService.startLoader('loading-component');
     const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
     const data = {
       ididentifytype: this.form.value.ididentifytype,
@@ -187,12 +199,13 @@ export class CarrierComponent implements OnInit {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside();
-          this.get(1);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -205,17 +218,20 @@ export class CarrierComponent implements OnInit {
   }
 
   delete = () => {
+    $('#confirmDeleteCarrier').modal('hide');
+    this.ngxService.startLoader('loading-component');
     this.carrierService.delete(this.itemSelected.idcarrier).subscribe(
       (response) => {
-        $('#confirmDeleteCarrier').modal('hide');
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.get(1);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
+        this.ngxService.stopLoader('loading-component');
       },
       (error) => {
+        this.ngxService.stopLoader('loading-component');
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
@@ -225,6 +241,7 @@ export class CarrierComponent implements OnInit {
     this.asideIsOpen = false;
     this.form.reset();
     this.itemSelected = null;
+    this.get(1);
   }
 
   /**
