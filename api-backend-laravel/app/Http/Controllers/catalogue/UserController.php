@@ -88,7 +88,7 @@ class UserController extends Controller
     {
         try {
             $item = User::find($id);
-            if ( ! $this->notExists($request->input(self::FIELD_DUPLICATE), $id) ) {
+            if ( $this->notExists($request->input(self::FIELD_DUPLICATE), $id) ) {
                 return $this->action($item, $request, 'update');
             } else {
                 return response()->json([
