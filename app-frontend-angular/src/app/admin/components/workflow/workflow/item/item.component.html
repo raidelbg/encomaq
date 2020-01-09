@@ -135,7 +135,11 @@
                     <div class="row">
                         <div class="col-12 col-sm-5">
                             <label for="itemname">Código<span class="required">*</span></label>
-                            <input id="itemname" type="text" class="form-control" placeholder="" formControlName="itemname">
+                            <input id="itemname" type="text" class="form-control" placeholder="" formControlName="itemname"
+                                (input)="validInput('itemname')" [ngClass]="{'is-invalid': error.itemname.error}">
+                                <div class="invalid-feedback" *ngIf="form.get('itemname').errors?.required">
+                                    {{error.itemname.msg}}
+                                </div>
                         </div>
                         <div class="col-12 col-sm-7 pt-4">
                             <div class="custom-control custom-checkbox">
@@ -145,21 +149,28 @@
                         </div>
                     </div>
 
-                    
                 </div>
 
                 <div class="col-12 mb-2">
                     <label for="description">Item<span class="required">*</span></label>
-                    <input id="description" type="text" class="form-control" placeholder="" formControlName="description">
+                    <input id="description" type="text" class="form-control" placeholder="" formControlName="description"
+                        (input)="validInput('description')" [ngClass]="{'is-invalid': error.description.error}">
+                        <div class="invalid-feedback" *ngIf="form.get('description').errors?.required">
+                            {{error.description.msg}}
+                        </div>
                 </div>
 
                 <div class="col-12 mb-2">
                     <label for="id_category">Categoría<span class="required">*</span></label>
-                    <select class="custom-select" formControlName="idcategoryitem">
+                    <select class="custom-select" formControlName="idcategoryitem" (change)="validInput('idcategoryitem')" 
+                    [ngClass]="{'is-invalid': error.idcategoryitem.error}">
                         <option *ngFor="let e of listCategory" [ngValue]="e.idcategoryitem">
                             {{e.categoryitemname}}
                         </option>
                     </select>
+                    <div class="invalid-feedback" *ngIf="form.get('idcategoryitem').errors?.required">
+                        {{error.idcategoryitem.msg}}
+                    </div>
                 </div>
 
                 <div class="col-12 mb-2">
@@ -167,11 +178,15 @@
                     <div class="row">
                         <div class="col-12 col-sm-6">
                             <label for="idunittype">Tipo Unidad<span class="required">*</span></label>
-                            <select class="custom-select" formControlName="idunittype">
+                            <select class="custom-select" formControlName="idunittype" (change)="validInput('idunittype')" 
+                                [ngClass]="{'is-invalid': error.idunittype.error}">
                                 <option *ngFor="let e of listUnitType" [ngValue]="e.idunittype">
                                     {{e.unittypename}}
                                 </option>
                             </select>
+                            <div class="invalid-feedback" *ngIf="form.get('idunittype').errors?.required">
+                                {{error.idunittype.msg}}
+                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                             <label for="price">Precio por defecto<span class="required">*</span></label>
@@ -179,7 +194,11 @@
                                 <div class="input-group-prepend">
                                   <span class="input-group-text">(USD) $</span>
                                 </div>
-                                <input id="price" type="text" class="form-control" placeholder="" formControlName="price">
+                                <input id="price" type="text" class="form-control" placeholder="" formControlName="price"
+                                (input)="validInput('price')" [ngClass]="{'is-invalid': error.price.error}">
+                                <div class="invalid-feedback" *ngIf="form.get('price').errors?.required">
+                                    {{error.price.msg}}
+                                </div>
                             </div>                            
                         </div>
                     </div>

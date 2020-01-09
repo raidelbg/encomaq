@@ -12,6 +12,7 @@ import { CategoryItemService } from 'src/app/admin/services/workflow/catalogue/c
 import { UnitTypeService } from 'src/app/admin/services/workflow/catalogue/unit-type.service';
 import { environment } from 'src/environments/environment';
 import { ItemPriceService } from 'src/app/admin/services/workflow/workflow/item-price.service';
+import { customValidatorHandler } from 'src/app/shared/classes/CustomValidators';
 
 declare var $: any;
 
@@ -52,6 +53,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   fileToUpload: File = null;
   urlBasic: string;
   itemNameSelected: string;
+  error: any;
 
   urlImageDefault = './assets/image/no_image_available.jpg';
 
@@ -84,7 +86,7 @@ export class ItemComponent implements OnInit, OnDestroy {
       itemname: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
       image: new FormControl(''),
       description: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
-      price: new FormControl(''),
+      price: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
       state: new FormControl(true),
     });
     this.formFilter = this.formBuilder.group({
@@ -103,11 +105,30 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.get(1);
   }
 
+  validInput(id: string) {
+    if (this.form.get(id).errors) {
+      this.error[id].error = true;
+      this.error[id].msg = customValidatorHandler(this.form, id);
+    } else {
+      this.error[id].error = false;
+      this.error[id].msg = '';
+    }
+  }
+
+  errorInit = () => {
+    this.error = {
+      idcategoryitem: { error: false, msg: ''},
+      idunittype: { error: false, msg: ''},
+      itemname: { error: false, msg: ''},
+      description: { error: false, msg: ''},
+      price: { error: false, msg: ''},
+    };
+  }
+
   handleFileInput(files: FileList, fieldName: string) {
     this.fileToUpload = files.item(0);
     // this.form.get(fieldName).setValue(files.item(0));
   }
-
 
   getAction(page: number, perPage: number): Observable<FilterServerResponse> {
     const filters = {
@@ -123,6 +144,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   get = (page: number) => {
+    this.errorInit();
     this.ngxService.startLoader('loading-component');
     this.list =  this.getAction(page, 12).pipe(
       tap(
@@ -384,6 +406,7 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.asideIsOpen = false;
     this.form.reset();
     this.itemSelected = null;
+    this.errorInit();
   }
 
   /**
