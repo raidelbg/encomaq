@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/ConstantsEnums';
 import { ConfigEmailService } from 'src/app/admin/services/workflow/catalogue/config-email.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { customValidatorHandler } from 'src/app/shared/classes/CustomValidators';
 
 declare var $: any;
 
@@ -21,6 +22,7 @@ export class ConfigEmailComponent implements OnInit {
 
   form: FormGroup;
   itemSelected = null;
+  error: any;
 
   typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
   overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
@@ -30,10 +32,11 @@ export class ConfigEmailComponent implements OnInit {
               private formBuilder: FormBuilder, private ngxService: NgxUiLoaderService) { }
 
   ngOnInit() {
+    this.errorInit();
     this.form = this.formBuilder.group({
       driver: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
       server: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
-      port: new FormControl('', {validators: [Validators.pattern('^[0-9]*$')], updateOn: 'change'}),
+      port: new FormControl('', {validators: [Validators.required, Validators.pattern('^[0-9]*$')], updateOn: 'change'}),
       encryptation: new FormControl(''),
       useremail: new FormControl('', {validators: [Validators.required, Validators.email], updateOn: 'change'}),
       passwordemail: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
@@ -125,6 +128,26 @@ export class ConfigEmailComponent implements OnInit {
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
+  }
+
+  validInput(id: string) {
+    if (this.form.get(id).errors) {
+      this.error[id].error = true;
+      this.error[id].msg = customValidatorHandler(this.form, id);
+    } else {
+      this.error[id].error = false;
+      this.error[id].msg = '';
+    }
+  }
+
+  errorInit = () => {
+    this.error = {
+      driver: { error: false, msg: ''},
+      server: { error: false, msg: ''},
+      port: { error: false, msg: ''},
+      useremail: { error: false, msg: ''},
+      passwordemail: { error: false, msg: ''},
+    };
   }
 
   /**

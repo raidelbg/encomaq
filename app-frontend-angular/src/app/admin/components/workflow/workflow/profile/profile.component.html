@@ -19,17 +19,29 @@
                 <div class="container mt-4">
                     <div class="row">
                         <div class="col-sm-6 col-12 mb-2">
-                            <label for="personname">Nombre</label>
-                            <input id="personname" type="text" class="form-control" placeholder="" autofocus formControlName="personname">
+                            <label for="personname">Nombre<span class="required">*</span></label>
+                            <input id="personname" type="text" class="form-control" placeholder="" autofocus formControlName="personname" 
+                                (input)="validInput('personname')" [ngClass]="{'is-invalid': error.personname.error}">
+                                <div class="invalid-feedback" *ngIf="form.get('personname').errors?.required">
+                                    {{error.personname.msg}}
+                                </div>
                         </div>
                         <div class="col-sm-6 col-12 mb-2">
-                            <label for="lastnameperson">Apellidos</label>
-                            <input id="lastnameperson" type="text" class="form-control" placeholder="" formControlName="lastnameperson">
+                            <label for="lastnameperson">Apellidos<span class="required">*</span></label>
+                            <input id="lastnameperson" type="text" class="form-control" placeholder="" formControlName="lastnameperson" 
+                                (input)="validInput('lastnameperson')" [ngClass]="{'is-invalid': error.lastnameperson.error}">
+                                <div class="invalid-feedback" *ngIf="form.get('lastnameperson').errors?.required">
+                                    {{error.lastnameperson.msg}}
+                                </div>
                         </div>
 
                         <div class="col-sm-6 col-12 mb-2">
-                            <label for="email">Email</label>
-                            <input id="email" type="text" class="form-control" placeholder="" formControlName="email">
+                            <label for="email">Email<span class="required">*</span></label>
+                            <input id="email" type="text" class="form-control" placeholder="" formControlName="email" 
+                                (input)="validInput('email')" [ngClass]="{'is-invalid': error.email.error}">
+                                <div class="invalid-feedback" *ngIf="form.get('email').errors?.required || form.get('email').errors?.email">
+                                    {{error.email.msg}}
+                                </div>
                         </div>
 
                         <div class="col-sm-6 col-12 mb-5">

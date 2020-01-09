@@ -7,6 +7,7 @@ import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/Constants
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { UserService } from 'src/app/admin/services/workflow/catalogue/user.service';
 import { LocalStorageCommon } from 'src/app/shared/classes/LocalStorageCommon';
+import { customValidatorHandler } from 'src/app/shared/classes/CustomValidators';
 
 declare var $: any;
 
@@ -26,6 +27,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   itemSelected = null;
+  error: any;
 
   typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
   overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
@@ -49,6 +51,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.form.get('lastnameperson').setValue(this.localStorageCommon.get('auth_user', 'json').lastnameperson);
     this.form.get('email').setValue(this.localStorageCommon.get('auth_user', 'json').email);
     this.form.get('password').setValue('');
+    this.errorInit();
   }
 
   action = () => {
@@ -85,6 +88,24 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.showNotification(error.title, error.icon, error.message, error.type);
       }
     );
+  }
+
+  validInput(id: string) {
+    if (this.form.get(id).errors) {
+      this.error[id].error = true;
+      this.error[id].msg = customValidatorHandler(this.form, id);
+    } else {
+      this.error[id].error = false;
+      this.error[id].msg = '';
+    }
+  }
+
+  errorInit = () => {
+    this.error = {
+      personname: { error: false, msg: ''},
+      lastnameperson: { error: false, msg: ''},
+      email: { error: false, msg: ''},
+    };
   }
 
 

@@ -20,19 +20,27 @@
                     <div class="row">
                         <div class="col-sm-6 col-12 mb-2">
                             <label for="driver">Driver</label>
-                            <input id="driver" type="text" class="form-control" placeholder="" autofocus formControlName="driver">
+                            <input id="driver" type="text" class="form-control" placeholder="" autofocus formControlName="driver"
+                                (input)="validInput('driver')" [ngClass]="{'is-invalid': error.driver.error}">
+                                <div class="invalid-feedback" *ngIf="form.get('driver').errors?.required">
+                                    {{error.driver.msg}}
+                                </div>
                         </div>
                         <div class="col-sm-6 col-12 mb-2">
                             <label for="server">Servidor</label>
-                            <input id="server" type="text" class="form-control" placeholder="" formControlName="server">
+                            <input id="server" type="text" class="form-control" placeholder="" formControlName="server"
+                                (input)="validInput('server')" [ngClass]="{'is-invalid': error.server.error}">
+                                <div class="invalid-feedback" *ngIf="form.get('server').errors?.required">
+                                    {{error.server.msg}}
+                                </div>
                         </div>
                         <div class="col-sm-6 col-12 mb-2">
                             <label for="port">Puerto</label>
                             <input id="port" type="text" class="form-control" placeholder="" formControlName="port"
-                                    [ngClass]="{ 'is-invalid': !form.get('port').valid }">
-                            <div class="invalid-feedback" *ngIf="!form.get('port').valid">
-                                Debe ingresar solo números
-                            </div>
+                                (input)="validInput('port')" [ngClass]="{'is-invalid': error.port.error}">
+                                <div class="invalid-feedback" *ngIf="form.get('port').errors?.required || form.get('port').errors?.pattern">
+                                    {{error.port.msg}}
+                                </div>
                         </div>
                         <div class="col-sm-6 col-12 mb-2">
                             <label for="encryptation">Encriptación</label>
@@ -41,19 +49,31 @@
 
                         <div class="col-sm-6 col-12 mb-2">
                             <label for="useremail">Usuario</label>
-                            <input id="useremail" type="text" class="form-control" placeholder="" formControlName="useremail">
+                            <input id="useremail" type="text" class="form-control" placeholder="" formControlName="useremail"
+                                (input)="validInput('useremail')" [ngClass]="{'is-invalid': error.useremail.error}">
+                                <div class="invalid-feedback" *ngIf="form.get('useremail').errors?.required || form.get('useremail').errors?.email">
+                                    {{error.useremail.msg}}
+                                </div>
                         </div>
 
                         <div class="col-sm-6 col-12 mb-5">
                             <label for="passwordemail">Password</label>
-                            <input id="passwordemail" type="password" class="form-control" placeholder="" formControlName="passwordemail">
+                            <input id="passwordemail" type="password" class="form-control" placeholder="" formControlName="passwordemail"
+                                (input)="validInput('passwordemail')" [ngClass]="{'is-invalid': error.passwordemail.error}">
+                                <div class="invalid-feedback" *ngIf="form.get('passwordemail').errors?.required">
+                                    {{error.passwordemail.msg}}
+                                </div>
                         </div>
 
 
-                        <div class="col-12">
-                            <button class="btn btn-lg btn-primary btn-block" type="button"
-                            (keydown.enter)="form.valid && action()" (click)="form.valid && action()"
-                            [disabled]="!form.valid">Guardar</button>
+                        <div class="col-12 mt-2">
+                            <div class="btn-group btn-block" role="group" aria-label="Basic example">
+                                <button class="btn btn-lg btn-primary" type="button"
+                                    (keydown.enter)="form.valid && action()" (click)="form.valid && action()"
+                                    [disabled]="!form.valid">Guardar
+                                </button>
+                                <button type="button" class="btn btn-lg btn-secondary" (click)="get()">Cancelar</button>
+                            </div>
                         </div>
                     </div>
                 </div>        

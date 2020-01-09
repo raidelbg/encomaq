@@ -48,7 +48,7 @@ export class CompanyComponent implements OnInit, OnDestroy {
       identify: new FormControl('', {validators: [Validators.required, Validators.pattern('^[0-9]*$')], updateOn: 'change'}),
       phone: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
       address: new FormControl(''),
-      email: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      email: new FormControl('', {validators: [Validators.required, Validators.email], updateOn: 'change'}),
       urlweb: new FormControl(''),
     });
     const partUrl = environment.baseUrl.replace('api/', '');
