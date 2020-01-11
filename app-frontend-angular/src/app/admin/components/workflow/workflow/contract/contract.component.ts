@@ -514,9 +514,9 @@ export class ContractComponent implements OnInit, OnDestroy {
     $('#listClientModalSearch').modal('hide');
   }
 
-  exportExcel = () => {
+  exportExcel = (idTable: string, nameFile: string) => {
     /* table id is passed over here */
-    const element = document.getElementById('contract-table');
+    const element = document.getElementById(idTable);
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
 
     /* generate workbook and add the worksheet */
@@ -524,7 +524,7 @@ export class ContractComponent implements OnInit, OnDestroy {
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
     /* save to file */
-    XLSX.writeFile(wb, 'Contratos.xlsx');
+    XLSX.writeFile(wb, nameFile);
  }
 
 
