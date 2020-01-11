@@ -64,6 +64,28 @@ class ContractController extends Controller
 
     }
 
+    public function resumeContract(Request $request)
+    {
+        try {
+
+            $result = Contract::with([
+                    'biz_client.biz_project', 'nom_categoryitem', 'biz_period',
+                    'biz_contractitem.biz_item', 'biz_contractpaymentform.biz_paymentform']
+            )
+            ->orderBy('biz_contract.startdate', 'asc')
+            ->selectRaw('biz_contract.*')
+            ->get();
+            return response()->json([
+                self::SUCCESS => true, self::DATA => $result
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => $e->getMessage()
+            ]);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *

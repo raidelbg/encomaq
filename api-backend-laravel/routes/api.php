@@ -44,6 +44,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('item-price', 'workflow\ItemPriceController');
     Route::resource('company', 'workflow\CompanyController');
     Route::get('contract/getLastNoContract', 'workflow\ContractController@getNoContract');
+    Route::get('contract/resumeContract', 'workflow\ContractController@resumeContract');
     Route::resource('contract', 'workflow\ContractController');
     Route::resource('referral-guide', 'workflow\ReferralGuideController');
 });

@@ -40,6 +40,7 @@ export class ContractComponent implements OnInit, OnDestroy {
   formArrayItem: FormArray;
 
   list: Observable<any[]>;
+  listResumeContract = [];
   listClient = [];
   listClientModal: Observable<any[]>;
   listPeriod = [];
@@ -225,6 +226,20 @@ export class ContractComponent implements OnInit, OnDestroy {
     );
   }
 
+  getResumeContract = () => {
+    this.contractService.get({}, 'resumeContract').pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          this.listResumeContract = response.data;
+          $('#listResumeContract').modal('show');
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
   getActionClient(page: number, perPage: number): Observable<any> {
     const filters = {
       search: '',
@@ -238,7 +253,7 @@ export class ContractComponent implements OnInit, OnDestroy {
   }
 
   getClientPaginate = (page: number) => {
-    this.listClientModal =  this.getActionClient(page, 5).pipe(
+    this.listClientModal = this.getActionClient(page, 5).pipe(
       tap(
         (response) => {
 
