@@ -33,10 +33,11 @@ class LiquidationController extends Controller
                 $sql .= ' SELECT biz_client.idclient FROM biz_client  WHERE  businessname LIKE '%".$filtro->search."%') ) )';
             }
 
-            if ($filtro->idproject != '') {
+            /*if ($filtro->idproject != '') {
                 $sql .= ' AND biz_liquidation.idliquidation IN ( ';
                 $sql .= ' SELECT biz_liquidation_project.idliquidation FROM biz_liquidation_project WHERE biz_liquidation_project.idproject = ' . $filtro->idproject . ' ) ';
-            }
+            }*/
+
             $data = Liquidation::with("biz_liquidationproject.biz_project.biz_client",
                 "biz_referralguideliquidation.biz_referralguide.biz_contract.biz_client",
                 "biz_referralguideliquidation.biz_referralguide.biz_Referralguideitem.biz_item",
