@@ -528,20 +528,7 @@ export class ContractComponent implements OnInit, OnDestroy {
  }
 
 
-  /**
-   * Show notifications launched from methods
-   * @param string title
-   * @param string icon
-   * @param string message
-   * @param string type
-   */
-  showNotification = (title: string, icon: string, message: string, type: string): void => {
-    this.titleNotification = title;
-    this.iconNotification = icon;
-    this.messageNotification = message;
-    this.typeNotification = type;
-    this.notification.open();
-  }
+
 
   calculateDay = (enddate: string): boolean => {
     if (enddate !== null) {
@@ -557,6 +544,21 @@ export class ContractComponent implements OnInit, OnDestroy {
     } else {
       return false;
     }
+  }
+
+  /**
+   * Show notifications launched from methods
+   * @param string title
+   * @param string icon
+   * @param string message
+   * @param string type
+   */
+  showNotification = (title: string, icon: string, message: string, type: string): void => {
+    this.titleNotification = title;
+    this.iconNotification = icon;
+    this.messageNotification = message;
+    this.typeNotification = type;
+    this.notification.open();
   }
 
   ngOnDestroy(): void {

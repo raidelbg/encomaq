@@ -16,6 +16,7 @@ class LiquidationController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
@@ -25,11 +26,11 @@ class LiquidationController extends Controller
             $filtro = json_decode($request->get('filter'));
 
             $sql = '';
-            if ($filtro->Buscar != '') {
+            if ($filtro->search != '') {
                 $sql .= ' OR biz_liquidation.idliquidation IN (';
                 $sql .= ' SELECT biz_liquidation_project.idliquidation FROM biz_liquidation_project WHERE biz_liquidation_project.idproject IN ( ';
                 $sql .= ' SELECT biz_project.idproject FROM biz_project  WHERE biz_project.idclient IN (';
-                $sql .= ' SELECT biz_client.idclient FROM biz_client  WHERE  businessname LIKE '%".$filtro->Buscar."%') ) )';
+                $sql .= ' SELECT biz_client.idclient FROM biz_client  WHERE  businessname LIKE '%".$filtro->search."%') ) )';
             }
 
             if ($filtro->idproject != '') {
@@ -41,7 +42,7 @@ class LiquidationController extends Controller
                 "biz_referralguideliquidation.biz_referralguide.biz_Referralguideitem.biz_item",
                 "biz_referralguideliquidation.biz_referralguide.nom_transferreason"
             )
-            ->whereRaw("biz_liquidation.state='".$filtro->state."' AND ( biz_liquidation.number LIKE '%".$filtro->Buscar."%' ".$sql." )")
+            ->whereRaw("biz_liquidation.state='".$filtro->state."' AND ( biz_liquidation.number LIKE '%".$filtro->search."%' ".$sql." )")
             ->orderBy("".$filtro->column, "".$filtro->order);
 
             return response()->json([
