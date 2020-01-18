@@ -53,6 +53,7 @@ import { DashboardComponent } from './components/workflow/workflow/dashboard/das
 import { ReferralGuideComponent } from './components/workflow/workflow/referral-guide/referral-guide.component';
 import { ProfileComponent } from './components/workflow/workflow/profile/profile.component';
 import { LiquidationComponent } from './components/workflow/workflow/liquidation/liquidation.component';
+import { LiquidationService } from './services/workflow/workflow/liquidation.service';
 
 @NgModule({
   declarations: [AdminComponent, AuthComponent, SigninComponent, SignupComponent, PasswordRenewComponent,
@@ -73,7 +74,7 @@ import { LiquidationComponent } from './components/workflow/workflow/liquidation
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
     SigninService, IdentificationtypeService, CategoryItemService, UnitTypeService, PaymentFormService, WarehouseService,
     TransferReasonService, RoleService, ConfigEmailService, UserService, CarrierService, ClientService, ProjectService, ItemService,
-    ItemPriceService, CompanyService, ContractService, PeriodService
+    ItemPriceService, CompanyService, ContractService, PeriodService, LiquidationService
   ]
 })
 export class AdminModule { }
