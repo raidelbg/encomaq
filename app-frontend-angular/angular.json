@@ -180,5 +180,8 @@
       }
     }
   },
-  "defaultProject": "app-frontend-angular"
+  "defaultProject": "app-frontend-angular",
+  "cli": {
+    "analytics": "a4267eeb-cf64-44fe-9e39-165d02578516"
+  }
 }

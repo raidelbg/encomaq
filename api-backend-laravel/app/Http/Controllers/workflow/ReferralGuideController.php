@@ -7,14 +7,24 @@ use Illuminate\Http\Request;
 
 class ReferralGuideController extends Controller
 {
+    private const SUCCESS = 'success';
+    private const MESSAGE = 'message';
+    private const DATA = 'data';
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        //
+        try {
+
+        } catch (\Exception $e) {
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => $e->getMessage()
+            ]);
+        }
     }
 
     /**

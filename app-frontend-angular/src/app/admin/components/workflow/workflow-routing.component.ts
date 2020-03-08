@@ -19,6 +19,7 @@ import { DashboardComponent } from './workflow/dashboard/dashboard.component';
 import { ReferralGuideComponent } from './workflow/referral-guide/referral-guide.component';
 import { ProfileComponent } from './workflow/profile/profile.component';
 import { LiquidationComponent } from './workflow/liquidation/liquidation.component';
+import { ReferralGuideUltimateComponent } from './workflow/referral-guide-ultimate/referral-guide-ultimate.component';
 
 export const routesWorkflow: Routes = [
     { path: 'identificationtype', component: IdentificationtypeComponent },
@@ -38,7 +39,8 @@ export const routesWorkflow: Routes = [
     { path: 'contract', component: ContractComponent },
     { path: 'dashboard', component: DashboardComponent },
     { path: '', component: DashboardComponent },
-    { path: 'referral-guide', component: ReferralGuideComponent },
+    { path: 'referral-guide-dev', component: ReferralGuideComponent },
+    { path: 'referral-guide', component: ReferralGuideUltimateComponent },
     { path: 'profile', component: ProfileComponent },
     { path: 'liquidation', component: LiquidationComponent },
 ];

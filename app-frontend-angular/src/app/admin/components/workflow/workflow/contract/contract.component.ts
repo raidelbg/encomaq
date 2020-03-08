@@ -219,7 +219,6 @@ export class ContractComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.ngxService.stopLoader('loading-component');
-          console.error(error);
         }
       ),
       map(response => response.data.data)
@@ -526,9 +525,6 @@ export class ContractComponent implements OnInit, OnDestroy {
     /* save to file */
     XLSX.writeFile(wb, nameFile);
  }
-
-
-
 
   calculateDay = (enddate: string): boolean => {
     if (enddate !== null) {
