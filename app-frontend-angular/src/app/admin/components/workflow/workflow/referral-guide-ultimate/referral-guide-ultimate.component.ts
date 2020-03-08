@@ -86,7 +86,8 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
       state: this.formFilter.value.stateFilter,
       column: this.formFilter.value.column,
       order: this.formFilter.value.order,
-      num_page: this.formFilter.value.numPage
+      num_page: this.formFilter.value.numPage,
+      transferreason: this.formFilter.value.transferreason
     };
     return from(this.referralGuideService.get(filters, null, page)).pipe(delay(200));
   }

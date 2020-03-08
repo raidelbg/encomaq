@@ -26,12 +26,24 @@ class ReferralGuideController extends Controller
             $where = "( biz_contract.nocontract LIKE '%" . $filter->search . "%' OR (biz_client.businessname LIKE '%" . $filter->search . "%' OR biz_client.identify LIKE '%" . $filter->search . "%') ) ";
             $where .= "AND biz_referralguide.state = " . $filter->state;
 
-            $result = ReferralGuide::with('biz_project', 'biz_warehouse', 'biz_contract.biz_client.biz_Project', 'biz_carrier.nom_identifytype', 'nom_transferreason')
-                ->selectRaw('biz_referralguide.*, biz_client.*')
-                ->join('biz_contract', 'biz_contract.idcontract', '=', 'biz_referralguide.idcontract')
+            if ($filter->transferreason !== '') {
+                $where .= ' AND biz_referralguide.idtransferreason = ' . $filter->transferreason;
+            }
+
+            $select = 'biz_referralguide.*, biz_client.businessname, biz_client.identify, biz_contract.nocontract, ';
+            $select .= 'nom_transferreason.transferreasonname, nom_transferreason.idtypetransferreason, biz_carrier.carriername, biz_carrier.licenseplate, ';
+            $select .= 'biz_project.projectname, biz_warehouse.warehousename';
+
+            $result = ReferralGuide::join('biz_contract', 'biz_contract.idcontract', '=', 'biz_referralguide.idcontract')
                 ->join('biz_client', 'biz_client.idclient', '=', 'biz_contract.idclient')
+                ->join('biz_carrier', 'biz_carrier.idcarrier', '=', 'biz_referralguide.idcarrier')
+                ->join('biz_project', 'biz_project.idproject', '=', 'biz_referralguide.idproject')
+                ->join('biz_warehouse', 'biz_warehouse.idwarehouse', '=', 'biz_referralguide.idwarehouse')
+                ->join('nom_transferreason', 'nom_transferreason.idtransferreason', '=', 'biz_referralguide.idtransferreason')
                 ->whereRaw($where)->orderBy($filter->column, $filter->order)
+                ->selectRaw($select)
                 ->paginate($filter->num_page);
+
             return response()->json([
                 self::SUCCESS => true, self::DATA => $result
             ]);
@@ -40,16 +52,6 @@ class ReferralGuideController extends Controller
                 self::SUCCESS => false, self::MESSAGE => $e->getMessage()
             ]);
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -70,17 +72,6 @@ class ReferralGuideController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
     {
         //
     }

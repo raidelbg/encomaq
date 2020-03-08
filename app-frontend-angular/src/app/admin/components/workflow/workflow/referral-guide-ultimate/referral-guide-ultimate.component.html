@@ -60,7 +60,7 @@
                                     <div class="col-sm-2 col-12 mb-2">
                                         <label for="column">Columna</label>
                                         <select class="custom-select" id="column" formControlName="column" (change)="get(1)">
-                                            <option value=""># GUIA REMISION</option>
+                                            <option value="biz_referralguide.guidenumber"># GUIA REMISION</option>
                                             <option value="biz_contract.nocontract"># CONTRATO</option>
                                             <option value="biz_client.businessname">CLIENTE</option>
                                         </select>
@@ -130,15 +130,29 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="text-truncate"><span class="font-weight-bold">NO.:</span> {{item.biz_contract.nocontract}}</td>
+                        <td class="text-truncate"><span class="font-weight-bold">NO.:</span> {{item.nocontract}}</td>
                         <td>{{item.guidenumber}}</td>
                         <td>{{item.datetimereferral + ' ' + item.sequential}}</td>
-                        <td class="text-left">{{item.nom_transferreason.transferreasonname}}</td>
-                        <td class="text-left"></td>
-                        <td class="text-left"></td>
+                        <td class="text-left">{{item.transferreasonname}}</td>
+                        <td class="text-left">
+                            <span *ngIf="item.idtypetransferreason != 2">
+                                {{item.warehousename}}
+                            </span>
+                            <span *ngIf="item.idtypetransferreason == 2">
+                                {{item.projectname}}
+                            </span>
+                        </td>
+                        <td class="text-left">
+                            <span *ngIf="item.idtypetransferreason != 2">
+                                {{item.projectname}}
+                            </span>
+                            <span *ngIf="item.idtypetransferreason == 2">
+                                {{item.warehousename}}
+                            </span>
+                        </td>
                         <td>
-                            <span>{{item.biz_carrier.carriername}}</span><br>
-                            <span class="font-weight-bold">PLACA:</span> {{item.biz_carrier.licenseplate}}
+                            <span>{{item.carriername}}</span><br>
+                            <span class="font-weight-bold">PLACA:</span> {{item.licenseplate}}
                         </td>
                         <td class="text-left">
                             <span *ngIf="item.state == 1">ACTIVO</span>
