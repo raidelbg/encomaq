@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import {NgxPaginationModule} from 'ngx-pagination';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxUiLoaderModule } from 'ngx-ui-loader';
 
 import { HttpConfigInterceptor } from '../shared/interceptors/httpconfig.interceptor';
@@ -54,13 +54,14 @@ import { ReferralGuideComponent } from './components/workflow/workflow/referral-
 import { ProfileComponent } from './components/workflow/workflow/profile/profile.component';
 import { LiquidationComponent } from './components/workflow/workflow/liquidation/liquidation.component';
 import { LiquidationService } from './services/workflow/workflow/liquidation.service';
+import { ReferralGuideUltimateComponent } from './components/workflow/workflow/referral-guide-ultimate/referral-guide-ultimate.component';
 
 @NgModule({
   declarations: [AdminComponent, AuthComponent, SigninComponent, SignupComponent, PasswordRenewComponent,
                 PasswordResetComponent, WorkflowComponent, IdentificationtypeComponent, CategoryItemComponent,
                 UnitTypeComponent, PaymentFormComponent, WarehouseComponent, TransferReasonComponent, RoleComponent, ConfigEmailComponent,
                 UserComponent, CarrierComponent, ClientComponent, ProjectComponent, ItemComponent, CompanyComponent, ContractComponent,
-                DashboardComponent, ReferralGuideComponent, ProfileComponent, LiquidationComponent],
+                DashboardComponent, ReferralGuideComponent, ProfileComponent, LiquidationComponent, ReferralGuideUltimateComponent],
   imports: [
     CommonModule,
     HttpClientModule,

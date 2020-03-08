@@ -207,7 +207,7 @@ export class ContractComponent implements OnInit, OnDestroy {
 
   get = (page: number) => {
     this.ngxService.startLoader('loading-component');
-    this.list =  this.getAction(page, 5).pipe(
+    this.list = this.getAction(page, 5).pipe(
       tap(
         (response) => {
 

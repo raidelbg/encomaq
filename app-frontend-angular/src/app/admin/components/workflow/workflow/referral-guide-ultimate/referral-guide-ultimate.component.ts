@@ -9,6 +9,8 @@ import * as XLSX from 'xlsx';
 import { Notification } from 'src/app/shared/components/classes/Notification';
 import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/ConstantsEnums';
 import { ContractService } from 'src/app/admin/services/workflow/workflow/contract.service';
+import { TransferReasonService } from 'src/app/admin/services/workflow/workflow/transfer-reason.service';
+import { ReferralGuideService } from 'src/app/admin/services/workflow/workflow/referral-guide.service';
 
 declare var $: any;
 
@@ -35,6 +37,7 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
 
   list: Observable<any[]>;
   listItem = [];
+  listTransferReason = [];
   itemSelected = null;
   anything = '';
 
@@ -57,13 +60,66 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   colorAnimation = CONFIG_LOADING_UI.colorAnimation;
 
   constructor(private notification: Notification, private formBuilder: FormBuilder, private ngxService: NgxUiLoaderService,
-              private contractService: ContractService) { }
+              private contractService: ContractService, private transferReasonService: TransferReasonService,
+              private referralGuideService: ReferralGuideService) { }
 
   ngOnInit(): void {
+    this.initFormBuiler();
+    this.getTypeTransferReason();
+    this.get(1);
+  }
+
+  initFormBuiler = () => {
+    this.formFilter = this.formBuilder.group({
+      search: new FormControl(''),
+      stateFilter: new FormControl('1'),
+      column: new FormControl('biz_contract.nocontract'),
+      order: new FormControl('ASC'),
+      numPage: new FormControl(5),
+      transferreason: new FormControl(''),
+    });
+  }
+
+  getAction(page: number, perPage: number): Observable<any> {
+    const filters = {
+      search: this.formFilter.value.search,
+      state: this.formFilter.value.stateFilter,
+      column: this.formFilter.value.column,
+      order: this.formFilter.value.order,
+      num_page: this.formFilter.value.numPage
+    };
+    return from(this.referralGuideService.get(filters, null, page)).pipe(delay(200));
   }
 
   get = (page: number) => {
+    this.ngxService.startLoader('loading-component');
+    this.list = this.getAction(page, 5).pipe(
+      tap(
+        (response) => {
+          this.total = response.data.total;
+          this.pag = response.data.current_page;
+          this.pageDelta = (page - 1) * 5;
+          this.ngxService.stopLoader('loading-component');
+        },
+        (error) => {
+          this.ngxService.stopLoader('loading-component');
+        }
+      ),
+      map(response => response.data.data)
+    );
+  }
 
+  getTypeTransferReason = () => {
+    this.transferReasonService.get({}).subscribe(
+      (response) => {
+        if (response.success) {
+          this.listTransferReason = response.data;
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
   }
 
   create = () => {
@@ -74,14 +130,12 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
 
   }
 
-  confirmDelete = (item: any) => {
+  delete = () => {
 
   }
 
-  closeAside = () => {
-    this.asideIsOpen = false;
-    this.form.reset();
-    this.itemSelected = null;
+  confirmDelete = (item: any) => {
+
   }
 
   getResumeContract = () => {

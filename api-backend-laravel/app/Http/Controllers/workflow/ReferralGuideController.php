@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\workflow;
 
 use App\Http\Controllers\Controller;
+use App\Models\shema_public\ReferralGuide;
 use Illuminate\Http\Request;
 
 class ReferralGuideController extends Controller
@@ -14,12 +15,26 @@ class ReferralGuideController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
+            $filter = json_decode($request->get('filter'));
 
+            $where = "( biz_contract.nocontract LIKE '%" . $filter->search . "%' OR (biz_client.businessname LIKE '%" . $filter->search . "%' OR biz_client.identify LIKE '%" . $filter->search . "%') ) ";
+            $where .= "AND biz_referralguide.state = " . $filter->state;
+
+            $result = ReferralGuide::with('biz_project', 'biz_warehouse', 'biz_contract.biz_client.biz_Project', 'biz_carrier.nom_identifytype', 'nom_transferreason')
+                ->selectRaw('biz_referralguide.*, biz_client.*')
+                ->join('biz_contract', 'biz_contract.idcontract', '=', 'biz_referralguide.idcontract')
+                ->join('biz_client', 'biz_client.idclient', '=', 'biz_contract.idclient')
+                ->whereRaw($where)->orderBy($filter->column, $filter->order)
+                ->paginate($filter->num_page);
+            return response()->json([
+                self::SUCCESS => true, self::DATA => $result
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 self::SUCCESS => false, self::MESSAGE => $e->getMessage()
