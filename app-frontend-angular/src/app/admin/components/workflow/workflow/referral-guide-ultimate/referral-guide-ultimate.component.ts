@@ -11,6 +11,8 @@ import { ICONS_ALERT, CONFIG_LOADING_UI } from 'src/app/shared/classes/Constants
 import { ContractService } from 'src/app/admin/services/workflow/workflow/contract.service';
 import { TransferReasonService } from 'src/app/admin/services/workflow/workflow/transfer-reason.service';
 import { ReferralGuideService } from 'src/app/admin/services/workflow/workflow/referral-guide.service';
+import { CarrierService } from 'src/app/admin/services/workflow/workflow/carrier.service';
+import { WarehouseService } from 'src/app/admin/services/workflow/workflow/warehouse.service';
 
 declare var $: any;
 
@@ -38,6 +40,11 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   list: Observable<any[]>;
   listItem = [];
   listTransferReason = [];
+  listContracts = [];
+  listProjects = [];
+  listWarehouses = [];
+  listCarriers = [];
+
   itemSelected = null;
   anything = '';
 
@@ -61,7 +68,8 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
 
   constructor(private notification: Notification, private formBuilder: FormBuilder, private ngxService: NgxUiLoaderService,
               private contractService: ContractService, private transferReasonService: TransferReasonService,
-              private referralGuideService: ReferralGuideService) { }
+              private referralGuideService: ReferralGuideService, private carrierService: CarrierService,
+              private warehouseService: WarehouseService) { }
 
   ngOnInit(): void {
     this.initFormBuiler();
@@ -77,6 +85,22 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
       order: new FormControl('ASC'),
       numPage: new FormControl(5),
       transferreason: new FormControl(''),
+    });
+    this.form = this.formBuilder.group({
+      idcontract: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      idclient: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      idproject: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      idwarehouse: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      establec: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      ptoventa: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      secuencial: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      datetimereferral: new FormControl(''),
+      sequential: new FormControl(''),
+      logisticservicecost: new FormControl(''),
+      idtransferreason: new FormControl(''),
+      idcarrier: new FormControl(''),
+      state: new FormControl(true),
+      items: this.formBuilder.array([]),
     });
   }
 
@@ -124,7 +148,12 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   }
 
   create = () => {
-
+    this.titleAside = 'Agregar Guía de Remisión';
+    this.form.reset();
+    this.form.get('idtransferreason').setValue('');
+    this.getCarriers();
+    this.getWarehouses();
+    this.asideIsOpen = true;
   }
 
   edit = (item: any) => {
@@ -132,6 +161,10 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   }
 
   delete = () => {
+
+  }
+
+  action = () => {
 
   }
 
@@ -147,8 +180,51 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
 
   }
 
-  calculateDay = (enddate: string) => {
+  createRowItem = () => {
+    const item = this.formBuilder.group({
+      idcontractitem: 0,
+      iditem: '',
+      count: 0,
+      observation: ''
+    });
+    this.formArrayItem = this.form.get('items') as FormArray;
+    this.formArrayItem.push(item);
+  }
 
+  deleteItem = (pos) => {
+    this.formArrayItem.removeAt(pos);
+  }
+
+  getContractPaginate = (page: number) => {
+
+  }
+
+  getCarriers = () => {
+    this.carrierService.get({}).subscribe(
+      (response) => {
+        if (response.success) {
+          this.listCarriers = response.data;
+          this.form.get('idcarrier').setValue('');
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
+  getWarehouses = () => {
+    this.warehouseService.get({}).subscribe(
+      (response) => {
+        if (response.success) {
+          this.listWarehouses = response.data;
+          this.form.get('idwarehouse').setValue('');
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
   }
 
 

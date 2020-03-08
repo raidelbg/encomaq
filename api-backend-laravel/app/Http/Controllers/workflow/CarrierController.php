@@ -24,9 +24,14 @@ class CarrierController extends Controller
     {
         try {
             $filter = json_decode($request->get('filter'));
-            $where = "(identify LIKE '%" . $filter->search . "%' OR carriername LIKE '%" . $filter->search . "%' OR ";
-            $where .= "licenseplate LIKE '%" . $filter->search . "%') AND state = " . $filter->state;
-            $result = Carrier::with('nom_identifytype')->whereRaw($where)->orderBy($filter->column, $filter->order)->paginate($filter->num_page);
+            if (isset($filter->num_page) !== false) {
+                $where = "(identify LIKE '%" . $filter->search . "%' OR carriername LIKE '%" . $filter->search . "%' OR ";
+                $where .= "licenseplate LIKE '%" . $filter->search . "%') AND state = " . $filter->state;
+                $result = Carrier::with('nom_identifytype')->whereRaw($where)->orderBy($filter->column, $filter->order)->paginate($filter->num_page);
+            } else {
+                $result = Carrier::get();
+            }
+
             return response()->json([
                 self::SUCCESS => true, self::DATA => $result
             ]);
