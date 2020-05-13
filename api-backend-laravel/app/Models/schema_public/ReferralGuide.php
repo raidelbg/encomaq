@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\shema_public;
+namespace App\Models\schema_public;
 
 use Illuminate\Database\Eloquent\Model;
 

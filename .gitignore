@@ -6,3 +6,4 @@ package-lock.json
 .scannerwork
 coverage
 node_modules/
+vendor/
