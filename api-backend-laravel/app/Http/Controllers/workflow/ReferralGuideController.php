@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\workflow;
 
 use App\Http\Controllers\Controller;
-use App\Models\shema_public\ReferralGuide;
+use App\Models\schema_public\ReferralGuide;
 use Illuminate\Http\Request;
 
 class ReferralGuideController extends Controller

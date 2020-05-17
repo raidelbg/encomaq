@@ -20,7 +20,7 @@ class ItemPriceController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request): ?\Illuminate\Http\JsonResponse
     {
         try {
             $filter = json_decode($request->get('filter'));

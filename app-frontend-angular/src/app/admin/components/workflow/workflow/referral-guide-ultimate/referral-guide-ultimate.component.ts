@@ -13,6 +13,8 @@ import { TransferReasonService } from 'src/app/admin/services/workflow/workflow/
 import { ReferralGuideService } from 'src/app/admin/services/workflow/workflow/referral-guide.service';
 import { CarrierService } from 'src/app/admin/services/workflow/workflow/carrier.service';
 import { WarehouseService } from 'src/app/admin/services/workflow/workflow/warehouse.service';
+import { ItemService } from 'src/app/admin/services/workflow/workflow/item.service';
+import { ItemPriceService } from 'src/app/admin/services/workflow/workflow/item-price.service';
 
 declare var $: any;
 
@@ -39,6 +41,7 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
 
   list: Observable<any[]>;
   listItem = [];
+  listItemPrice = [];
   listTransferReason = [];
   listContracts = [];
   listProjects = [];
@@ -69,7 +72,7 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   constructor(private notification: Notification, private formBuilder: FormBuilder, private ngxService: NgxUiLoaderService,
               private contractService: ContractService, private transferReasonService: TransferReasonService,
               private referralGuideService: ReferralGuideService, private carrierService: CarrierService,
-              private warehouseService: WarehouseService) { }
+              private warehouseService: WarehouseService, private itemService: ItemService, private itemPriceService: ItemPriceService) { }
 
   ngOnInit(): void {
     this.initFormBuiler();
@@ -147,12 +150,72 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
     );
   }
 
+  getItem = () => {
+    const filter = {
+      search: '',
+      state: 1,
+      column: 'itemname',
+      order: 'ASC'
+    };
+    this.listItem.push({iditem: '', itemname: '-- Seleccione --'});
+    this.itemService.get(filter).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          response.data.forEach(element => {
+            this.listItem.push({
+              iditem: element.iditem,
+              itemname: element.itemname + '. ' + element.description
+            });
+          });
+          this.createRowItem();
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
+  getListItemPrice = (pos: any) => {
+    const item = this.formArrayItem.value[pos];
+    this.itemSelected = item;
+    const data = {
+      iditem: item.iditem
+    };
+    this.itemPriceService.get(data).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          this.formArrayItem.value[pos].listPrice = response.data;
+          if ( response.data.length > 0 ) {
+            this.formArrayItem.at(pos).get('price').setValue(response.data[0].price);
+            this.formArrayItem.at(pos).get('iditemprice').setValue(response.data[0].iditemprice);
+            this.formArrayItem.at(pos).get('listPrice').setValue(response.data);
+          }
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
+  getIDItemPrice(pos: number) {
+    console.log(this.formArrayItem.value);
+    /*const price = item.price;
+    item.listPrice.forEach(function(e) {
+      if (parseFloat(price) === parseFloat(e.price)) {
+        item.iditemprice = e.iditemprice;
+      }
+    });*/
+  }
+
   create = () => {
     this.titleAside = 'Agregar Guía de Remisión';
     this.form.reset();
     this.form.get('idtransferreason').setValue('');
     this.getCarriers();
     this.getWarehouses();
+    this.getItem();
     this.asideIsOpen = true;
   }
 
@@ -182,8 +245,10 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
 
   createRowItem = () => {
     const item = this.formBuilder.group({
-      idcontractitem: 0,
       iditem: '',
+      iditemprice: 0,
+      listPrice: [],
+      price: 0,
       count: 0,
       observation: ''
     });

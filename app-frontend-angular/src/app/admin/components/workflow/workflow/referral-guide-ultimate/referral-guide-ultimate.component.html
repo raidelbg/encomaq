@@ -306,8 +306,9 @@
                             <tr>
                                 <th>No.</th>
                                 <th>Descripción</th>
-                                <th>Cantidad</th>
-                                <th>Observaciones</th>
+                                <th style="width: 150px !important;">Precio</th>
+                                <th style="width: 120px !important;">Cantidad</th>
+                                <!--<th>Observaciones</th>-->
                                 <th style="width: 5%;">
                                     <button type="button" class="btn btn-primary" (click)="createRowItem()">
                                         <i class="fas fa-plus-square"></i>
@@ -320,18 +321,25 @@
                                 <ng-container [formGroupName]="ii">
                                     <td>{{ ii + 1 }}</td>
                                     <td>
-                                        <select class="custom-select" formControlName="iditem">
+                                        <select class="custom-select" formControlName="iditem" (change)="getListItemPrice(ii)">
                                             <option *ngFor="let e of listItem" [ngValue]="e.iditem">
                                                 {{e.itemname}}
                                             </option>
                                         </select>                                    
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" placeholder="" formControlName="count">
+                                        <select class="form-control" formControlName="iditemprice" (change)="getIDItemPrice(ii)">
+                                            <option *ngFor="let it of element.listPrice" [ngValue]="it.iditemprice">
+                                              {{it.price}}
+                                            </option>
+                                        </select>
                                     </td>
                                     <td>
+                                        <input type="text" class="form-control" placeholder="" formControlName="count">
+                                    </td>
+                                    <!--<td>
                                         <input type="text" class="form-control" placeholder="" formControlName="observation">
-                                    </td> 
+                                    </td> -->
                                     <td class="text-center">              
                                         <button type="button" class="btn btn-danger" (click)="deleteItem(ii)">
                                             <i class="fas fa-trash-alt"></i>
