@@ -40,13 +40,16 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   formArrayItem: FormArray;
 
   list: Observable<any[]>;
+  listContracts: Observable<any[]>;
+
   listItem = [];
   listItemPrice = [];
   listTransferReason = [];
-  listContracts = [];
   listProjects = [];
   listWarehouses = [];
   listCarriers = [];
+
+  contractSelected: any;
 
   itemSelected = null;
   anything = '';
@@ -64,6 +67,10 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   pag = 1;
   pageDelta = 1;
   total = 0;
+
+  pagContract = 1;
+  pageDeltaContract = 1;
+  totalContract = 0;
 
   typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
   overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
@@ -90,7 +97,7 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
       transferreason: new FormControl(''),
     });
     this.form = this.formBuilder.group({
-      idcontract: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
+      nocontract: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
       idclient: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
       idproject: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
       idwarehouse: new FormControl('', {validators: [Validators.required], updateOn: 'change'}),
@@ -119,6 +126,17 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
     return from(this.referralGuideService.get(filters, null, page)).pipe(delay(200));
   }
 
+  getActionContract = (page: number, perPage: number): Observable<any> => {
+    const filters = {
+      search: '',
+      state: 1,
+      column: 'biz_contract.nocontract',
+      order: 'DESC',
+      num_page: perPage
+    };
+    return from(this.contractService.get(filters, null, page)).pipe(delay(200));
+  }
+
   get = (page: number) => {
     this.ngxService.startLoader('loading-component');
     this.list = this.getAction(page, 5).pipe(
@@ -131,6 +149,23 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.ngxService.stopLoader('loading-component');
+        }
+      ),
+      map(response => response.data.data)
+    );
+  }
+
+  getListContract = (page: number) => {
+    this.listContracts = this.getActionContract(page, 5).pipe(
+      tap(
+        (response) => {
+          this.totalContract = response.data.total;
+          this.pagContract = response.data.current_page;
+          this.pageDeltaContract = (page - 1) * 5;
+          $('#listContractModalSearch').modal('show');
+        },
+        (error) => {
+          console.log(error);
         }
       ),
       map(response => response.data.data)
@@ -213,9 +248,11 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
     this.titleAside = 'Agregar Guía de Remisión';
     this.form.reset();
     this.form.get('idtransferreason').setValue('');
+    this.getListContract(1);
     this.getCarriers();
     this.getWarehouses();
     this.getItem();
+    this.form.get('state').setValue(true);
     this.asideIsOpen = true;
   }
 
@@ -228,7 +265,45 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   }
 
   action = () => {
+    this.add();
+  }
 
+  add = () => {
+    this.ngxService.startLoader('loading-component');
+    const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
+    const guidenumber = this.form.value.establec + '-' + this.form.value.ptoventa + '-' + this.form.value.secuencial;
+
+    const data = {
+      idcontract: this.contractSelected.idcontract,
+      idproject: this.form.value.idproject,
+      idtransferreason: this.form.value.idtransferreason,
+      idcarrier: this.form.value.idcarrier,
+      idwarehouse: this.form.value.idwarehouse,
+
+      datetimereferral: this.form.value.datetimereferral,
+      logisticservicecost: this.form.value.logisticservicecost,
+      sequential: this.form.value.sequential,
+      guidenumber,
+      state,
+      items: this.form.value.items,
+    };
+
+    console.log(data);
+
+    this.referralGuideService.post(data).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
+          this.closeAside();
+          this.get(1);
+        } else {
+          this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
   }
 
   confirmDelete = (item: any) => {
@@ -260,10 +335,6 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
     this.formArrayItem.removeAt(pos);
   }
 
-  getContractPaginate = (page: number) => {
-
-  }
-
   getCarriers = () => {
     this.carrierService.get({}).subscribe(
       (response) => {
@@ -292,6 +363,18 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
     );
   }
 
+  selectedContract = (item: any) => {
+    this.contractSelected = item;
+    this.form.get('nocontract').setValue(item.nocontract);
+    this.form.get('idclient').setValue(item.biz_client.businessname);
+    this.listProjects = item.biz_client.biz_project;
+    this.form.get('idproject').setValue(this.listProjects[0].idproject);
+    $('#listContractModalSearch').modal('hide');
+  }
+
+  getContractPaginate = (page: number) => {
+
+  }
 
   trackByFn(index: any, item: any) {
     return index;

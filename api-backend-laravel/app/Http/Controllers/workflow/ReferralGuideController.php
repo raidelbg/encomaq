@@ -4,6 +4,7 @@ namespace App\Http\Controllers\workflow;
 
 use App\Http\Controllers\Controller;
 use App\Models\schema_public\ReferralGuide;
+use App\Models\schema_public\ReferralGuideItem;
 use Illuminate\Http\Request;
 
 class ReferralGuideController extends Controller
@@ -62,7 +63,14 @@ class ReferralGuideController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $item = new ReferralGuide();
+            return $this->action($item, $request, 'add');
+        } catch (\Exception $e) {
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -97,5 +105,66 @@ class ReferralGuideController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function action(ReferralGuide $item, Request $request, $typeAction)
+    {
+        try {
+            $item->idcontract = $request->input('idcontract');
+            $item->idproject = $request->input('idproject');
+            $item->idtransferreason = $request->input('idtransferreason');
+            $item->idcarrier = $request->input('idcarrier');
+            $item->idwarehouse = $request->input('idwarehouse');
+            $item->datetimereferral = $request->input('datetimereferral');
+            $item->logisticservicecost = $request->input('logisticservicecost');
+            $item->sequential = $request->input('sequential');
+            $item->guidenumber = $request->input('guidenumber');
+            $item->state = ($request->input('state') === true || $request->input('state') === 1) ? 1 : 0;
+
+            if ($item->save()) {
+                $resultItems = $this->actionItems($request->input('items'), $item->idreferralguide);
+                if ($resultItems) {
+                    return response()->json([
+                        self::SUCCESS => true,
+                        self::MESSAGE => ($typeAction === 'add') ? 'Se agregó satisfactoriamente' : 'Se editó satisfactoriamente'
+                    ]);
+                } else {
+                    $item->delete();
+                    return response()->json([
+                        self::SUCCESS => false,
+                        self::MESSAGE => ($typeAction === 'add') ? 'Ha ocurrido un error al intentar agregar' : 'Ha ocurrido un error al intentar editar'
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    self::SUCCESS => false,
+                    self::MESSAGE => ($typeAction === 'add') ? 'Ha ocurrido un error al intentar agregar' : 'Ha ocurrido un error al intentar editar'
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => $e->getMessage()
+            ]);
+        }
+    }
+
+    private function actionItems($items, $idReferralGuide): bool
+    {
+        foreach ($items as $item) {
+            $referralItems = new ReferralGuideItem();
+            $referralItems->idreferralguide = $idReferralGuide;
+
+            $referralItems->iditemprice = $item['iditemprice'];
+            $referralItems->iditem = $item['iditem'];
+            $referralItems->price = $item['price'];
+            $referralItems->quantify = $item['count'];
+            $referralItems->observation = $item['observation'];
+
+            if(! $referralItems->save()) {
+                return false;
+            }
+        }
+        return true;
     }
 }
