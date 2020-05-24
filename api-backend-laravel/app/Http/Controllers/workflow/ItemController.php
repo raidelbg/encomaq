@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\workflow;
 
 use App\Models\schema_public\Item;
+use App\Models\schema_public\ItemPrice;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -20,15 +21,15 @@ class ItemController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request): ?\Illuminate\Http\JsonResponse
     {
         try {
-            $filter = json_decode($request->get('filter'));
+            $filter = json_decode($request->get('filter'), false);
             $otherWhere = '';
-            if (isset($filter->idcategoryitem) && $filter->idcategoryitem != '') {
+            if (isset($filter->idcategoryitem) && $filter->idcategoryitem !== '') {
                 $otherWhere .= ' AND idcategoryitem = ' . $filter->idcategoryitem;
             }
-            if (isset($filter->idunittype) && $filter->idunittype != '') {
+            if (isset($filter->idunittype) && $filter->idunittype !== '') {
                 $otherWhere .= ' AND idunittype = ' . $filter->idunittype;
             }
             $where = "(itemname LIKE '%" . $filter->search . "%' OR description LIKE '%" . $filter->search . "%' ) ";
@@ -59,7 +60,7 @@ class ItemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): ?\Illuminate\Http\JsonResponse
     {
         try {
             $path = null;
@@ -72,11 +73,15 @@ class ItemController extends Controller
                     $path = $dirupload . '/' . $name;
                 }
             }
-            $data = json_decode($request->get('data'));
+
+            $flagItemPrice = false;
+
+            $data = json_decode($request->get('data'), false);
             if (isset($data->iditem)) {
                 $item = Item::find($data->iditem);
             } else {
                 $item = new Item();
+                $flagItemPrice = true;
             }
 
             $item->idcategoryitem = $data->idcategoryitem;
@@ -86,19 +91,27 @@ class ItemController extends Controller
             $item->price = $data->price;
             $item->state = 1;
 
-            if ($path != null) {
+            if ($path !== null) {
                 $item->image = $path;
             }
 
             if ($item->save()) {
+
+                if ($flagItemPrice) {
+                    $itemprice = new ItemPrice();
+                    $itemprice->iditem = $item->iditem;
+                    $itemprice->price = $data->price;
+                    $itemprice->save();
+                }
+
                 return response()->json([
                     self::SUCCESS => true, self::MESSAGE => 'Se ha guardado satisfactoriamente el Producto'
                 ]);
-            } else {
-                return response()->json([
-                    self::SUCCESS => false, self::MESSAGE => 'Ha ocurrido un error al intentar guardar el Producto'
-                ]);
             }
+
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => 'Ha ocurrido un error al intentar guardar el Producto'
+            ]);
 
         } catch (\Exception $e) {
             return response()->json([

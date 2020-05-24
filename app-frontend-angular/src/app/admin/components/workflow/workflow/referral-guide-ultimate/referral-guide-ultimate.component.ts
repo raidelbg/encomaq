@@ -224,6 +224,20 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
       (response) => {
         if (response.success) {
           this.formArrayItem.value[pos].listPrice = response.data;
+
+          this.formArrayItem.at(pos).get('itsInContract').setValue(true);
+          let flag = false;
+          this.contractSelected.biz_contractitem.forEach(element => {
+            if (parseInt(element.iditem, 0) === parseInt(item.iditem, 0)) {
+              flag = true;
+            }
+          });
+
+          if (!flag) {
+            this.formArrayItem.at(pos).get('itsInContract').setValue(false);
+            $('#infoNoContractItem').modal('show');
+          }
+
           if ( response.data.length > 0 ) {
             this.formArrayItem.at(pos).get('price').setValue(response.data[0].price);
             this.formArrayItem.at(pos).get('iditemprice').setValue(response.data[0].iditemprice);
@@ -251,6 +265,9 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
     this.titleAside = 'Agregar Guía de Remisión';
     this.form.reset();
     this.form.get('idtransferreason').setValue('');
+    this.form.get('idwarehouse').setValue('');
+    this.form.get('idcarrier').setValue('');
+    this.form.get('idproject').setValue('');
     this.getListContract(1);
     this.form.get('state').setValue(true);
     this.formArrayItem = this.form.get('items') as FormArray;
@@ -328,7 +345,8 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
       listPrice: [],
       price: 0,
       count: 0,
-      observation: ''
+      observation: '',
+      itsInContract: true
     });
     this.formArrayItem = this.form.get('items') as FormArray;
     this.formArrayItem.push(item);
@@ -387,7 +405,8 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
         listPrice: [],
         price: 0,
         count: element.quantity,
-        observation: element.observation
+        observation: element.observation,
+        itsInContract: true
       });
 
       this.formArrayItem.push(itemC);

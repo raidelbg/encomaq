@@ -201,7 +201,7 @@
                 </div>
 
                 <div class="col-sm-4 mb-2">
-                    <label for="idcontract">Contrato</label>
+                    <label for="idcontract">Contrato<span class="required">*</span></label>
                     <div class="input-group mb-3">
                         <input id="idclient" type="text" class="form-control" placeholder="" formControlName="nocontract" readonly>
                         <div class="input-group-append">
@@ -216,7 +216,7 @@
                 </div>
 
                 <div class="col-sm-4 col-12 mb-2">
-                    <label for="guidenumber">No. Guía Remisión</label>
+                    <label for="guidenumber">No. Guía Remisión<span class="required">*</span></label>
                     <div class="input-group">
                         <input type="text" class="form-control" name="establec" maxlength="3" style="width: 25%;" formControlName="establec" placeholder="xxx">
                         <input type="text" class="form-control" name="ptoventa" maxlength="3" style="width: 25%;" formControlName="ptoventa" placeholder="xxx">
@@ -225,8 +225,9 @@
                 </div>
 
                 <div class="col-sm-4 col-12 mb-2">
-                    <label for="idproject">Proyectos</label>
+                    <label for="idproject">Proyectos<span class="required">*</span></label>
                     <select class="custom-select" formControlName="idproject">
+                        <option value="">-- Seleccione --</option>
                         <option *ngFor="let e of listProjects" [ngValue]="e.idproject">
                             {{e.projectname}}
                         </option>
@@ -234,7 +235,7 @@
                 </div>
 
                 <div class="col-sm-4 col-12 mb-2">
-                    <label for="idwarehouse">Bodegas</label>
+                    <label for="idwarehouse">Bodegas<span class="required">*</span></label>
                     <select class="custom-select" formControlName="idwarehouse">
                         <option value="">-- Seleccione --</option>
                         <option *ngFor="let e of listWarehouses" [ngValue]="e.idwarehouse">
@@ -244,12 +245,12 @@
                 </div>
 
                 <div class="col-sm-4 col-12 mb-2">
-                    <label for="datetimereferral">Fecha</label>
+                    <label for="datetimereferral">Fecha<span class="required">*</span></label>
                     <input id="datetimereferral" type="text" class="form-control" placeholder="" formControlName="datetimereferral">
                 </div>
 
                 <div class="col-sm-4 col-12 mb-2">
-                    <label for="sequential">Hora</label>
+                    <label for="sequential">Hora<span class="required">*</span></label>
                     <input id="sequential" type="time" class="form-control" placeholder="" formControlName="sequential">
                 </div>
 
@@ -259,7 +260,7 @@
                 </div>
 
                 <div class="col-12 mb-2">
-                    <label for="idtransferreason">Motivo Traslado</label>
+                    <label for="idtransferreason">Motivo Traslado<span class="required">*</span></label>
                     <select class="custom-select" formControlName="idtransferreason">
                         <option value="">-- Seleccione --</option>
                         <option *ngFor="let e of listTransferReason" [ngValue]="e.idtransferreason">
@@ -270,7 +271,7 @@
 
 
                 <div class="col-12 mb-2">
-                    <label for="idcarrier">Transportista</label>
+                    <label for="idcarrier">Transportista<span class="required">*</span></label>
                     <div class="input-group mb-3">
                         <select class="custom-select" formControlName="idcarrier">
                             <option value="">-- Seleccione --</option>
@@ -292,7 +293,7 @@
                 </div>
 
                 <div class="col-12 mt-3">
-                    <span class="font-weight-bold">LISTA DE PRODUCTOS</span>
+                    <span class="font-weight-bold">LISTA DE PRODUCTOS<span class="required">*</span></span>
                     <hr>
                 </div>
 
@@ -313,7 +314,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr formArrayName="items" *ngFor="let element of form.controls.items?.value; let ii = index; trackBy:trackByFn">
+                            <tr formArrayName="items" *ngFor="let element of form.controls.items?.value; let ii = index; trackBy:trackByFn" [ngClass]="{'its_in_contract': !element.itsInContract}">
                                 <ng-container [formGroupName]="ii">
                                     <td>{{ ii + 1 }}</td>
                                     <td>
@@ -374,6 +375,25 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             <button type="button" class="btn btn-danger" (click)="delete()">Eliminar</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="infoNoContractItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="exampleModalLabel">Información</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>El producto no se encuentra en la lista perteneciente al Contrato anteriormente seleccionado.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
         </div>
         </div>
     </div>
