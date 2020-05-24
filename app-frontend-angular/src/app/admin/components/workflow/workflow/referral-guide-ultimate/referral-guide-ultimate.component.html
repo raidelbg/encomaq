@@ -255,8 +255,13 @@
                 </div>
 
                 <div class="col-sm-4 col-12 mb-2">
-                    <label for="logisticservicecost">Costo Serv. Logística ($)</label>
-                    <input id="logisticservicecost" type="number" class="form-control" placeholder="" formControlName="logisticservicecost">
+                    <label for="logisticservicecost">Costo Serv. Logística</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text"> (USD) $</span>
+                        </div>
+                        <input id="logisticservicecost" type="number" class="form-control" placeholder="" formControlName="logisticservicecost">
+                    </div>
                 </div>
 
                 <div class="col-12 mb-2">
@@ -303,7 +308,7 @@
                             <tr>
                                 <th>No.</th>
                                 <th>Descripción</th>
-                                <th style="width: 150px !important;">Precio</th>
+                                <th style="width: 150px !important;">Precio (USD)</th>
                                 <th style="width: 120px !important;">Cantidad</th>
                                 <th>Observaciones</th>
                                 <th style="width: 5%;">
@@ -332,7 +337,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" placeholder="" formControlName="count">
+                                        <input type="text" class="form-control text-right" placeholder="" formControlName="count">
                                     </td>
                                     <td>
                                         <input type="text" class="form-control" placeholder="" formControlName="observation">
