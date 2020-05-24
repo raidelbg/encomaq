@@ -81,7 +81,15 @@ class ReferralGuideController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+
+            $result = ReferralGuide::where('idreferralguide', $id)->first();
+
+        } catch (\Exception $e) {
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -154,13 +162,11 @@ class ReferralGuideController extends Controller
         foreach ($items as $item) {
             $referralItems = new ReferralGuideItem();
             $referralItems->idreferralguide = $idReferralGuide;
-
             $referralItems->iditemprice = $item['iditemprice'];
             $referralItems->iditem = $item['iditem'];
             $referralItems->price = $item['price'];
             $referralItems->quantify = $item['count'];
             $referralItems->observation = $item['observation'];
-
             if(! $referralItems->save()) {
                 return false;
             }

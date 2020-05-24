@@ -83,6 +83,9 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initFormBuiler();
+    this.getCarriers();
+    this.getWarehouses();
+    this.getItem();
     this.getTypeTransferReason();
     this.get(1);
   }
@@ -249,15 +252,15 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
     this.form.reset();
     this.form.get('idtransferreason').setValue('');
     this.getListContract(1);
-    this.getCarriers();
-    this.getWarehouses();
-    this.getItem();
     this.form.get('state').setValue(true);
+    this.formArrayItem = this.form.get('items') as FormArray;
+    this.formArrayItem.clear();
     this.asideIsOpen = true;
   }
 
   edit = (item: any) => {
-
+    this.itemSelected = item;
+    console.log(item);
   }
 
   delete = () => {
@@ -332,7 +335,9 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   }
 
   deleteItem = (pos) => {
-    this.formArrayItem.removeAt(pos);
+    console.log(pos);
+    // this.formArrayItem.removeAt(pos);
+    console.log(this.formArrayItem.value);
   }
 
   getCarriers = () => {
@@ -370,6 +375,25 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
     this.listProjects = item.biz_client.biz_project;
     this.form.get('idproject').setValue(this.listProjects[0].idproject);
     $('#listContractModalSearch').modal('hide');
+
+    this.formArrayItem = this.form.get('items') as FormArray;
+    this.formArrayItem.clear();
+
+    let pos = 0;
+    item.biz_contractitem.forEach(element => {
+      const itemC = this.formBuilder.group({
+        iditem: element.iditem,
+        iditemprice: 0,
+        listPrice: [],
+        price: 0,
+        count: element.quantity,
+        observation: element.observation
+      });
+
+      this.formArrayItem.push(itemC);
+      this.getListItemPrice(pos);
+      pos++;
+    });
   }
 
   getContractPaginate = (page: number) => {
