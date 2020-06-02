@@ -75,23 +75,17 @@
         <div class="col-12">
             <div class="row">
 
-                <div class="col-12 col-sm-3" *ngFor="let item of list | async | paginate: { id: 'filters', itemsPerPage: 12, currentPage: pag, totalItems: total }; index as i">
-                    <div class="card mb-3" [ngClass]="{ 'border-primary': item.state === 1, 'border-danger': item.state === 0 }">
+                <div class="col-12 col-sm-3" *ngFor="let item of list | async | paginate: { id: 'filters', itemsPerPage: itemsPerPage, currentPage: pag, totalItems: total }; index as i">
+                    <div class="card mb-3 cursor-pointer" [ngClass]="{ 'border-primary': item.state === 1, 'border-danger': item.state === 0 }" (click)="edit(item)">
                         <div class="row no-gutters">
                             <div class="col-4">
                                 <img src="{{ (item.image != '' && item.image != null) ? urlBasic + '' + item.image : urlImageDefault }}" class="card-img" alt="...">
                             </div>
                             <div class="col-8">
-                            <div class="card-body">
-                                <h5 class="card-title text-truncate">{{item.itemname + '. ' + item.description}}</h5>
-                                <p class="card-text text-truncate">{{item.nom_categoryitem.categoryitemname}}</p>
-                                <p class="card-text">
-                                    <i class="fas fa-info-circle fa-lg mr-2 cursor-pointer" (click)="info(item)"></i>
-                                    <i class="fas fa-edit fa-lg mr-2 cursor-pointer" (click)="edit(item)"></i>
-                                    <i class="fas fa-trash-alt fa-lg mr-2 cursor-pointer" (click)="confirmDelete(item)"></i>
-                                    <i class="fas fa-file-invoice-dollar fa-lg cursor-pointer" (click)="listPrice(item)"></i>
-                                </p>
-                            </div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-truncate">{{item.itemname + '. ' + item.description}}</h5>
+                                    <p class="card-text text-truncate">{{item.nom_categoryitem.categoryitemname}}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -211,6 +205,10 @@
                     (keydown.enter)="form.valid && action()" (click)="form.valid && action()"
                     [disabled]="!form.valid">Guardar</button>
                 </div>
+                <div class="col-12 btn-group mt-2">
+                    <button class="btn btn-lg btn-info" type="button" (click)="listPrice()">Precios</button>
+                    <button class="btn btn-lg btn-danger" type="button" (click)="confirmDelete()">Eliminar</button>
+                </div>
             </div>
         </div>        
     </form>
@@ -260,6 +258,9 @@
                 <button type="button" class="btn btn-lg btn-primary" (click)="actionListPrice()">Guardar</button>
                 <button type="button" class="btn btn-lg btn-secondary" (click)="cancelConfirmActionListPrice()">Cancelar</button>
             </div>
+        </div>
+        <div class="col-12 mt-2">
+            <button class="btn btn-lg btn-info btn-block" type="button" (click)="edit(itemSelected)">Información</button>
         </div>
     </div>
     

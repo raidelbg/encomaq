@@ -105,7 +105,8 @@ class ItemController extends Controller
                 }
 
                 return response()->json([
-                    self::SUCCESS => true, self::MESSAGE => 'Se ha guardado satisfactoriamente el Producto'
+                    self::SUCCESS => true, self::MESSAGE => 'Se ha guardado satisfactoriamente el Producto',
+                    'id' => $item->iditem
                 ]);
             }
 
@@ -166,7 +167,7 @@ class ItemController extends Controller
     private function notExists($item, $id)
     {
         $elements = Item::where('itemname', $item);
-        if ($id != null) {
+        if ($id !== null) {
             $elements = $elements->where('iditem', '!=' , $id);
         }
         $count = $elements->count();

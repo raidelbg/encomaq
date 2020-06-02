@@ -48,6 +48,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   listUnitType = [];
   listItemPrice = [];
   itemSelected = null;
+  itemAddToEdit = null;
   anything = '';
 
   fileToUpload: File = null;
@@ -70,6 +71,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   pag = 1;
   pageDelta = 1;
   total = 0;
+  itemsPerPage = 20;
 
   typeSpinnerLoading = CONFIG_LOADING_UI.typeSpinnerLoading;
   overlayColorLoading = CONFIG_LOADING_UI.overlayColorLoading;
@@ -96,7 +98,7 @@ export class ItemComponent implements OnInit, OnDestroy {
       order: new FormControl('ASC'),
       idcategoryitem: new FormControl(''),
       idunittype: new FormControl(''),
-      numPage: new FormControl(12),
+      numPage: new FormControl(this.itemsPerPage),
     });
 
     const partUrl = environment.baseUrl.replace('api/', '');
@@ -146,14 +148,15 @@ export class ItemComponent implements OnInit, OnDestroy {
   get = (page: number) => {
     this.errorInit();
     this.ngxService.startLoader('loading-component');
-    this.list =  this.getAction(page, 12).pipe(
+    this.list =  this.getAction(page, this.itemsPerPage).pipe(
       tap(
         (response) => {
           this.getCategory();
           this.getUnitType();
           this.total = response.data.total;
           this.pag = response.data.current_page;
-          this.pageDelta = (page - 1) * 12;
+          this.pageDelta = (page - 1) * this.itemsPerPage;
+          this.verifyItemToEdit(response.data.data);
           this.ngxService.stopLoader('loading-component');
         },
         (error) => {
@@ -205,11 +208,6 @@ export class ItemComponent implements OnInit, OnDestroy {
     }
   }
 
-  info = (item: any) => {
-    this.itemSelected = item;
-    $('#infoItem').modal('show');
-  }
-
   edit = (item: any) => {
     this.itemSelected = item;
     this.itemService.get(item.iditem).pipe(takeUntil(this.destroySubscription$)).subscribe(
@@ -237,6 +235,16 @@ export class ItemComponent implements OnInit, OnDestroy {
     );
   }
 
+  verifyItemToEdit = (data) => {
+    if (this.itemAddToEdit !== null) {
+      data.forEach(element => {
+        if (parseInt(this.itemAddToEdit, 0) === parseInt(element.iditem, 0)) {
+          this.edit(element);
+        }
+      });
+    }
+  }
+
   update = (id: any) => {
     this.ngxService.startLoader('loading-component');
     const data = {
@@ -252,7 +260,6 @@ export class ItemComponent implements OnInit, OnDestroy {
       (response) => {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
-          this.closeAside();
           this.get(1);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
@@ -291,8 +298,9 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.itemService.postFile(data, this.fileToUpload).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
+          this.itemAddToEdit = response.id;
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
-          this.closeAside();
+          this.closeAside(false);
           this.get(1);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
@@ -306,17 +314,16 @@ export class ItemComponent implements OnInit, OnDestroy {
     );
   }
 
-  listPrice = (item: any) => {
-    this.itemSelected = item;
+  listPrice = () => {
     const data = {
-      iditem: item.iditem
+      iditem: this.itemSelected.iditem
     };
     this.itemPriceService.get(data).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
           this.listItemPrice = response.data;
           this.titleAside = 'Lista de Precio';
-          this.itemNameSelected = item.itemname + '. ' + item.description;
+          this.itemNameSelected = this.itemSelected.itemname + '. ' + this.itemSelected.description;
           this.formView = false;
           this.formTableView = true;
           this.asideIsOpen = true;
@@ -349,7 +356,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   cancelActionListPrice = () => {
-    this.listPrice(this.itemSelected);
+    this.listPrice();
     $('#confirmCancel').modal('hide');
   }
 
@@ -363,7 +370,7 @@ export class ItemComponent implements OnInit, OnDestroy {
       (response) => {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
-          this.listPrice(this.itemSelected);
+          this.listPrice();
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
@@ -376,9 +383,8 @@ export class ItemComponent implements OnInit, OnDestroy {
     );
   }
 
-  confirmDelete = (item: any) => {
-    this.itemSelected = item;
-    this.anything = item.itemname + ' ' + item.description;
+  confirmDelete = () => {
+    this.anything = this.itemSelected.itemname + ' ' + this.itemSelected.description;
     $('#confirmDeleteItem').modal('show');
   }
 
@@ -388,6 +394,7 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.itemService.delete(this.itemSelected.iditem).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
+          this.itemAddToEdit = null;
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.get(1);
         } else {
@@ -402,8 +409,10 @@ export class ItemComponent implements OnInit, OnDestroy {
     );
   }
 
-  closeAside = () => {
-    this.asideIsOpen = false;
+  closeAside = (noClose = true) => {
+    if (noClose) {
+      this.asideIsOpen = false;
+    }
     this.form.reset();
     this.itemSelected = null;
     this.errorInit();

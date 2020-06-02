@@ -22,7 +22,7 @@ class ReferralGuideController extends Controller
     public function index(Request $request)
     {
         try {
-            $filter = json_decode($request->get('filter'));
+            $filter = json_decode($request->get('filter'), false);
 
             $where = "( biz_contract.nocontract LIKE '%" . $filter->search . "%' OR (biz_client.businessname LIKE '%" . $filter->search . "%' OR biz_client.identify LIKE '%" . $filter->search . "%') ) ";
             $where .= "AND biz_referralguide.state = " . $filter->state;
@@ -59,7 +59,7 @@ class ReferralGuideController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -77,7 +77,7 @@ class ReferralGuideController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
