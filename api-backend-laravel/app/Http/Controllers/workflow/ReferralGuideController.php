@@ -100,11 +100,18 @@ class ReferralGuideController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): ?\Illuminate\Http\JsonResponse
     {
-        //
+        try {
+            $item = ReferralGuide::find($id);
+            return $this->action($item, $request, 'add');
+        } catch (\Exception $e) {
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -172,6 +179,11 @@ class ReferralGuideController extends Controller
 
     private function actionItems($items, $idReferralGuide): bool
     {
+        $count = ReferralGuideItem::where('idreferralguide', $idReferralGuide)->count();
+        if ($count !== 0) {
+            ReferralGuideItem::where('idreferralguide', $idReferralGuide)->delete();
+        }
+
         foreach ($items as $item) {
             $referralItems = new ReferralGuideItem();
             $referralItems->idreferralguide = $idReferralGuide;

@@ -216,10 +216,11 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
 
   getListItemPrice = (pos: any) => {
     const item = this.formArrayItem.value[pos];
-    this.itemSelected = item;
+    // this.itemSelected = item;
     const data = {
       iditem: item.iditem
     };
+
     this.itemPriceService.get(data).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
@@ -277,7 +278,6 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
 
   edit = (item: any) => {
     this.itemSelected = item;
-    console.log(item);
     this.contractSelected = item.biz_contract;
     this.form.get('nocontract').setValue(item.nocontract);
     this.form.get('idclient').setValue(this.contractSelected.biz_client.businessname);
@@ -296,12 +296,13 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
     this.form.get('idcarrier').setValue(item.idcarrier);
     this.form.get('state').setValue(item.state);
 
-    this.formArrayItem = this.form.get('items') as FormArray;
     this.formArrayItem.clear();
+    this.formArrayItem = this.form.get('items') as FormArray;
 
-    let pos = 0;
-    item.biz__referral_guide_item.forEach(element => {
-      console.log(element);
+    const length = item.biz__referral_guide_item.length;
+
+    for (let index = 0; index < length; index++) {
+      const element = item.biz__referral_guide_item[index];
       this.formArrayItem.push(this.formBuilder.group({
         iditem: element.iditem,
         iditemprice: element.iditemprice,
@@ -311,9 +312,8 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
         observation: element.observation,
         itsInContract: true
       }));
-      this.getListItemPrice(pos);
-      pos++;
-    });
+      this.getListItemPrice(index);
+    }
 
     this.titleAside = 'Editar Guía Remisión';
     this.asideIsOpen = true;
@@ -342,7 +342,11 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   }
 
   action = () => {
-    this.add();
+    if (this.itemSelected === null) {
+      this.add();
+    } else {
+      this.update(this.itemSelected.idreferralguide);
+    }
   }
 
   add = () => {
@@ -368,6 +372,44 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
     console.log(data);
 
     this.referralGuideService.post(data).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
+          this.closeAside();
+          this.get(1);
+        } else {
+          this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
+        }
+      },
+      (error) => {
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
+  }
+
+  update = (id: number) => {
+    this.ngxService.startLoader('loading-component');
+    const state = (this.form.value.state !== null && this.form.value.state !== false) ? true : false;
+    const guidenumber = this.form.value.establec + '-' + this.form.value.ptoventa + '-' + this.form.value.secuencial;
+
+    const data = {
+      idcontract: this.contractSelected.idcontract,
+      idproject: this.form.value.idproject,
+      idtransferreason: this.form.value.idtransferreason,
+      idcarrier: this.form.value.idcarrier,
+      idwarehouse: this.form.value.idwarehouse,
+
+      datetimereferral: this.form.value.datetimereferral,
+      logisticservicecost: this.form.value.logisticservicecost,
+      sequential: this.form.value.sequential,
+      guidenumber,
+      state,
+      items: this.form.value.items,
+    };
+
+    console.log(data);
+
+    this.referralGuideService.put(id, data).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');

@@ -19,7 +19,7 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Cantidad de Clientes</h5>
-              <p class="card-text text-center value-card">0</p>
+              <p class="card-text text-center value-card">{{ countClients }}</p>
             </div>
           </div>
         </div>
@@ -27,7 +27,7 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Cantidad de Contratos</h5>
-              <p class="card-text text-center value-card">0</p>
+              <p class="card-text text-center value-card">{{ countContract }}</p>
             </div>
           </div>
         </div>
@@ -35,7 +35,7 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">Cantidad de Guías</h5>
-                <p class="card-text text-center value-card">0</p>
+                <p class="card-text text-center value-card">{{ countGuide }}</p>
               </div>
             </div>
           </div>
@@ -43,9 +43,12 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">Cantidad de Liquidaciones</h5>
-                <p class="card-text text-center value-card">0</p>
+                <p class="card-text text-center value-card">{{ countLiquidation }}</p>
               </div>
             </div>
           </div>
       </div>
 </div>
+
+<app-notification [type]="typeNotification" [icon]="iconNotification" 
+[title]="titleNotification" [message]="messageNotification"></app-notification>

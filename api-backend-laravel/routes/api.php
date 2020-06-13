@@ -49,3 +49,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('referral-guide', 'workflow\ReferralGuideController');
     Route::resource('liquidation', 'workflow\LiquidationController');
 });
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('private/dashboard/count-client', 'report\DashboardController@countClients');
+    Route::get('private/dashboard/count-contract', 'report\DashboardController@countContracts');
+    Route::get('private/dashboard/count-guide', 'report\DashboardController@countReferralGuides');
+    Route::get('private/dashboard/count-liquidation', 'report\DashboardController@countLiquidations');
+    Route::resource('private/dashboard', 'report\DashboardController');
+});

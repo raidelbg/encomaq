@@ -122,7 +122,7 @@ class ContractController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): ?\Illuminate\Http\JsonResponse
     {
         try {
             $item = Contract::find($id);
@@ -140,7 +140,7 @@ class ContractController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy($id): ?\Illuminate\Http\JsonResponse
     {
         try {
             $item = Contract::find($id);
@@ -148,11 +148,11 @@ class ContractController extends Controller
                 return response()->json([
                     self::SUCCESS => true, self::MESSAGE => 'Se eliminó satisfactoriamente'
                 ]);
-            } else {
-                return response()->json([
-                    self::SUCCESS => false, self::MESSAGE => 'Ha ocurrido un error al intentar eliminar'
-                ]);
             }
+
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => 'Ha ocurrido un error al intentar eliminar'
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 self::SUCCESS => false, self::MESSAGE => $e->getMessage()
@@ -253,7 +253,7 @@ class ContractController extends Controller
         try {
 
             $count = ContractItem::where('idcontract', $idContract)->count();
-            if ($count != 0) {
+            if ($count !== 0) {
                 ContractItem::where('idcontract', $idContract)->delete();
             }
 
