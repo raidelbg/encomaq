@@ -23,10 +23,10 @@ class LiquidationController extends Controller
     {
         try {
 
-            $filtro = json_decode($request->get('filter'));
+            $filtro = json_decode($request->get('filter'), false);
 
             $sql = '';
-            if ($filtro->search != '') {
+            if ($filtro->search !== '') {
                 $sql .= ' OR biz_liquidation.idliquidation IN (';
                 $sql .= ' SELECT biz_liquidation_project.idliquidation FROM biz_liquidation_project WHERE biz_liquidation_project.idproject IN ( ';
                 $sql .= ' SELECT biz_project.idproject FROM biz_project  WHERE biz_project.idclient IN (';

@@ -47,8 +47,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('contract/resumeContract', 'workflow\ContractController@resumeContract');
     Route::resource('contract', 'workflow\ContractController');
     Route::resource('referral-guide', 'workflow\ReferralGuideController');
-    Route::resource('liquidation', 'workflow\LiquidationController');
+
 });
+Route::resource('liquidation', 'workflow\LiquidationController');
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('private/dashboard/count-client', 'report\DashboardController@countClients');

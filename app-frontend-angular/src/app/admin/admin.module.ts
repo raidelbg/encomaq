@@ -5,6 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxUiLoaderModule } from 'ngx-ui-loader';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { HttpConfigInterceptor } from '../shared/interceptors/httpconfig.interceptor';
 import { AdminRoutingModule } from './admin-routing.module';
@@ -69,7 +70,8 @@ import { ReferralGuideUltimateComponent } from './components/workflow/workflow/r
     SharedModule,
     AdminRoutingModule,
     NgxPaginationModule,
-    NgxUiLoaderModule
+    NgxUiLoaderModule,
+    NgSelectModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
