@@ -108,11 +108,21 @@ class ReferralGuideController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy($id): ?\Illuminate\Http\JsonResponse
     {
-        //
+        try {
+            $item = ReferralGuide::find($id);
+            if ($item->delete()) {
+                return response()->json([self::SUCCESS => true, self::MESSAGE => 'Se eliminó satisfactoriamente' ]);
+            }
+            return response()->json([self::SUCCESS => false, self::MESSAGE => 'Ha ocurrido un error al intentar eliminar' ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                self::SUCCESS => false, self::MESSAGE => $e->getMessage()
+            ]);
+        }
     }
 
     private function action(ReferralGuide $item, Request $request, $typeAction)

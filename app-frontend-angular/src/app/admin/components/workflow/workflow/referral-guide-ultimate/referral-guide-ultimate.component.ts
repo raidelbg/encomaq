@@ -281,7 +281,25 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   }
 
   delete = () => {
-
+    $('#confirmDeleteReferralGuide').modal('hide');
+    this.ngxService.startLoader('loading-component');
+    this.referralGuideService.delete(this.itemSelected.idreferralguide).pipe(takeUntil(this.destroySubscription$)).subscribe(
+      (response) => {
+        if (response.success) {
+          this.itemSelected = null;
+          this.closeAside();
+          this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
+          this.get(1);
+        } else {
+          this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
+        }
+        this.ngxService.stopLoader('loading-component');
+      },
+      (error) => {
+        this.ngxService.stopLoader('loading-component');
+        this.showNotification(error.title, error.icon, error.message, error.type);
+      }
+    );
   }
 
   action = () => {
@@ -327,7 +345,9 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   }
 
   confirmDelete = (item: any) => {
-
+    this.itemSelected = item;
+    this.anything = this.itemSelected.guidenumber;
+    $('#confirmDeleteReferralGuide').modal('show');
   }
 
   getResumeContract = () => {

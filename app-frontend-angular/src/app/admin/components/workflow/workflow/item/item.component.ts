@@ -264,7 +264,7 @@ export class ItemComponent implements OnInit, OnDestroy {
       (response) => {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
-          this.get(1);
+          this.get(this.pag);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
@@ -305,7 +305,7 @@ export class ItemComponent implements OnInit, OnDestroy {
         if (response.success) {
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.closeAside(false, response.id);
-          this.get(1);
+          this.get(this.pag);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
@@ -402,7 +402,7 @@ export class ItemComponent implements OnInit, OnDestroy {
           this.itemSelected = null;
           this.closeAside();
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
-          this.get(1);
+          this.get(this.pag);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
         }
