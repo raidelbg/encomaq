@@ -298,9 +298,8 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.itemService.postFile(data, this.fileToUpload).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
-          this.itemAddToEdit = response.id;
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
-          this.closeAside(false);
+          this.closeAside(false, response.id);
           this.get(1);
         } else {
           this.showNotification('¡Atención!', ICONS_ALERT.warning, response.message, 'warning');
@@ -395,6 +394,8 @@ export class ItemComponent implements OnInit, OnDestroy {
       (response) => {
         if (response.success) {
           this.itemAddToEdit = null;
+          this.itemSelected = null;
+          this.closeAside();
           this.showNotification('Información', ICONS_ALERT.success, response.message, 'success');
           this.get(1);
         } else {
@@ -409,14 +410,14 @@ export class ItemComponent implements OnInit, OnDestroy {
     );
   }
 
-  closeAside = (noClose = true) => {
+  closeAside = (noClose: boolean = true, id: number = null) => {
     if (noClose) {
       this.asideIsOpen = false;
     }
     this.form.reset();
     this.itemSelected = null;
     this.errorInit();
-    this.itemAddToEdit = null;
+    this.itemAddToEdit = id;
   }
 
   /**
