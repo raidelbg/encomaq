@@ -49,6 +49,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   listItemPrice = [];
   itemSelected = null;
   itemAddToEdit = null;
+  flagEdit = false;
   anything = '';
 
   fileToUpload: File = null;
@@ -169,6 +170,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   getCategory = () => {
+    this.listCategory = [];
     this.listCategory.push({idcategoryitem: '', categoryitemname: '-- Seleccione Categoría --'});
     this.categoryService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
@@ -185,6 +187,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   getUnitType = () => {
+    this.listUnitType = [];
     this.listUnitType.push({idunittype: '', unittypename: '-- Selecc. Tipo Unidad --'});
     this.unitTypeService.get({}).pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
@@ -224,6 +227,7 @@ export class ItemComponent implements OnInit, OnDestroy {
           this.form.get('state').setValue(response.data.state);
 
           this.titleAside = 'Editar Producto';
+          this.flagEdit = true;
           this.formTableView = false;
           this.formView = true;
           this.asideIsOpen = true;
@@ -279,6 +283,7 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.form.get('idcategoryitem').setValue('');
     this.form.get('idunittype').setValue('');
     this.form.get('state').setValue(true);
+    this.flagEdit = false;
     this.formTableView = false;
     this.formView = true;
     this.asideIsOpen = true;

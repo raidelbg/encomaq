@@ -205,7 +205,7 @@
                     (keydown.enter)="form.valid && action()" (click)="form.valid && action()"
                     [disabled]="!form.valid">Guardar</button>
                 </div>
-                <div class="col-12 btn-group mt-2">
+                <div *ngIf="flagEdit" class="col-12 btn-group mt-2">
                     <button class="btn btn-lg btn-info" type="button" (click)="listPrice()">Precios</button>
                     <button class="btn btn-lg btn-danger" type="button" (click)="confirmDelete()">Eliminar</button>
                 </div>
