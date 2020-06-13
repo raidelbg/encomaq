@@ -278,6 +278,45 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   edit = (item: any) => {
     this.itemSelected = item;
     console.log(item);
+    this.contractSelected = item.biz_contract;
+    this.form.get('nocontract').setValue(item.nocontract);
+    this.form.get('idclient').setValue(this.contractSelected.biz_client.businessname);
+    const guidenumber = item.guidenumber.split('-');
+    this.form.get('establec').setValue(guidenumber[0]);
+    this.form.get('ptoventa').setValue(guidenumber[1]);
+    this.form.get('secuencial').setValue(guidenumber[2]);
+    this.listProjects = this.contractSelected.biz_client.biz_project;
+    this.form.get('idproject').setValue(item.idproject);
+
+    this.form.get('idwarehouse').setValue(item.idwarehouse);
+    this.form.get('datetimereferral').setValue(item.datetimereferral);
+    this.form.get('sequential').setValue(item.sequential);
+    this.form.get('logisticservicecost').setValue(item.logisticservicecost);
+    this.form.get('idtransferreason').setValue(item.idtransferreason);
+    this.form.get('idcarrier').setValue(item.idcarrier);
+    this.form.get('state').setValue(item.state);
+
+    this.formArrayItem = this.form.get('items') as FormArray;
+    this.formArrayItem.clear();
+
+    let pos = 0;
+    item.biz__referral_guide_item.forEach(element => {
+      console.log(element);
+      this.formArrayItem.push(this.formBuilder.group({
+        iditem: element.iditem,
+        iditemprice: element.iditemprice,
+        listPrice: [],
+        price: element.price,
+        count: element.quantify,
+        observation: element.observation,
+        itsInContract: true
+      }));
+      this.getListItemPrice(pos);
+      pos++;
+    });
+
+    this.titleAside = 'Editar Guía Remisión';
+    this.asideIsOpen = true;
   }
 
   delete = () => {
@@ -407,6 +446,7 @@ export class ReferralGuideUltimateComponent implements OnInit, OnDestroy {
   }
 
   selectedContract = (item: any) => {
+    console.log(item);
     this.contractSelected = item;
     this.form.get('nocontract').setValue(item.nocontract);
     this.form.get('idclient').setValue(item.biz_client.businessname);

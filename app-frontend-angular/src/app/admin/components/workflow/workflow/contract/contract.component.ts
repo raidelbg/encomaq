@@ -272,7 +272,6 @@ export class ContractComponent implements OnInit, OnDestroy {
   }
 
   create = () => {
-
     this.contractService.get({}, 'getLastNoContract').pipe(takeUntil(this.destroySubscription$)).subscribe(
       (response) => {
         if (response.success) {
@@ -287,6 +286,7 @@ export class ContractComponent implements OnInit, OnDestroy {
           this.form.get('nocontract').setValue(response.data);
 
           this.formArrayItem = this.form.get('items') as FormArray;
+          this.formArrayItem.clear();
           this.createRowItem();
 
           this.formArrayPaymentForm = this.form.get('paymentform') as FormArray;
@@ -318,7 +318,6 @@ export class ContractComponent implements OnInit, OnDestroy {
 
   edit = (item: any) => {
     this.itemSelected = item;
-
     this.form.get('idclient').setValue(item.idclient);
     this.form.get('nocontract').setValue(item.nocontract);
     this.form.get('startdate').setValue(item.startdate);
@@ -366,7 +365,10 @@ export class ContractComponent implements OnInit, OnDestroy {
 
     });
 
+
     this.formArrayItem = this.form.get('items') as FormArray;
+    this.formArrayItem.clear();
+
     item.biz_contractitem.forEach(element => {
       this.formArrayItem.push(this.formBuilder.group({
         idcontractitem: element.idcontractitem,
@@ -393,7 +395,7 @@ export class ContractComponent implements OnInit, OnDestroy {
       count: 0,
       observation: ''
     });
-    this.formArrayItem = this.form.get('items') as FormArray;
+    // this.formArrayItem = this.form.get('items') as FormArray;
     this.formArrayItem.push(item);
   }
 

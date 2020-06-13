@@ -35,7 +35,10 @@ class ReferralGuideController extends Controller
             $select .= 'nom_transferreason.transferreasonname, nom_transferreason.idtypetransferreason, biz_carrier.carriername, biz_carrier.licenseplate, ';
             $select .= 'biz_project.projectname, biz_warehouse.warehousename';
 
-            $result = ReferralGuide::join('biz_contract', 'biz_contract.idcontract', '=', 'biz_referralguide.idcontract')
+            $result = ReferralGuide::with([
+                'biz_ReferralGuideItem', 'biz_contract.biz_client.biz_project', 'biz_contract.biz_contractitem.biz_item'
+            ])
+                ->join('biz_contract', 'biz_contract.idcontract', '=', 'biz_referralguide.idcontract')
                 ->join('biz_client', 'biz_client.idclient', '=', 'biz_contract.idclient')
                 ->join('biz_carrier', 'biz_carrier.idcarrier', '=', 'biz_referralguide.idcarrier')
                 ->join('biz_project', 'biz_project.idproject', '=', 'biz_referralguide.idproject')

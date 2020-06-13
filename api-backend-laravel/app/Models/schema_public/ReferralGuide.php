@@ -13,7 +13,7 @@ class ReferralGuide extends Model
     protected $table = 'biz_referralguide';
     protected $primaryKey = 'idreferralguide';
 
-    public function biz_ReferralGuideItem()
+    public function biz_ReferralGuideItem(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ReferralGuideItem::class,'idreferralguide');
     }
