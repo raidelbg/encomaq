@@ -416,6 +416,7 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.form.reset();
     this.itemSelected = null;
     this.errorInit();
+    this.itemAddToEdit = null;
   }
 
   /**
