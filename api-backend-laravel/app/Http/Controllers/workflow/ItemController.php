@@ -159,7 +159,7 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy($id): ?\Illuminate\Http\JsonResponse
     {
         try {
             $item = Item::find($id);
